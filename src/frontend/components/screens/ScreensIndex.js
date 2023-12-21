@@ -1,0 +1,14 @@
+export { default as HomeScreen } from './accessibleSceens/HomeScreen';
+export { default as AddEntryScreen } from './accessibleSceens/AddEntry';
+export { default as ViewEntriesScreen } from './accessibleSceens/ViewEntry';
+export { default as ProfileScreen } from './accessibleSceens/Profile';
+export { default as SettingsScreen } from './accessibleSceens/Settings';
+export { default as HistoryScreen } from './accessibleSceens/History';
+export { default as DetailedHistoryScreen } from './accessibleSceens/DetailedHistory';
+export { default as StartDrinkingScreen } from './accessibleSceens/StartDrinking';
+export { default as EditEntriesScreen } from './oldScreens/EditEntry';
+export { default as EntriesScreen } from './backendScreens/Entries';
+export { default as ChartsScreen } from './accessibleSceens/ChartsScreen';
+export { default as LoginScreen } from './startUpScreens/LoginScreen';
+export { default as StartScreen } from './startUpScreens/StartScreen';
+export { default as RegisterScreen } from './startUpScreens/RegisterScreen';
