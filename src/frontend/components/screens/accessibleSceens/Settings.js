@@ -1,85 +1,67 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Slider from '@react-native-community/slider';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { settingsStyles } from '../../styles/styles';
-import { sendNotification } from '../../../utils/notifications';
-import { saveDataToFile, loadDataFromFile } from '../../../utils/database';
-import { globalData } from '../../../utils/database';
+import { UserContext } from '../../../context/UserContext';
+import { getServerBaseUrl } from '../../../utils/config/dbURL';
 
 const SettingsScreen = () => {
+  const { user } = useContext(UserContext);
   const [spendingLimit, setSpendingLimit] = useState(0);
   const [drinkingLimit, setDrinkingLimit] = useState(0);
 
   useEffect(() => {
-    // Load saved limits from AsyncStorage
+    // Load saved limits from the server or local storage
     loadLimits();
-  }, []);
-  
-  useEffect(() => {
-    // Save limits to AsyncStorage whenever they change
-    saveLimits();
-  }, [spendingLimit, drinkingLimit]);
+  }, [user]);
 
   const loadLimits = async () => {
+    if (!user) {
+      console.log('SettingsScreen.js: No user data available');
+      return;
+    }
+    // Add logic to fetch limits from the server
     try {
-      const savedSpendingLimit = await AsyncStorage.getItem('spendingLimit');
-      const savedDrinkingLimit = await AsyncStorage.getItem('drinkingLimit');
-
-      if (savedSpendingLimit !== null) {
-        setSpendingLimit(parseInt(savedSpendingLimit));
+      const apiUrl = `${getServerBaseUrl()}/api/settings/${user.id}`;
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error('SettingsScreen.js: Failed to load settings');
       }
-
-      if (savedDrinkingLimit !== null) {
-        setDrinkingLimit(parseInt(savedDrinkingLimit));
-      }
+      const data = await response.json();
+      setSpendingLimit(data.spendingLimit);
+      setDrinkingLimit(data.drinkingLimit);
     } catch (error) {
-      console.log('Error loading limits:', error);
+      console.error('SettingsScreen.js: Error loading settings:', error);
     }
   };
 
   const saveLimits = async () => {
+    if (!user) {
+      console.log('SettingsScreen.js: No user data available');
+      return;
+    }
     try {
-      globalData.settings.spendingLimit = spendingLimit;
-      globalData.settings.drinkingLimit = drinkingLimit;
-      await saveDataToFile();
-    } catch (error) {
-      console.log('Error saving limits:', error);
-    }
-  };
+      const apiUrl = `${getServerBaseUrl()}/api/settings`;
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.id, // Assuming user has an 'id' field
+          spendingLimit,
+          drinkingLimit,
+        }),
+      });
 
-  const handleCheckLimits = () => {
-    // Check if spending limit is met
-    if (totalSpending > spendingLimit) {
-      sendNotification('Spending Limit Reached', 'You have exceeded your spending limit.');
-    }
-  
-    // Check if drinking limit is met
-    if (totalDrinks > drinkingLimit) {
-      sendNotification('Drinking Limit Reached', 'You have reached your drinking limit.');
-    }
-  
-    // Save the limits
-    try {
-      saveDataToFile();
-      console.log('Limits saved successfully!');
-    } catch (error) {
-      console.log('Error saving limits:', error);
-    }
-  };
-  
+      if (!response.ok) {
+        throw new Error('SettingsScreen.js: Failed to save settings');
+      }
 
-  // // Calculate total spending and drinks based on your app logic
-  // const totalSpending = 150;
-  // const totalDrinks = 5;
-
-  const handleSaveLimits = async () => {
-    try {
-      await AsyncStorage.setItem('spendingLimit', spendingLimit.toString());
-      await AsyncStorage.setItem('drinkingLimit', drinkingLimit.toString());
-      alert('Limits saved successfully.');
+      const data = await response.json();
+      console.log('SettingsScreen.js: Settings saved successfully:', data);
     } catch (error) {
-      console.log('Error saving limits:', error);
+      console.error('SettingsScreen.js: Error saving settings:', error);
     }
   };
 
@@ -91,7 +73,6 @@ const SettingsScreen = () => {
         minimumValue={0}
         maximumValue={500}
         step={1}
-        defaultValue={500}
         value={spendingLimit}
         onValueChange={setSpendingLimit}
       />
@@ -101,17 +82,12 @@ const SettingsScreen = () => {
         style={settingsStyles.slider}
         minimumValue={0}
         maximumValue={100}
-        defaultValue={100}
         step={1}
         value={drinkingLimit}
         onValueChange={setDrinkingLimit}
       />
 
-      {/* <TouchableOpacity style={settingsStyles.button} onPress={handleCheckLimits}>
-        <Text style={settingsStyles.buttonText}>Check Limits</Text>
-      </TouchableOpacity> */}
-
-      <TouchableOpacity style={settingsStyles.button} onPress={handleSaveLimits}>
+      <TouchableOpacity style={settingsStyles.button} onPress={saveLimits}>
         <Text style={settingsStyles.buttonText}>Save Limits</Text>
       </TouchableOpacity>
     </View>

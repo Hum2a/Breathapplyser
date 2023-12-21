@@ -9,29 +9,30 @@ const DbAPI = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      
       try {
-        console.log('Fetching data...');
-        console.log('Imported getServerBaseUrl:', getServerBaseUrl);
-        // const apiUrl = `${getServerBaseUrl()}/api/users`;
-        const apiUrl = "http://10.0.2.2:5432/api/users";
-        console.log(`API URL: ${apiUrl}`);
+        console.log('DBapi.js: Fetching data...');
+        console.log('DBapi.js: Imported getServerBaseUrl:', getServerBaseUrl);
+        const apiUrl = `${getServerBaseUrl()}/api/users`;
+        // const apiUrl = "http://10.0.2.2:5432/api/users";
+        console.log(`DBapi.js: API URL: ${apiUrl}`);
 
         const response = await fetch(apiUrl);
-        console.log('Response received:', response);
+        console.log('DBapi.js: Response received:', response);
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`HTTP DBapi.js: error! status: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('Data parsed as JSON:', data);
+        console.log('DBapi.js: Data parsed as JSON:', data);
 
         setUsers(data);
-        console.log('Users state updated:', data);
+        console.log('DBapi.js: Users state updated:', data);
       } catch (err) {
-        console.error('Error fetching data:', err);
+        console.error('DBapi.js: Error fetching data:', err);
         setError(err.message || 'An error occurred');
-        console.log('Error state updated:', err.message);
+        console.log('DBapi.js: Error state updated:', err.message);
       }
     };
 
@@ -43,15 +44,15 @@ const DbAPI = () => {
       {error ? (
         <>
           <Text>Error: {error}</Text>
-          {console.log('Rendering error:', error)}
+          {console.log('DBapi.js: Rendering error:', error)}
         </>
       ) : (
         <>
           <Text>Users:</Text>
-          {console.log('Rendering users...')}
+          {console.log('DBapi.js: Rendering users...')}
           {users ? (
             users.map(user => {
-              console.log('Rendering user:', user);
+              console.log('DBapi.js: Rendering user:', user);
               return <Text key={user.id}>{user.username}</Text>;
             })
           ) : (

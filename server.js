@@ -1,10 +1,22 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const userRoutes = require('./src/backend/routes/userRoutes');
-const registerRoutes = require('./src/backend/routes/registerRoutes');
-const loginRoutes = require('./src/backend/routes/loginRoutes');
-const { createTables } = require('./src/backend/queries/createTables');
+
+const { createTables } = require('./src/backend/queries/default/createTables');
+const insertCurrencies = require('./src/backend/queries/default/insertCurrencies');
+
 const db = require('./src/backend/database/db');
+
+const {
+  userRoutes,
+  loginRoutes,
+  registerRoutes,
+  profileRoute,
+  settingsRoutes,
+  drunknessRoutes,
+  bacRoutes,
+  totalUnitsRoutes,
+  realTimeBACRoutes
+} = require('./src/backend/routes/routesIndex');
 
 const app = express();
 const PORT = process.env.PORT || 5432;
@@ -24,27 +36,30 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(userRoutes);
 app.use(registerRoutes);
 app.use(loginRoutes);
+app.use(profileRoute);
+app.use(settingsRoutes);
+app.use(drunknessRoutes);
+app.use(bacRoutes);
+app.use(totalUnitsRoutes);
+app.use(realTimeBACRoutes);
 
 // Test database connection
 db.connect()
   .then(obj => {
-    console.log("Connected to the database successfully");
+    console.log("Server.js: Connected to the database successfully");
     obj.done(); // release the connection
   })
   .catch(error => {
-    console.error("Error connecting to the database", error);
+    console.error("Server.js: Error connecting to the database", error);
   });
 
 
 // Create tables when the server starts
 createTables().then(() => {
-  console.log('Tables creation attempted...');
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-});
+  console.log('Server.js: Tables creation attempted...');
+}).catch(err => console.error('Server.js: Error creating tables:', err));
 
 setInterval(() => {
-  console.log('Server check-in: still running');
+  console.log('Server.js: Server check-in: still running');
 }, 10000); // 10000 milliseconds = 10 seconds
 

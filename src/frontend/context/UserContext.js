@@ -8,17 +8,17 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const loadUserData = async () => {
-      console.log('Attempting to load user data...');
+      console.log('UserContext.js: Attempting to load user data...');
       try {
         const userDataString = await AsyncStorage.getItem('userData');
-        console.log('User data fetched:', userDataString);
+        console.log('UserContext.js: User data fetched:', userDataString);
         if (userDataString) {
           const userData = JSON.parse(userDataString);
-          console.log('User data parsed:', userData);
+          console.log('UserContext.js: User data parsed:', userData);
           setUser(userData);
         }
       } catch (error) {
-        console.error('Error loading user data:', error);
+        console.error('UserContext.js: Error loading user data:', error);
       }
     };
 
@@ -26,24 +26,24 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   const storeUserData = async (userData) => {
-    console.log('Attempting to store user data:', userData);
+    console.log('UserContext.js: Attempting to store user data:', userData);
     try {
       await AsyncStorage.setItem('userData', JSON.stringify(userData));
-      console.log('User data stored successfully');
+      console.log('UserContext.js: User data stored successfully');
       setUser(userData);
     } catch (error) {
-      console.error('Error saving user data', error);
+      console.error('UserContext.js: Error saving user data', error);
     }
   };
 
   const clearUserData = async () => {
-    console.log('Attempting to clear user data...');
+    console.log('UserContext.js: Attempting to clear user data...');
     try {
       await AsyncStorage.removeItem('userData');
-      console.log('User data cleared successfully');
+      console.log('UserContext.js: User data cleared successfully');
       setUser(null);
     } catch (error) {
-      console.error('Error clearing user data', error);
+      console.error('UserContext.js: Error clearing user data', error);
     }
   };
 

@@ -1,41 +1,89 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LineChart } from 'react-native-chart-kit';
-import { chartStyles } from '../styles/styles';
-import { chartConfig } from './chartConfig';
-import { getServerBaseUrl } from '../../utils/config/dbURL';
+import { chartStyles } from '../../styles/styles';
+import { globalData } from '../../../utils/database';
+import { chartConfig } from '../chartConfig';
 
 const RealTimeBACChart = () => {
-  const [bacValues, setBACValues] = useState([]);
+    console.log('----------REAL TIME BAC CHART LOG---------');
+  const [bacValues, setBACValues] = useState([globalData.globalBAC]);
   const [timerInterval, setTimerInterval] = useState(1000); // Default interval: 1 second
 
+  
+  const fetchStoredBACValues = async () => {
+    try {
+      const storedValues = await AsyncStorage.getItem('realTimeBACValues');
+      if (storedValues) {
+        const parsedValues = JSON.parse(storedValues);
+        setBACValues(parsedValues);
+      }
+    } catch (error) {
+      console.log('Error fetching stored BAC values:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchBACValue = async () => {
+    fetchStoredBACValues();
+  }, []);
+
+  useEffect(() => {
+    const storeBACValues = async () => {
       try {
-        const response = await fetch(`${getServerBaseUrl()}/api/realTimeBAC`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch real-time BAC data');
-        }
-        const data = await response.json();
-        setBACValues((prevValues) => [...prevValues, data.currentBAC]);
+        await AsyncStorage.setItem('realTimeBACValues', JSON.stringify(bacValues));
       } catch (error) {
-        console.error('Error fetching real-time BAC data:', error);
+        console.log('Error storing BAC values:', error);
       }
     };
 
-    const timer = setInterval(fetchBACValue, timerInterval);
-    return () => clearInterval(timer);
-  }, [timerInterval]);
+    storeBACValues();
+  }, [bacValues]);
+
+  useEffect(() => {
+    const timer = setInterval(updateBACValues, timerInterval);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [timerInterval, bacValues]);
+
+  const updateBACValues = () => {
+    const previousBAC = bacValues[bacValues.length - 1];
+    const decreasePerSecond = 0.015 / 3600;
+    const decreasePerMinute = decreasePerSecond * 60;
+    const decreasePerHour = decreasePerMinute * 60;
+
+    // Calculate the elapsed time since the last update
+    const elapsedSeconds = timerInterval / 1000;
+    
+    // Calculate the decrease in BAC based on the elapsed time
+    const decrease = decreasePerSecond * elapsedSeconds;
+
+    // Ensure that the decrease doesn't cause the BAC to become negative
+    const currentBAC = Math.max(previousBAC - decrease, 0);
+  
+    setBACValues((prevBACValues) => {
+      const newBACValues = [...prevBACValues, currentBAC];
+      globalData.globalBAC = currentBAC; // Store the current BAC value in globalData
+      return newBACValues;
+    });
+  };
+  
 
   const handleIntervalChange = (interval) => {
+    console.log('Interval changed:', interval);
     setTimerInterval(interval);
   };
+
+  console.log('Render BAC Values:', bacValues);
+  console.log('----------------------------------');
 
   return (
     <View style={chartStyles.chartContainer}>
       <LineChart
         data={{
-          labels: bacValues.map((_, index) => index.toString()),
+          labels: [],
           datasets: [
             {
               data: bacValues,
@@ -55,6 +103,7 @@ const RealTimeBACChart = () => {
             borderRadius: 16,
           },
           withVerticalLabels: true,
+          xAxisLabelCount: 0,
         }}
         bezier
       />
@@ -63,7 +112,6 @@ const RealTimeBACChart = () => {
         <Text style={chartStyles.legendLabel}>Real Time Blood Alcohol Content</Text>
       </View>
       <View style={chartStyles.intervalButtonsContainer}>
-        {/* Interval buttons */}
         <TouchableOpacity
           style={[
             chartStyles.intervalButton,

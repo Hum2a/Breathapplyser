@@ -3,24 +3,25 @@ import { setServerBaseUrl } from '../../../frontend/utils/config/dbURL';
 import NetInfo from '@react-native-community/netinfo';
 
 const initializeNetwork = async () => {
-  console.log('Network initialization started');
+  console.log('initaliseNetwork.js: Network initialization started');
 
   // NetInfo listener for connection changes
   const unsubscribe = NetInfo.addEventListener(state => {
-    console.log('Connection type:', state.type);
-    console.log('Is connected?', state.isConnected);
+    console.log('initaliseNetwork.js: Connection type:', state.type);
+    console.log('initaliseNetwork.js: Is connected?', state.isConnected);
   });
 
   // Get network information
   const networkInfo = await getNetworkInfo();
-  console.log('Network info retrieved:', networkInfo);
+  console.log('initaliseNetwork.js: Network info retrieved:', networkInfo);
   if (networkInfo && networkInfo.ipv4Address) {
     // const baseUrl = `http://${networkInfo.ipv4Address}:5432`;
+    // const baseUrl = `http://127.0.0.1:5432`;
     const baseUrl = `http://10.0.2.2:5432`;
-    console.log('Setting server base URL to:', baseUrl);
+    console.log('initaliseNetwork.js: Setting server base URL to:', baseUrl);
     setServerBaseUrl(baseUrl);
   } else {
-    console.error('Failed to fetch network information');
+    console.error('initaliseNetwork.js: Failed to fetch network information');
   }
 
   return unsubscribe; // Return the unsubscribe function to call it in App.tsx

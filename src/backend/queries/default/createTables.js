@@ -1,4 +1,4 @@
-const db = require('../database/db');
+const db = require('../../database/db');
 
 const createTables = async () => {
     // Create tables for users
@@ -102,7 +102,55 @@ const createTables = async () => {
         );
     `);
 
-    console.log('Tables created successfully!');
+    await db.none(`
+    CREATE TABLE IF NOT EXISTS currencies (
+        id SERIAL PRIMARY KEY,
+        code TEXT UNIQUE,
+        name TEXT,
+        symbol TEXT
+    );
+`);
+    // Drunkness data table
+    await db.none(`
+      CREATE TABLE IF NOT EXISTS drunkness_data (
+        id SERIAL PRIMARY KEY,
+        user_id INT REFERENCES users(id),
+        drunkness_level REAL,
+        timestamp TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+  
+    // BAC data table
+    await db.none(`
+      CREATE TABLE IF NOT EXISTS bac_data (
+        id SERIAL PRIMARY KEY,
+        user_id INT REFERENCES users(id),
+        bac_level REAL,
+        timestamp TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+  
+    // Total units data table
+    await db.none(`
+      CREATE TABLE IF NOT EXISTS total_units_data (
+        id SERIAL PRIMARY KEY,
+        user_id INT REFERENCES users(id),
+        units REAL,
+        timestamp TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+  
+    // Real-time BAC data table
+    await db.none(`
+      CREATE TABLE IF NOT EXISTS real_time_bac_data (
+        id SERIAL PRIMARY KEY,
+        user_id INT REFERENCES users(id),
+        real_time_bac REAL,
+        timestamp TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+
+    console.log('CreateTables.js: Tables created successfully!');
 };
 
 module.exports = {

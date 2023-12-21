@@ -11,6 +11,10 @@ const StartScreen = ({ navigation }) => {
     navigation.navigate('Login');
   };
 
+  const navigateToHome = () => {
+    navigation.navigate('Home');
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -25,6 +29,13 @@ const StartScreen = ({ navigation }) => {
         onPress={navigateToRegister}
       >
         <Text style={styles.buttonText}>Register</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.button, styles.loginButton]}
+        onPress={navigateToHome}
+        >
+        <Text style={styles.buttonText}>Home</Text>
       </TouchableOpacity>
     </View>
   );

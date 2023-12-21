@@ -14,35 +14,35 @@ const getNetworkInfo = async () => {
 
     // Get Local IP
     ipAddress = await NetworkInfo.getIPAddress();
-    console.log(`ipAddress = ${ipAddress}`);
+    console.log(`networkInfo.js: ipAddress = ${ipAddress}`);
 
     // Get IPv4 IP (priority: WiFi first, cellular second)
     ipv4Address = await NetworkInfo.getIPV4Address();
-    console.log(`ipv4Address = ${ipv4Address}`);
+    console.log(`networkInfo.js: ipv4Address = ${ipv4Address}`);
 
     // Get Broadcast
     broadcast = await NetworkInfo.getBroadcast();
-    console.log(`broadcast = ${broadcast}`);
+    console.log(`networkInfo.js: broadcast = ${broadcast}`);
 
     // Get SSID
     ssid = await NetworkInfo.getSSID();
-    console.log(`ssid = ${ssid}`);
+    console.log(`networkInfo.js: ssid = ${ssid}`);
 
     // Get BSSID
     bssid = await NetworkInfo.getBSSID();
-    console.log(`bssid = ${bssid}`);
+    console.log(`networkInfo.js: bssid = ${bssid}`);
 
     // Get Subnet
     subnet = await NetworkInfo.getSubnet();
-    console.log(`subnet = ${subnet}`);
+    console.log(`networkInfo.js: subnet = ${subnet}`);
 
     // Get Default Gateway IP
     defaultGateway = await NetworkInfo.getGatewayIPAddress();
-    console.log(`defaultGateway = ${defaultGateway}`);
+    console.log(`networkInfo.js: defaultGateway = ${defaultGateway}`);
 
     // Get frequency (supported only for Android)
     frequency = await NetworkInfo.getFrequency();
-    console.log(`frequency = ${frequency}`);
+    console.log(`networkInfo.js: frequency = ${frequency}`);
 
     resolve({
       ipAddress,

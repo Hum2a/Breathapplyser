@@ -1,43 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TouchableOpacity, FlatList } from 'react-native';
-import { globalData } from '../../../utils/database';
 import { styles } from '../../styles/styles';
+import { UserContext } from '../../../context/UserContext';
+import { getServerBaseUrl } from '../../../utils/config/dbURL';
 
 const HistoryScreen = ({ navigation }) => {
   const [historyData, setHistoryData] = useState([]);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
-    // Prepare the data for the history screen
-    prepareHistoryData();
-  }, []);
-  
-  const prepareHistoryData = () => {
-    // Group the entries by date
-    const groupedData = globalData.entries.reduce((result, entry) => {
-      if (entry && entry.dateTime) { // Add null check
-        const date = entry.dateTime.split(' ')[0]; // Extract the date from dateTime
-        if (!result[date]) {
-          result[date] = [];
-        }
-        result[date].push(entry);
+    if (user) {
+      fetchHistoryData();
+    }
+  }, [user]);
+
+  const fetchHistoryData = async () => {
+    try {
+      const apiUrl = `${getServerBaseUrl()}/api/entries/${user.id}`; // Assuming API to fetch entries by user ID
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error('Failed to fetch history data');
       }
+      const entries = await response.json();
+      prepareHistoryData(entries);
+    } catch (error) {
+      console.error('Error fetching history data:', error);
+    }
+  };
+
+  const prepareHistoryData = (entries) => {
+    const groupedData = entries.reduce((result, entry) => {
+      const date = entry.dateTime.split(' ')[0];
+      if (!result[date]) {
+        result[date] = [];
+      }
+      result[date].push(entry);
       return result;
     }, {});
 
-    // Format the grouped data as an array of objects
-    const formattedData = Object.keys(groupedData).map((date) => {
-      return {
-        date,
-        entries: groupedData[date],
-      };
-    });
+    const formattedData = Object.keys(groupedData).map(date => ({
+      date,
+      entries: groupedData[date],
+    })).sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    // Sort the data by date (most recent first)
-    const sortedData = formattedData.sort((a, b) => {
-      return new Date(b.date) - new Date(a.date);
-    });
-
-    setHistoryData(sortedData);
+    setHistoryData(formattedData);
   };
 
   return (

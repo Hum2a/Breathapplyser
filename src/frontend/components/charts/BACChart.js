@@ -1,45 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { chartStyles } from '../styles/styles';
-import { globalData } from '../../utils/database';
 import { chartConfig } from './chartConfig';
+import { getServerBaseUrl } from '../../utils/config/dbURL';
 
 const BloodAlcoholContentChart = () => {
-  console.log('----------BLOOD ALCOHOL CONTENT CHART LOG----------');
-  const chartData = globalData.chartData;
-  const bacValues = [];
-  
-  let cumulativeBAC = 0;
+  const [bacData, setBacData] = useState([]);
+  const [bacValues, setBacValues] = useState([]);
 
-  if (chartData && chartData.length > 0) {
-    chartData.forEach((data, index) => {
-      const units = parseFloat(data.units);
-      const hoursElapsed = index + 1; // Assuming one entry per hour
-
-      if (!isNaN(units)) {
-        const bacIncrease = data.BACIncrease || 0; // Get BAC increase from the entry
-        cumulativeBAC += bacIncrease; // Add BAC increase to cumulative BAC
-
-        const bacDecrease = cumulativeBAC * (0.015 / 100) * hoursElapsed; // Calculate BAC decrease based on hours elapsed
-        cumulativeBAC -= bacDecrease; // Subtract BAC decrease from cumulative BAC
-
-        bacValues.push(cumulativeBAC); // Store the cumulative BAC value
-      } else {
-        console.log('Invalid units value:', data.units);
+  useEffect(() => {
+    const fetchBacData = async () => {
+      try {
+        const response = await fetch(`${getServerBaseUrl()}/api/bacChartData`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch BAC chart data');
+        }
+        const data = await response.json();
+        setBacData(data);
+        calculateBacValues(data);
+      } catch (error) {
+        console.error('Error fetching BAC chart data:', error);
       }
+    };
 
-      console.log('BACIncrease value:', data.BACIncrease);
+    fetchBacData();
+  }, []);
+
+  const calculateBacValues = (data) => {
+    let cumulativeBAC = 0;
+    const calculatedValues = data.map((entry, index) => {
+      const bacIncrease = entry.BACIncrease || 0;
+      cumulativeBAC += bacIncrease;
+
+      const bacDecrease = cumulativeBAC * (0.015 / 100) * (index + 1);
+      cumulativeBAC = Math.max(cumulativeBAC - bacDecrease, 0);
+
+      return cumulativeBAC;
     });
 
-    console.log('BAC Values:', bacValues);
-    console.log('--------------------------------------');
+    setBacValues(calculatedValues);
+  };
 
+  if (bacData && bacData.length > 0) {
     return (
       <View style={chartStyles.chartContainer}>
         <LineChart
           data={{
-            labels: chartData.map((data) => data.date),
+            labels: bacData.map((data) => data.date),
             datasets: [
               {
                 data: bacValues,
@@ -70,7 +78,7 @@ const BloodAlcoholContentChart = () => {
     );
   }
 
-  return null;
+  return <Text>Loading chart data...</Text>;
 };
 
 export default BloodAlcoholContentChart;

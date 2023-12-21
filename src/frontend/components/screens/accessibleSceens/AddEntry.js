@@ -9,7 +9,7 @@ import { TimePickerModal } from 'react-native-paper-dates';
 import { sendNotification } from '../../../utils/notifications';
 import calculateBACIncrease from '../../../utils/calculations/calculateBAC';
 import { UserContext } from '../../../context/UserContext';
-import dbURL from '../../../utils/config/dbURL';
+import getServerBaseUrl from '../../../utils/config/dbURL';
 
 
 const AddEntryScreen = ({ navigation }) => {
@@ -41,18 +41,21 @@ const AddEntryScreen = ({ navigation }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const drinksResponse = await axios.get(`${dbURL.serverBaseUrl}/api/drinks`);
-        setDrinks(drinksResponse.data);
+          const baseUrl = getServerBaseUrl();
 
-        const currenciesResponse = await axios.get(`${dbURL.serverBaseUrl}/api/currencies`);
-        setCurrencies(currenciesResponse.data);
+          const drinksResponse = await fetch(`${baseUrl}/api/drinks`);
+          setDrinks(await drinksResponse.json());
+
+          const currenciesResponse = await fetch(`${baseUrl}/api/currencies`);
+          setCurrencies(await currenciesResponse.json());
       } catch (error) {
-        console.error('Error fetching data:', error);
+          console.error('AddEntry.js: Error fetching data:', error);
       }
-    };
-    fetchData();
-    handleCheckLimits();
-  }, []);
+  };
+
+  fetchData();
+  handleCheckLimits();
+}, []);
 
   const handleSaveEntry = async () => {
     if (!validateAmount(amount) || !validateUnits(units) || !validatePrice(price)) {
@@ -61,7 +64,7 @@ const AddEntryScreen = ({ navigation }) => {
     }
 
     if (!user || !user.profile) {
-      console.error("User data is not available");
+      console.error("AddEntry.js User data is not available");
       return;
     }
 
@@ -86,11 +89,23 @@ const AddEntryScreen = ({ navigation }) => {
 
     // When sending data to the server
     try {
-      const response = await axios.post(`${dbURL.serverBaseUrl}/api/entries`, entry);
-      console.log('Entry saved successfully:', response.data);
-      // Update UI or state as needed
+      const response = await fetch(`${getServerBaseUrl()}/api/entries`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(entry),
+      });
+
+      if (!response.ok) {
+        throw new Error(`AddEntry.js: HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('AddEntry.js: Entry saved successfully:', data);
+      navigation.navigate('Home');
     } catch (error) {
-      console.error('Error saving entry:', error);
+      console.error('AddEntry.js: Error saving entry:', error);
     }
   
     navigation.navigate('Home');

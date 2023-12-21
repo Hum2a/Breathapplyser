@@ -1,27 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { chartStyles } from '../styles/styles';
-import { globalData } from '../../utils/database';
 import { chartConfig } from './chartConfig';
+import { getServerBaseUrl } from '../../utils/config/dbURL';
 
 const DrunknessChart = () => {
-  console.log('----------DRUNKNESS LEVEL CHART LOG----------');
-  const chartData = globalData.chartData;
-  const drunknessValues = [];
+  const [chartData, setChartData] = useState([]);
 
-  let cumulativeDrunkness = 0;
+  useEffect(() => {
+    const fetchChartData = async () => {
+      try {
+        const response = await fetch(`${getServerBaseUrl()}/api/drunknessChartData`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch drunkness chart data');
+        }
+        const data = await response.json();
+        setChartData(data);
+      } catch (error) {
+        console.error('Error fetching drunkness chart data:', error);
+      }
+    };
+    fetchChartData();
+  }, []);
 
-  if (chartData && chartData.length > 0) {
-    chartData.forEach((data) => {
-      cumulativeDrunkness += data.drunkness || 0;
-      drunknessValues.push(cumulativeDrunkness);
+  if (!chartData.length) {
+    return <Text>Loading chart data...</Text>;
+  }
 
-      console.log('Drunkness value:', data.drunkness);
-    });
-
-    console.log('Drunkness Values:', drunknessValues);
-    console.log('--------------------------------------');
+  const drunknessValues = chartData.map((data, index) => {
+    return data.drunkness || 0; // Assuming API provides drunkness value directly
+  });
 
     return (
       <View style={chartStyles.chartContainer}>
@@ -59,6 +68,5 @@ const DrunknessChart = () => {
   }
 
   return null;
-};
 
 export default DrunknessChart;

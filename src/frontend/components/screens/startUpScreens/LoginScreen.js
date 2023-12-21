@@ -21,7 +21,7 @@ const LoginScreen = ({ navigation }) => {
       });
 
       if (response.status === 200) {
-        console.log('Login successful');
+        console.log('LoginScreen.js: Login successful');
 
         // Save the user data in AsyncStorage or Context (if needed)
 
@@ -29,7 +29,7 @@ const LoginScreen = ({ navigation }) => {
         navigation.navigate('Home'); // Replace 'Home' with the actual name of your Home screen
       }
     } catch (error) {
-      console.error('Error during login:', error);
+      console.error('LoginScreen.js: Error during login:', error);
       // Handle errors (show error message to the user)
     }
   };

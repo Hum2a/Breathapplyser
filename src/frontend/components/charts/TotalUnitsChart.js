@@ -1,45 +1,50 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { chartStyles } from '../styles/styles';
-import { globalData } from '../../utils/database';
 import { chartConfig } from './chartConfig';
+import { getServerBaseUrl } from '../../utils/config/dbURL';
 
 const TotalUnitsChart = () => {
-  console.log('----------TOTAL UNITS CHART LOG----------');
-  const chartData = globalData.chartData;
-  const totalUnitsValues = [];
+  const [chartData, setChartData] = useState([]);
 
-  let cumulativeUnits = 0;
+  useEffect(() => {
+    const fetchChartData = async () => {
+      try {
+        const response = await fetch(`${getServerBaseUrl()}/api/unitsData`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch units data');
+        }
+        const data = await response.json();
+        setChartData(data);
+      } catch (error) {
+        console.error('Error fetching units data:', error);
+      }
+    };
+
+    fetchChartData();
+  }, []);
+
+  const calculateTotalUnitsValues = (data) => {
+    let cumulativeUnits = 0;
+    return data.map(entry => {
+      cumulativeUnits += parseFloat(entry.units);
+      return cumulativeUnits;
+    });
+  };
 
   if (chartData && chartData.length > 0) {
-    chartData.forEach((data) => {
-      const units = parseFloat(data.units);
-
-      if (!isNaN(units)) {
-        cumulativeUnits += units;
-        totalUnitsValues.push(cumulativeUnits);
-      } else {
-        console.log('Invalid units value:', data.units);
-      }
-
-      console.log('Units value:', data.units);
-    });
-
-    console.log('Total Units Values:', totalUnitsValues);
-    console.log('--------------------------------------');
+    const totalUnitsValues = calculateTotalUnitsValues(chartData);
 
     return (
       <View style={chartStyles.chartContainer}>
         <LineChart
           data={{
             labels: chartData.map((data) => data.date),
-            datasets: [
-              {
-                data: totalUnitsValues,
-                color: () => chartConfig.chartColors[0],
-              },
-            ],
+            datasets: [{
+              data: totalUnitsValues,
+              color: () => chartConfig.chartColors[0],
+            }],
           }}
           width={350}
           height={200}
@@ -49,9 +54,7 @@ const TotalUnitsChart = () => {
             backgroundGradientTo: '#ffffff',
             decimalPlaces: 2,
             color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            style: {
-              borderRadius: 16,
-            },
+            style: { borderRadius: 16 },
             withVerticalLabels: true,
           }}
           bezier

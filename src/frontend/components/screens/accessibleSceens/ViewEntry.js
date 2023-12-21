@@ -1,30 +1,41 @@
-// ViewEntriesScreen.js
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { loadDataFromFile, clearEntries } from '../../../utils/database';
-import { loadDataFromServer } from '../../../../backend/utils/loadData';
 import { styles } from '../../styles/styles';
 import CombinedChart from '../../charts/CombinedChart';
 import EntriesScreen from '../backendScreens/Entries';
+import { getServerBaseUrl } from '../../../utils/config/dbURL';
 
 const ViewEntriesScreen = ({ navigation }) => {
   const [entries, setEntries] = useState([]);
 
   useEffect(() => {
-    // Load entry data from the server
-    const serverUrl = 'http://10.0.2.2:5432/api/entries';  // Update this URL
-    loadDataFromServer(serverUrl)
-      .then((data) => setEntries(data))
-      .catch((error) => console.error('Error loading data:', error));
+    console.log('ViewEntries.js: useEffect called');
+    const serverUrl = `${getServerBaseUrl()}/api/entries`;
+    console.log('ViewEntries.js: Server URL:', serverUrl);
+
+    fetch(serverUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('ViewEntries.js: Data loaded from server:', data);
+        setEntries(data);
+      })
+      .catch((error) => console.error('ViewEntries.js: Error loading data:', error));
 
     // Optionally, you can load data from file as well
     // loadDataFromFile();
   }, []);
 
   const handleClearEntries = async () => {
+    console.log('ViewEntries.js: handleClearEntries called');
     await clearEntries();
     setEntries([]);
+    console.log('ViewEntries.js: Entries cleared');
     // Optionally, you can load data from file as well
     // loadDataFromFile();
   };

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import moment from 'moment';
 import { Picker } from '@react-native-picker/picker';
 import { profStyles } from '../../styles/styles';
 import { saveDataToFile, globalData } from '../../../utils/database';
+import { UserContext } from '../../../context/UserContext';
+import { getServerBaseUrl } from '../../../utils/config/dbURL';
 
 const ProfileScreen = () => {
   const [height, setHeight] = useState('186');
@@ -14,6 +16,7 @@ const ProfileScreen = () => {
   const [heightUnit, setHeightUnit] = useState('cm');
   const [weightUnit, setWeightUnit] = useState('kg');
   const [ageUnit, setAgeUnit] = useState('years');
+  const { user } = useContext(UserContext);
 
   const calculateBMI = () => {
     // Perform BMI calculation based on height and weight and update the bmi state variable
@@ -34,30 +37,61 @@ const ProfileScreen = () => {
     const bmiValue = weightInKg / (heightInMeters * heightInMeters);
     setBMI(bmiValue.toFixed(2)); // Round BMI value to 2 decimal places
   };
-  
-  const handleSaveProfile = () => {
+
+  const handleSaveProfile = async () => {
     const profile = {
-      height: height !== '' ? height : globalData.profile?.height,
-      weight: weight !== '' ? weight : globalData.profile?.weight,
-      age: age !== '' ? age : globalData.profile?.age,
-      sex: sex !== '' ? sex : globalData.profile?.sex,
-      bmi: bmi !== '' ? bmi : globalData.profile?.bmi,
-      dateTime: moment().format('YYYY-MM-DD HH:mm:ss'), // Add the current date and time
+      user_id: user.id, // Assuming user has an id
+      height: height,
+      weight: weight,
+      age: age,
+      sex: sex,
+      bmi: bmi,
+      dateTime: moment().format('YYYY-MM-DD HH:mm:ss'),
     };
-  
-    globalData.profile = {
-      ...globalData.profile,
-      ...profile,
-    };
-  
-    saveDataToFile()
-      .then(() => {
-        console.log('Profile details saved:', profile);
-      })
-      .catch((error) => {
-        console.log('Error saving profile details:', error);
+
+    try {
+      const response = await fetch(`${getServerBaseUrl()}/api/profile`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(profile),
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to save profile');
+      }
+
+      const responseData = await response.json();
+      console.log('ProfileScreen.js: Profile saved:', responseData);
+    } catch (error) {
+      console.error('ProfileScreen.js: Error saving profile:', error);
+    }
   };
+  
+  // const handleSaveProfile = () => {
+  //   const profile = {
+  //     height: height !== '' ? height : globalData.profile?.height,
+  //     weight: weight !== '' ? weight : globalData.profile?.weight,
+  //     age: age !== '' ? age : globalData.profile?.age,
+  //     sex: sex !== '' ? sex : globalData.profile?.sex,
+  //     bmi: bmi !== '' ? bmi : globalData.profile?.bmi,
+  //     dateTime: moment().format('YYYY-MM-DD HH:mm:ss'), // Add the current date and time
+  //   };
+  
+  //   globalData.profile = {
+  //     ...globalData.profile,
+  //     ...profile,
+  //   };
+  
+  //   saveDataToFile()
+  //     .then(() => {
+  //       console.log('Profile details saved:', profile);
+  //     })
+  //     .catch((error) => {
+  //       console.log('Error saving profile details:', error);
+  //     });
+  // };
   
 
   const handleClearProfile = () => {

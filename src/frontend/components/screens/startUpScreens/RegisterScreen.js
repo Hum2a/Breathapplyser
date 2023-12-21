@@ -28,10 +28,10 @@ const RegisterScreen = ({ navigation }) => {
       }
 
       const data = await response.json();
-      console.log('Registration successful', data);
+      console.log('RegisterScreen.js: Registration successful', data);
       navigation.navigate('Login');
     } catch (error) {
-      console.error('Error during registration:', error);
+      console.error('RegisterScreen.js: Error during registration:', error);
       // Optionally, update state to show an error message to the user
     }
   };
