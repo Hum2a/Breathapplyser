@@ -1,0 +1,168 @@
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, FlatList, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { getFirestore, collection, query, orderBy, getDocs, doc, setDoc, getDoc } from 'firebase/firestore';
+import moment from 'moment';
+import { UserContext } from '../../../../context/UserContext'; // Update path as needed
+import { CommonStyles as styles } from '../../../styles/DrinkingStyles/commonStyles';
+import { saveBACLevel } from '../../../../../backend/firebase/queries/saveBACLevel';
+
+const CommonDrinks = () => {
+  const [commonDrinks, setCommonDrinks] = useState([]);
+  const [userProfile, setUserProfile] = useState(null);
+  const { user } = useContext(UserContext);
+  const firestore = getFirestore();
+
+  useEffect(() => {
+    fetchUserProfile()
+    if (user) fetchCommonDrinks();
+  }, [user]);
+
+  const fetchUserProfile = async () => {
+    console.log("fetchUserProfile called");
+    if (user) {
+      console.log('User found');
+      const docRef = doc(firestore, user.uid, "Profile");
+      console.log('docRef initialised');
+  
+      try {
+        const promise = getDoc(docRef);
+        const timeout = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Request timed out')), 5000) // 5 seconds timeout
+        );
+        const docSnap = await Promise.race([promise, timeout]);
+        console.log('docSnap initialised');
+  
+        if (docSnap.exists()) {
+          setUserProfile(docSnap.data());
+          console.log('userProfile retrieved');
+          // Use userProfile for BAC calculations and other operations
+        } else {
+          console.log("No such profile document!");
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error.message);
+      }
+    }
+  };    
+
+  const fetchCommonDrinks = async () => {
+    if (!user) return;
+  
+    const drinkOccurrences = {};
+    let daysChecked = 0;
+    let currentDate = moment();
+  
+    while (daysChecked < 50) {
+      const dateStr = currentDate.format('YYYY-MM-DD');
+      console.log(`Checking entries for date: ${dateStr}`); // Log the date being checked
+  
+      const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
+      const querySnapshot = await getDocs(query(entriesRef, orderBy("date", "desc")));
+  
+      if (!querySnapshot.empty) {
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+          const key = `${data.alcohol}-${data.type}`;
+          if (!drinkOccurrences[key]) {
+            drinkOccurrences[key] = { count: 1, ...data };
+          } else {
+            drinkOccurrences[key].count += 1;
+          }
+        });
+      } else {
+        // Optionally, log if no entries found for a specific date
+        console.log(`No entries found for date: ${dateStr}`);
+      }
+  
+      currentDate = currentDate.subtract(1, 'days');
+      daysChecked++;
+    }
+  
+    const sortedCommonDrinks = Object.values(drinkOccurrences)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 3); // Take top 3
+  
+    setCommonDrinks(sortedCommonDrinks);
+  };
+
+  const handleReenterDrink = async (drink) => {
+    // Remove 'id' from the drink object to prevent storing it as a separate field
+    const { id, ...drinkDetails } = drink;
+
+    const newEntry = {
+      ...drinkDetails,
+      date: new Date(),
+      startTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+      endTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+      timestamp: new Date(),
+    };
+
+    const entryDetails = {
+      selectedStartTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+      selectedEndTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+      selectedDate: moment().toDate(),
+    };
+
+    const dateTimeString = moment().format('YYYYMMDD_HHmmss');
+    const dateStr = moment().format('YYYY-MM-DD');
+    const entryDocId = `Entry_${dateTimeString}`;
+
+    try {
+      await setDoc(doc(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs", entryDocId), newEntry);
+
+      // Assuming you have userProfile in context to calculate BACIncrease
+      await saveBACLevel(user, drink.units, userProfile, entryDetails);
+
+      // Update daily totals similarly to how it's done in RecentDrinks
+       // Define references for daily totals
+       const selectedDateStr = moment().format('YYYY-MM-DD');
+       const amountSpentRef = doc(firestore, user.uid, "Daily Totals", "Amount Spent", selectedDateStr);
+       const unitsIntakeRef = doc(firestore, user.uid, "Daily Totals", "Unit Intake", selectedDateStr);
+       const bacLevelRef = doc(firestore, user.uid, "Daily Totals", "BAC Level", selectedDateStr);
+ 
+       // Fetch existing daily totals
+       const amountSpentDoc = await getDoc(amountSpentRef);
+       const unitsIntakeDoc = await getDoc(unitsIntakeRef);
+       const bacLevelDoc = await getDoc(bacLevelRef);
+ 
+       // Calculate new totals
+       const newAmountSpent = (amountSpentDoc.exists() ? amountSpentDoc.data().value : 0) + drink.price;
+       const newUnitsIntake = (unitsIntakeDoc.exists() ? unitsIntakeDoc.data().value : 0) + drink.units;
+       const newBACLevel = (bacLevelDoc.exists() ? bacLevelDoc.data().value : 0) + drink.BACIncrease;
+ 
+         // Update and save new values
+       await setDoc(amountSpentRef, { value: newAmountSpent, lastUpdated: moment().format('YY-MM-DD HH:mm:ss') }, { merge: true });
+       await setDoc(unitsIntakeRef, { value: newUnitsIntake, lastUpdated: moment().format('YY-MM-DD HH:mm:ss') }, { merge: true });
+       await setDoc(bacLevelRef, { value: newBACLevel, lastUpdated: moment().format('YY-MM-DD HH:mm:ss') }, { merge: true });
+   
+
+      Alert.alert('Success', 'Drink re-entered successfully.');
+    } catch (error) {
+      console.error('Error re-entering drink:', error);
+      Alert.alert('Error', 'Could not re-enter the drink.');
+    }
+  };
+  
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.listItem}
+      onPress={() => handleReenterDrink(item)}
+    >
+      <Text style={styles.text}>{`${item.alcohol} - ${item.type}: ${item.count}`}</Text>
+    </TouchableOpacity>
+  );
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Top 3 Common Drinks</Text>
+      <FlatList
+        data={commonDrinks}
+        renderItem={renderItem}
+        keyExtractor={item => `${item.alcohol}-${item.type}`}
+      />
+    </View>
+  );
+};
+
+export default CommonDrinks;
