@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import { chartStyles } from '../../../../styles/HistoryStyles/chartStyles';
+import { chartStyles } from '../../../../styles/ChartStyles/chartStyles';
 import { chartConfig } from '../../chart-handling/chartConfig';
 import { collection, getFirestore, query, orderBy, getDocs } from 'firebase/firestore';
 import { Picker } from '@react-native-picker/picker';

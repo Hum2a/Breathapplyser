@@ -3,8 +3,10 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import moment from 'moment';
 import { Picker } from '@react-native-picker/picker';
 import { profStyles } from '../../../styles/SettingStyles/profileStyles';
+import { appStyles } from '../../../styles/appStyles';
 import { UserContext } from '../../../../context/UserContext';
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import { SafeAreaView } from 'react-native-safe-area-context';
 // import { firestore } from '../../../../backendFB/database/firebase';
 
 const ProfileScreen = () => {
@@ -123,103 +125,105 @@ const ProfileScreen = () => {
   };
 
   return (
-    <View style={profStyles.container}>
-      <Text style={profStyles.title}>Your Profile</Text>
+    <SafeAreaView style={appStyles.fullScreen}>
+      <View style={profStyles.container}>
+        <Text style={profStyles.title}>Your Profile</Text>
 
-      <View style={profStyles.inputContainer}>
-        <Text style={profStyles.inputLabel}>Height</Text>
-        {heightUnit === 'cm' ? (
+        <View style={profStyles.inputContainer}>
+          <Text style={profStyles.inputLabel}>Height</Text>
+          {heightUnit === 'cm' ? (
+            <TextInput
+              style={profStyles.input}
+              placeholder="Height in cm"
+              value={height}
+              onChangeText={setHeight}
+              keyboardType="numeric"
+            />
+          ) : (
+            <View style={profStyles.inputDualContainer}>
+              <TextInput
+                style={[profStyles.input, profStyles.inputDual]}
+                placeholder="Feet"
+                value={heightFeet}
+                onChangeText={setHeightFeet}
+                keyboardType="numeric"
+              />
+              <TextInput
+                style={[profStyles.input, profStyles.inputDual]}
+                placeholder="Inches"
+                value={heightInches}
+                onChangeText={setHeightInches}
+                keyboardType="numeric"
+              />
+            </View>
+          )}
+          <Picker
+            style={profStyles.unitPicker}
+            selectedValue={heightUnit}
+            onValueChange={(itemValue) => setHeightUnit(itemValue)}
+          >
+            <Picker.Item label="cm" value="cm" />
+            <Picker.Item label="feet" value="feet" />
+          </Picker>
+        </View>
+
+        <View style={profStyles.inputContainer}>
+          <Text style={profStyles.inputLabel}>Weight</Text>
           <TextInput
             style={profStyles.input}
-            placeholder="Height in cm"
-            value={height}
-            onChangeText={setHeight}
+            placeholder="Weight"
+            value={weight}
+            onChangeText={setWeight}
             keyboardType="numeric"
           />
-        ) : (
-          <View style={profStyles.inputDualContainer}>
-            <TextInput
-              style={[profStyles.input, profStyles.inputDual]}
-              placeholder="Feet"
-              value={heightFeet}
-              onChangeText={setHeightFeet}
-              keyboardType="numeric"
-            />
-            <TextInput
-              style={[profStyles.input, profStyles.inputDual]}
-              placeholder="Inches"
-              value={heightInches}
-              onChangeText={setHeightInches}
-              keyboardType="numeric"
-            />
-          </View>
-        )}
-        <Picker
-          style={profStyles.unitPicker}
-          selectedValue={heightUnit}
-          onValueChange={(itemValue) => setHeightUnit(itemValue)}
-        >
-          <Picker.Item label="cm" value="cm" />
-          <Picker.Item label="feet" value="feet" />
-        </Picker>
+          <Picker
+            style={profStyles.unitPicker}
+            selectedValue={weightUnit}
+            onValueChange={(itemValue) => setWeightUnit(itemValue)}
+          >
+            <Picker.Item label="kg" value="kg" />
+            <Picker.Item label="lbs" value="lbs" />
+          </Picker>
+        </View>
+
+        <View style={profStyles.inputContainer}>
+          <Text style={profStyles.inputLabel}>Age</Text>
+          <TextInput
+            style={profStyles.input}
+            placeholder="Age"
+            value={age}
+            onChangeText={setAge}
+            keyboardType="numeric"
+          />
+        </View>
+
+        <View style={profStyles.inputContainer}>
+          <Text style={profStyles.inputLabel}>Sex</Text>
+          <Picker
+            style={profStyles.unitPicker}
+            selectedValue={sex}
+            onValueChange={(itemValue) => setSex(itemValue)}
+          >
+            <Picker.Item label="Male" value="male" />
+            <Picker.Item label="Female" value="female" />
+          </Picker>
+        </View>
+
+        <Text style={profStyles.bmiLabel}>Your BMI: {bmi}</Text>
+
+        <TouchableOpacity style={profStyles.button} onPress={calculateBMI}>
+          <Text style={profStyles.buttonText}>Calculate BMI</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={profStyles.button} onPress={handleSaveProfile}>
+          <Text style={profStyles.buttonText}>Save Profile</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={profStyles.clearButton} onPress={handleClearProfile}>
+          <Text style={profStyles.clearButtonText}>Clear Information</Text>
+        </TouchableOpacity>
       </View>
-
-      <View style={profStyles.inputContainer}>
-        <Text style={profStyles.inputLabel}>Weight</Text>
-        <TextInput
-          style={profStyles.input}
-          placeholder="Weight"
-          value={weight}
-          onChangeText={setWeight}
-          keyboardType="numeric"
-        />
-        <Picker
-          style={profStyles.unitPicker}
-          selectedValue={weightUnit}
-          onValueChange={(itemValue) => setWeightUnit(itemValue)}
-        >
-          <Picker.Item label="kg" value="kg" />
-          <Picker.Item label="lbs" value="lbs" />
-        </Picker>
-      </View>
-
-      <View style={profStyles.inputContainer}>
-        <Text style={profStyles.inputLabel}>Age</Text>
-        <TextInput
-          style={profStyles.input}
-          placeholder="Age"
-          value={age}
-          onChangeText={setAge}
-          keyboardType="numeric"
-        />
-      </View>
-
-      <View style={profStyles.inputContainer}>
-        <Text style={profStyles.inputLabel}>Sex</Text>
-        <Picker
-          style={profStyles.unitPicker}
-          selectedValue={sex}
-          onValueChange={(itemValue) => setSex(itemValue)}
-        >
-          <Picker.Item label="Male" value="male" />
-          <Picker.Item label="Female" value="female" />
-        </Picker>
-      </View>
-
-      <Text style={profStyles.bmiLabel}>Your BMI: {bmi}</Text>
-
-      <TouchableOpacity style={profStyles.button} onPress={calculateBMI}>
-        <Text style={profStyles.buttonText}>Calculate BMI</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={profStyles.button} onPress={handleSaveProfile}>
-        <Text style={profStyles.buttonText}>Save Profile</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={profStyles.clearButton} onPress={handleClearProfile}>
-        <Text style={profStyles.clearButtonText}>Clear Information</Text>
-      </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 

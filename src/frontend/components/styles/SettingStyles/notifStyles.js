@@ -4,7 +4,7 @@ export const notifStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#FFFFFF", // Background color for the entire screen
+    // backgroundColor: "#FFFFFF", // Background color for the entire screen
   },
   categoryHeader: {
     fontSize: 24,

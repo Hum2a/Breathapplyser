@@ -1,10 +1,14 @@
 import { StyleSheet } from "react-native";
 
 export const profStyles = StyleSheet.create({
+  fullScreen: {
+    flex: 1,
+    backgroundColor: '#BAEAFF', // Set your desired background color here
+},
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#F0F0F0',
+    // backgroundColor: '#F0F0F0',
   },
   title: {
     fontSize: 24,

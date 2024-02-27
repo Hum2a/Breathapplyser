@@ -50,9 +50,10 @@ const CommonDrinks = () => {
   
     const drinkOccurrences = {};
     let daysChecked = 0;
+    let daysToCheck = 50;
     let currentDate = moment();
   
-    while (daysChecked < 50) {
+    while (daysChecked < daysToCheck) {
       const dateStr = currentDate.format('YYYY-MM-DD');
       console.log(`Checking entries for date: ${dateStr}`); // Log the date being checked
   

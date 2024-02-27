@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert, ScrollView, Dimensions } from 'react-native';
 import { favouriteStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
 import { getFirestore, collection, getDocs, doc, deleteDoc, setDoc } from 'firebase/firestore';
 import moment from 'moment';
+import Svg, { Polygon } from 'react-native-svg';
 
 const FavouriteList = ({ user, navigation }) => {
   const [Favourites, setFavourites] = useState([]);
   const firestore = getFirestore();
+  const { width, height } = Dimensions.get('window');
 
   useEffect(() => {
     const fetchFavourites = async () => {
@@ -36,7 +38,7 @@ const FavouriteList = ({ user, navigation }) => {
     }
   };
 
-  const renderItem = ({ item }) => (
+  const renderSquareItem = ({ item }) => (
     <TouchableOpacity
       style={favouriteStyles.container}
       onPress={() => navigation.navigate('EditFavourite', { favorite: item })}
@@ -72,6 +74,33 @@ const FavouriteList = ({ user, navigation }) => {
       >
         <Text style={favouriteStyles.deleteButtonText}>Delete</Text>
       </TouchableOpacity>
+    </TouchableOpacity>
+    
+  );
+
+  const renderItem = ({ item, navigation }) => (
+    <TouchableOpacity onPress={() => navigation.navigate('EditFavourite', { favorite: item })} style={{ alignItems: 'center', marginBottom: 20 }}>
+      <View style={{ position: 'relative' }}>
+        <Svg height='350' width='350' viewBox="0 0 100 100">
+          <Polygon
+            points="50,0 61,35 98,35 67,57 76,91 50,70 24,91 33,57 2,35 39,35"
+            fill="#9CEEF1"
+          />
+        </Svg>
+        <View style={[favouriteStyles.starContent, { position: 'absolute', top: '34%', left: '10%', right: '10%' }]}>
+          <Text style={favouriteStyles.categoryText}>{item.Alcohol}</Text>
+          <Text style={favouriteStyles.detailsText}>Amount: {item.Amount}</Text>
+          <Text style={favouriteStyles.detailsText}>Price: {item.Price}</Text>
+          <Text style={favouriteStyles.detailsText}>Type: {item.Type}</Text>
+          <Text style={favouriteStyles.detailsText}>Units: {item.Units}</Text>
+          <TouchableOpacity
+            style={favouriteStyles.deleteButton}
+            onPress={() => handleDeleteFavourite(item.id)}
+          >
+            <Text style={favouriteStyles.deleteButtonText}>Delete</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 

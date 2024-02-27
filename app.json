@@ -1,4 +1,11 @@
 {
   "name": "Breathapplyser",
-  "displayName": "Breathapplyser"
+  "displayName": "Breathapplyser",
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "dbf0593a-e2ce-49ca-9494-f67af264873c"
+      }
+    }
+  }
 }

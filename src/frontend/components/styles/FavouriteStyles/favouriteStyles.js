@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 export const favouriteStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#9CEEF1',
     padding: 10,
     marginBottom: 10,
     borderRadius: 8,
@@ -36,5 +36,35 @@ export const favouriteStyles = StyleSheet.create({
   },
   entry: {
     marginBottom: 20,
+  },
+  starContent: {
+    alignItems: 'center', // Center content horizontally in the star
+    justifyContent: 'center', // Center content vertically in the star
+    // Adjust padding as needed to fit your star shape
+  },
+  pulsatingBorder: {
+    position: 'absolute',
+    width: "110%", // Adjust based on the size of your SVG
+    height: "110%", // Adjust based on the size of your SVG
+    borderRadius: 100, // Adjust for rounded corners, if desired
+    backgroundColor: 'transparent', // Or any color for the border
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addNewFavouriteButton: {
+    backgroundColor: '#9CEEF1',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 50,
+    borderColor: 'black',
+    borderwidth: 2,
+    marginBottom: 10,
+    marginTop: 5,
+  },
+  addNewFavouriteButtonText: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
   },
 });

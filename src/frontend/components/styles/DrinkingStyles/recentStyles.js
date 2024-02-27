@@ -5,18 +5,20 @@ const screenWidth = Dimensions.get('window').width;
 export const RecentStyles = StyleSheet.create({
   container: {
     padding: 10,
-    backgroundColor: '#F0F0F0',
     borderRadius: 10,
     margin: 10,
     maxHeight: 200,
     maxWidth: screenWidth * 0.5,
+    backgroundColor: '#92DDFE',
+    borderColor: 'gold',
+    borderWidth: 0.5,
   },
   listItem: {
-    backgroundColor: '#f9f9f9', // Slightly off-white background for each item
-    marginVertical: 6, // Reduced margin vertically to separate items
-    borderRadius: 5, // Round the corners
-    padding: 8, // Reduced padding inside each item
-    shadowColor: "#000", // Shadow for elevation effect
+    backgroundColor: 'rgba(249, 249, 249, 0.5)', // Making background slightly transparent
+    marginVertical: 6,
+    borderRadius: 5,
+    padding: 8,
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 1,
@@ -25,6 +27,7 @@ export const RecentStyles = StyleSheet.create({
     shadowRadius: 1.41,
     elevation: 2,
   },
+  
   text: {
     fontSize: 14, // Reduced font size
     color: '#333', // Dark color for text for readability

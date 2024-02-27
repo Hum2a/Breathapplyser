@@ -4,7 +4,7 @@ export const limitStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#F0F0F0',
+    // backgroundColor: '#F0F0F0',
   },
   title: {
     fontSize: 24,

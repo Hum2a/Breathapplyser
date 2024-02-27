@@ -5,12 +5,12 @@ import {
   HomeScreen,
   StartDrinkingScreen,
   AddEntryScreen,
-  ViewEntriesScreen,
   ProfileScreen,
   LimitsScreen,
   SettingsScreen,
   HistoryScreen,
   DetailedHistoryScreen,
+  HistoryCalendarScreen,
   ChartsScreen,
   StartScreen,
   LoginScreen,
@@ -23,13 +23,17 @@ import {
   FavouriteListScreen,
   NotificationManagerScreen,
   GetStartedScreen,
-  CustomeLineChartScreen,
   TodaysStatsScreen,
   AllStatsScreen,
   CurrentNightOutScreen,
   CompareNightsOutScreen,
   AchievementsScreen,
   EditEntriesScreen,
+  BACChartsScreen,
+  UnitsChartsScreen,
+  AmountSpentChartsScreen,
+  NamesCharts,
+  TypesCharts,
 } from '../screens/ScreensIndex';
 
 const Stack = createNativeStackNavigator();
@@ -41,9 +45,9 @@ const AppNavigation = () => {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="StartDrinking" component={StartDrinkingScreen} />
         <Stack.Screen name="AddEntry" component={AddEntryScreen} />
-        <Stack.Screen name="ViewEntries" component={ViewEntriesScreen} />
         <Stack.Screen name="History" component={HistoryScreen} />
         <Stack.Screen name="DetailedHistory" component={DetailedHistoryScreen} />
+        <Stack.Screen name="HistoryCalender" component={HistoryCalendarScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Limits" component={LimitsScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
@@ -59,13 +63,17 @@ const AppNavigation = () => {
         <Stack.Screen name="FavouriteList" component={FavouriteListScreen} />
         <Stack.Screen name="NotificationManger" component={NotificationManagerScreen} />
         <Stack.Screen name="GetStarted" component={GetStartedScreen} />
-        <Stack.Screen name="CustomChartDev" component={CustomeLineChartScreen} />
         <Stack.Screen name="TodaysStats" component={TodaysStatsScreen} />
         <Stack.Screen name="AllStats" component={AllStatsScreen} />
         <Stack.Screen name="CurrentNight" component={CurrentNightOutScreen} />
         <Stack.Screen name="CompareNights" component={CompareNightsOutScreen} />
         <Stack.Screen name="Achievements" component={AchievementsScreen} />
         <Stack.Screen name="EditEntries" component={EditEntriesScreen} />
+        <Stack.Screen name="BACCharts" component={BACChartsScreen} />
+        <Stack.Screen name="UnitsCharts" component={UnitsChartsScreen} />
+        <Stack.Screen name="AmountSpentCharts" component={AmountSpentChartsScreen} />
+        <Stack.Screen name="NamesCharts" component={NamesCharts} />
+        <Stack.Screen name="TypesCharts" component={TypesCharts} />
       </Stack.Navigator>
     </NavigationContainer>
   );

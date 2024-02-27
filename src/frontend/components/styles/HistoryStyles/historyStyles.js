@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 export const HistoryStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#BAEAFF',
   },
   title: {
     fontSize: 24,
@@ -12,7 +12,7 @@ export const HistoryStyles = StyleSheet.create({
     alignSelf: 'center',
   },
   historyItem: {
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#92DDFE',
     borderRadius: 8,
     padding: 20,
     margin: 10,

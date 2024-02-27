@@ -4,6 +4,8 @@ import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore'; // Impor
 import { notificationCategories } from '../../../../assets/lists/dropdownData';
 import { notifStyles as styles } from '../../../styles/SettingStyles/notifStyles';
 import { UserContext } from '../../../../context/UserContext';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { appStyles } from '../../../styles/appStyles';
 
 const NotificationManager = () => {
   const [notificationSettings, setNotificationSettings] = useState({});
@@ -74,27 +76,29 @@ const NotificationManager = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      {notificationCategories.map((categoryObj) => (
-        <View key={categoryObj.category}>
-          <TouchableOpacity
-            onPress={() => toggleCategory(categoryObj.category)}
-          >
-            <Text style={styles.categoryHeader}>{categoryObj.category}</Text>
-          </TouchableOpacity>
-          {openCategories[categoryObj.category] && categoryObj.types.map((type) => (
-            <View key={type} style={styles.notificationItem}>
-              <Text style={styles.notificationText}>{type}</Text>
-              <Switch 
-                value={notificationSettings[categoryObj.category]?.[type] || false}
-                onValueChange={() => toggleNotification(categoryObj.category, type)}
-                style={styles.switchContainer}
-              />
-            </View>
-          ))}
-        </View>
-      ))}
-    </ScrollView>
+    <SafeAreaView style={appStyles.fullScreen}>
+      <ScrollView style={styles.container}>
+        {notificationCategories.map((categoryObj) => (
+          <View key={categoryObj.category}>
+            <TouchableOpacity
+              onPress={() => toggleCategory(categoryObj.category)}
+            >
+              <Text style={styles.categoryHeader}>{categoryObj.category}</Text>
+            </TouchableOpacity>
+            {openCategories[categoryObj.category] && categoryObj.types.map((type) => (
+              <View key={type} style={styles.notificationItem}>
+                <Text style={styles.notificationText}>{type}</Text>
+                <Switch 
+                  value={notificationSettings[categoryObj.category]?.[type] || false}
+                  onValueChange={() => toggleNotification(categoryObj.category, type)}
+                  style={styles.switchContainer}
+                />
+              </View>
+            ))}
+          </View>
+        ))}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

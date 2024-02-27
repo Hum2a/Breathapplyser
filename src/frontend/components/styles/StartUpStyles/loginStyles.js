@@ -1,7 +1,11 @@
 import { StyleSheet } from "react-native";
 
 export const LoginStyles = StyleSheet.create({
-    container: {
+  fullScreen: {
+    flex: 1,
+    backgroundColor: '#BAEAFF', // Set your desired background color here
+  },  
+  container: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',

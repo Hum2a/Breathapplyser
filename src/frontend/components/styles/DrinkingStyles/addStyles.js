@@ -138,4 +138,16 @@ export const addStyles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
   },
+  scanButton: {
+    backgroundColor: '#2979FF', // Button background color
+    padding: 10, // Padding around the button text
+    borderRadius: 8, // Border radius to make the button rounded
+    marginTop: 20, // Margin at the top to separate from other elements
+  },
+  scanButtonText: {
+    color: 'white', // Button text color
+    fontSize: 16, // Font size of the button text
+    textAlign: 'center', // Center-align the text
+  },
+  
 });

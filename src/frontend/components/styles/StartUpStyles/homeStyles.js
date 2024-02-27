@@ -9,7 +9,7 @@ export const homeStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#BAEAFF',
   },
   topWidgetsContainer: {
     flexDirection: 'row',
@@ -29,7 +29,7 @@ export const homeStyles = StyleSheet.create({
   },
   commonDrinksContainer: {
     maxWidth: width * 0.4, // Set max width to 40% of screen width
-    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Adjust transparency as needed
+    backgroundColor: 'rgba(21, 231, 212, 0.8)', // Adjust transparency as needed
     borderRadius: 10,
     padding: 10,
     elevation: 3,
@@ -65,7 +65,7 @@ export const homeStyles = StyleSheet.create({
     buttonContainer: {
       width: buttonWidth,
       height: 100,
-      backgroundColor: '#4CAF50', // Background color (change as needed)
+      backgroundColor: '#032585', // Background color (change as needed)
       borderColor: '#000000',
       borderWidth: 1,
       borderRadius: 10, // Adjust the border radius for rounded corners
@@ -116,7 +116,7 @@ export const homeStyles = StyleSheet.create({
     achievementsButton: {
       flexDirection: 'row', // Align text and icon in a row
       alignItems: 'center', // Center items vertically
-      backgroundColor: '#4CAF50', // Example color, change as needed
+      backgroundColor: '#032585', // Example color, change as needed
       paddingVertical: 8,
       paddingHorizontal: 16,
       borderRadius: 20,
@@ -133,7 +133,7 @@ export const homeStyles = StyleSheet.create({
       width: 50,
       height: 50,
       borderRadius: 25, // Make it circular by setting borderRadius half of the width and height
-      backgroundColor: '#4CAF50', // Background color (change as needed)
+      backgroundColor: '#032585', // Background color (change as needed)
       justifyContent: 'center',
       alignItems: 'center',
       marginBottom: 20, // Add some space between buttons

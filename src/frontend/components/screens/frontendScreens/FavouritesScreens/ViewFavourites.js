@@ -3,6 +3,7 @@ import { TouchableOpacity, View } from 'react-native';
 import { UserContext } from '../../../../context/UserContext';
 import FavouriteList from './FavouritesList';
 import { AddNewFavouritesButton } from '../../../buttons/FavoutitesComponents/FavouritesButtons';
+import { appStyles } from '../../../styles/appStyles';
 
 const FavouritesScreen = ({ navigation }) => {
   const { user } = useContext(UserContext);

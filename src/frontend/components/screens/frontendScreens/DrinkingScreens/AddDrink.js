@@ -19,7 +19,6 @@ import { AlcoholInput, TypeInput, AmountInput, UnitsInput, PriceInput } from '..
 import { CurrencyPicker } from '../../../buttons/AddEntryComponents/AddEntryPickers';
 import { addEntryToFavourites } from '../../../../../backend/app/utils/handles/addToFavourites';
 
-
 const AddEntryScreen = ({ navigation }) => {
   const [drinks, setDrinks] = useState([]);
   const [amount, setAmount] = useState('1');
@@ -100,6 +99,10 @@ const handleEndTimeConfirm = (time) => {
 
   const handlePickFromFavourites = () => {
     navigation.navigate('PickFavourites', { navigation }); // Pass navigation as a parameter
+  };
+
+  const handleBarcodeScan = () => {
+    navigation.navigate('BarcodeScan'); // Navigate to BarcodeScan screen
   };
 
   useEffect(() => {
@@ -451,6 +454,10 @@ const handleCheckLimits = async () => {
         )}
 
         <PickFromFavouritesButton onPress = {handlePickFromFavourites} />
+{/* 
+        <TouchableOpacity style={addStyles.scanButton} onPress={handleBarcodeScan}>
+          <Text style={addStyles.scanButtonText}>Scan Barcode</Text>
+        </TouchableOpacity> */}
 
         <View style={addStyles.amountSpentContainer}>
           {currencies.map((currency) => (

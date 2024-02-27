@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, Switch } from 'react-native';
+import { View, Text, Switch, StyleSheet } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import { chartStyles } from '../../../styles/HistoryStyles/chartStyles';
-import { collection, getFirestore, onSnapshot, query, orderBy, getDocs } from 'firebase/firestore';
-import { chartConfig } from '../chart-handling/chartConfig';
+import { collection, getFirestore, query, orderBy, getDocs } from 'firebase/firestore';
 import { Picker } from '@react-native-picker/picker';
-import { UserContext } from '../../../../context/UserContext';
 import moment from 'moment';
+import { UserContext } from '../../../../context/UserContext';
+import { chartConfig } from '../chart-handling/chartConfig';
+import { totalUnitsStyles as styles } from '../../../styles/ChartStyles/totalUnitsStyles';
 
 const TotalUnitsChart = () => {
   const [totalUnitsValues, setTotalUnitsValues] = useState([]);
@@ -22,7 +22,7 @@ const TotalUnitsChart = () => {
   useEffect(() => {
     const fetchAllEntries = async () => {
       try {
-        const entriesSnapshot = await getDocs(collection(firestore, user.uid, "Alcohol Stuff", "Entries"));
+        const entriesSnapshot = await getDocs(query(collection(firestore, user.uid, "Alcohol Stuff", "Entries")));
         const allEntriesData = [];
 
         for (const doc of entriesSnapshot.docs) {
@@ -59,9 +59,7 @@ const TotalUnitsChart = () => {
     let cumulativeUnits = 0;
 
     // Sort entries within the date by startTime
-    filteredEntries.sort((a, b) => {
-      return moment(a.startTime, 'YYYY-MM-DD HH:mm:ss').diff(moment(b.startTime, 'YYYY-MM-DD HH:mm:ss'));
-    });
+    filteredEntries.sort((a, b) => moment(a.startTime, 'YYYY-MM-DD HH:mm:ss').diff(moment(b.startTime, 'YYYY-MM-DD HH:mm:ss')));
 
     filteredEntries.forEach(entry => {
       cumulativeUnits += parseFloat(entry.units || 0);
@@ -84,9 +82,7 @@ const TotalUnitsChart = () => {
       let cumulativeUnits2 = 0;
 
       // Sort entries within the second date by startTime
-      filteredEntries2.sort((a, b) => {
-        return moment(a.startTime, 'YYYY-MM-DD HH:mm:ss').diff(moment(b.startTime, 'YYYY-MM-DD HH:mm:ss'));
-      });
+      filteredEntries2.sort((a, b) => moment(a.startTime, 'YYYY-MM-DD HH:mm:ss').diff(moment(b.startTime, 'YYYY-MM-DD HH:mm:ss')));
 
       filteredEntries2.forEach(entry => {
         cumulativeUnits2 += parseFloat(entry.units || 0);
@@ -104,9 +100,10 @@ const TotalUnitsChart = () => {
   const uniqueDates = [...new Set(allEntries.map(entry => entry.date))];
 
   return (
-    <View style={chartStyles.chartContainer}>
+    <View style={styles.container}>
+      <Text style={styles.graphTitle}> Total Units Chart</Text>
       {/* Toggle for Comparison Mode */}
-      <Text style={chartStyles.toggleLabel}>Comparison Mode:</Text>
+      <Text style={styles.toggleLabel}>Comparison Mode:</Text>
       <Switch
         value={comparisonMode}
         onValueChange={() => {
@@ -120,7 +117,7 @@ const TotalUnitsChart = () => {
       <Picker
         selectedValue={selectedDate}
         onValueChange={(itemValue) => filterDataByDate(allEntries, itemValue)}
-        style={chartStyles.pickerStyle}
+        style={styles.pickerStyle}
       >
         {uniqueDates.map(date => (
           <Picker.Item key={date} label={date} value={date} />
@@ -135,7 +132,7 @@ const TotalUnitsChart = () => {
             setSelectedDate2(itemValue);
             filterDataByDate(allEntries, selectedDate, itemValue);
           }}
-          style={chartStyles.pickerStyle}
+          style={styles.pickerStyle}
         >
           {uniqueDates.map(date => (
             <Picker.Item key={date} label={date} value={date} />
@@ -149,10 +146,10 @@ const TotalUnitsChart = () => {
             data={{
               labels: chartLabels,
               datasets: [
-                { data: totalUnitsValues, color: () => chartConfig.chartColors[0] },
+                { data: totalUnitsValues, color: () => '#2979FF' },
                 // Include the second dataset if in comparison mode
                 ...(comparisonMode && totalUnitsValues2.length > 0
-                  ? [{ data: totalUnitsValues2, color: () => chartConfig.chartColors[1] }]
+                  ? [{ data: totalUnitsValues2, color: () => '#FF6D00' }]
                   : [])
               ],
             }}
@@ -170,16 +167,17 @@ const TotalUnitsChart = () => {
             }}
             bezier
           />
-          <View style={chartStyles.legendContainer}>
-            <View style={[chartStyles.legendItem, { backgroundColor: chartConfig.chartColors[0] }]} />
-            <Text style={chartStyles.legendLabel}>Total Units</Text>
+          <View style={styles.legendContainer}>
+            <View style={[styles.legendItem, { backgroundColor: '#2979FF' }]} />
+            <Text style={styles.legendLabel}>Total Units</Text>
           </View>
         </View>
       ) : (
-        <Text style={chartStyles.noDataText}>No data available for this date.</Text>
+        <Text style={styles.noDataText}>No data available for this date.</Text>
       )}
     </View>
   );
 }
+
 
 export default TotalUnitsChart;
