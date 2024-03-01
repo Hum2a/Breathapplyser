@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Image, TouchableOpacity, Text, SafeAreaView } from 'react-native';
+import { View, Image, TouchableOpacity, Text, SafeAreaView, TouchableWithoutFeedback } from 'react-native';
 import Video from 'react-native-video';
 import { useNavigation } from '@react-navigation/native';
 import { homeStyles } from '../../styles/StartUpStyles/homeStyles';
@@ -12,6 +12,7 @@ import RecentDrinks from './DrinkingScreens/RecentDrinks';
 import CommonDrinks from './DrinkingScreens/CommonDrinks';
 import StarAnimation from '../../animations/favouriteStar';
 import BeerAnimation from '../../animations/beerjug';
+import SpinningCog from '../../animations/settingsCog';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -24,11 +25,6 @@ const HomeScreen = () => {
   const toggleBeerAnimation = () => {
     setPlayBeerAnimation(!playBeerAnimation);
   };
-
-  const toggleStarAnimation = () => {
-    setPlayStarAnimation(!playStarAnimation);
-  };
-
 
   const NavigateToDrinking = () => {
     navigation.navigate('AddEntry');
@@ -109,6 +105,7 @@ const HomeScreen = () => {
         <CommonDrinks />
         <RecentDrinks navigation={navigation} />
       </View>
+      
       <TouchableOpacity onPress={() => { toggleBeerAnimation(); NavigateToDrinking(); }} style={homeStyles.beerContainer}>
         <BeerAnimation frameRate={24} play={playBeerAnimation} />
         <Text style={homeStyles.buttonText}>Tap to Start Drinking</Text>
@@ -124,11 +121,9 @@ const HomeScreen = () => {
             </TouchableOpacity>
 
             <TouchableOpacity style={homeStyles.buttonContainer} onPress={NavigateToSettings}>
-              <Image
-                source={require('../../../assets/images/gear.png')}
-                style={homeStyles.smallIcon}
-              />
+              <SpinningCog />
             </TouchableOpacity>
+
 
             <TouchableOpacity style={homeStyles.buttonContainer} onPress={NavigateToCharts}>
               <Image
@@ -137,25 +132,12 @@ const HomeScreen = () => {
               />
             </TouchableOpacity>
 
-            {/* <TouchableOpacity style={homeStyles.buttonContainer} onPress={NavigateToFavourites}>
-              <Image
-                source={require('../../../assets/images/heart.png')}
-                style={homeStyles.smallIcon}
-              />
-               <Video
-                source={require('../../../assets/animations/frames')} // Adjusted path to the new .mp4 file
-                style={homeStyles.smallIcon}
-                resizeMode="cover"
-                repeat={true}
-                muted={true}
-                automaticallyPlay={true} // Ensure the video plays automatically
-                onError={(e) => console.log(e)} // Add an error handler to log any issues
-              />
-            </TouchableOpacity> */}
+            <TouchableWithoutFeedback onPressIn={() => setPlayStarAnimation(true)} onPressOut={() => { setPlayStarAnimation(false); NavigateToFavourites(); }}>
+                <View style={homeStyles.buttonContainer}>
+                    <StarAnimation play={playStarAnimation} frameRate={24} />
+                </View>
+            </TouchableWithoutFeedback>
 
-            <TouchableOpacity style={homeStyles.buttonContainer} onPress={() => { toggleStarAnimation(); NavigateToFavourites(); }} >
-                  <StarAnimation frameRate={24} play={playStarAnimation} />
-            </TouchableOpacity>
 
 
             <TouchableOpacity style={homeStyles.buttonContainer} onPress={NavigateToAllStats}>

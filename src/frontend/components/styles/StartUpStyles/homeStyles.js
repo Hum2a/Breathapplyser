@@ -65,21 +65,10 @@ export const homeStyles = StyleSheet.create({
     buttonContainer: {
       width: buttonWidth,
       height: 100,
-      backgroundColor: '#032585', // Background color (change as needed)
-      borderColor: '#000000',
-      borderWidth: 1,
-      borderRadius: 10, // Adjust the border radius for rounded corners
+      backgroundColor: 'transparent',
       marginBottom: 20, // Add some space between buttons
       justifyContent: 'center',
       alignItems: 'center',
-      shadowColor: '#000', // Add shadow properties for a classy look
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.3,
-      shadowRadius: 3.84,
-      elevation: 5,
     },
     
     buttonText: {
@@ -103,6 +92,7 @@ export const homeStyles = StyleSheet.create({
     smallIcon: {
       width: 50,
       height: 50,
+      backgroundColor: 'transparent',
     },
     statsAndAchievementsContainer: {
       flexDirection: 'row', // Align items in a row

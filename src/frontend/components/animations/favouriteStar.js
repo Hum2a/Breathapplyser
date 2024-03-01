@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Image } from 'react-native';
 import { homeStyles } from '../styles/StartUpStyles/homeStyles';
+import FastImage from 'react-native-fast-image';
 
 // Pre-filled array with the required frame images
 const frames = [
@@ -27,35 +28,41 @@ const frames = [
 
 ];
 
-const StarAnimation = ({ frameRate, play }) => {
-    const [currentFrame, setCurrentFrame] = useState(0);
-  
-    useEffect(() => {
-      let interval;
-      if (play) {
-        interval = setInterval(() => {
-          setCurrentFrame(prevCurrentFrame => {
-            // Check if we've reached the last frame. If so, do not increment.
-            if (prevCurrentFrame < frames.length - 1) {
-              return prevCurrentFrame + 1;
-            } else {
-              // Once the last frame is reached, stop the interval and hold on the last frame
-              clearInterval(interval);
-              return prevCurrentFrame;
+const StarAnimation = ({ frameRate, play, onComplete }) => {
+  const [currentFrame, setCurrentFrame] = useState(0);
+  const animationRef = useRef({});
+
+  useEffect(() => {
+    if (play) {
+      animationRef.current.interval = setInterval(() => {
+        setCurrentFrame(prevCurrentFrame => {
+          const nextFrame = prevCurrentFrame + 1;
+          if (nextFrame < frames.length) {
+            return nextFrame;
+          } else {
+            clearInterval(animationRef.current.interval);
+            if (onComplete) {
+              // Ensure onComplete is called outside the render phase
+              setTimeout(onComplete, 0);
             }
-          });
-        }, 1000 / frameRate);
-      } else {
-        // Optionally, you could also decide to reset to the first frame or hold the last frame when stopped
-        setCurrentFrame(0); // Reset to first frame when not playing
-        // setCurrentFrame(frames.length - 1); // Uncomment to hold the last frame when not playing
-      }
-      return () => clearInterval(interval);
-    }, [play, frameRate]);
-  
-    return (
-      <Image source={frames[currentFrame]} style={homeStyles.smallIcon} />
-    );
+            return prevCurrentFrame; // Keep showing the last frame
+          }
+        });
+      }, 1000 / frameRate);
+    } else {
+      setCurrentFrame(0); // Reset to the first frame when not playing
+    }
+
+    // Cleanup interval on component unmount or when play changes
+    return () => clearInterval(animationRef.current.interval);
+  }, [play, frameRate, onComplete]);
+
+  return (
+    <FastImage
+      source={frames[currentFrame]}
+      style={homeStyles.smallIcon}
+    />
+  );
 };
 
 export default StarAnimation;
