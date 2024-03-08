@@ -34,6 +34,10 @@ import {
   AmountSpentChartsScreen,
   NamesCharts,
   TypesCharts,
+  Rankings,
+  SpentRankingsScreen,
+  UnitRankingsScreen,
+  AcceptRankingsScreen
 } from '../screens/ScreensIndex';
 
 const Stack = createNativeStackNavigator();
@@ -41,7 +45,13 @@ const Stack = createNativeStackNavigator();
 const AppNavigation = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Start">
+      <Stack.Navigator 
+        initialRouteName="Start"
+        screenOptions={{
+          headerShown: false,
+          gestureEnabled: true, // Enable gestures if desired
+        }}
+        >
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="StartDrinking" component={StartDrinkingScreen} />
         <Stack.Screen name="AddEntry" component={AddEntryScreen} />
@@ -74,6 +84,12 @@ const AppNavigation = () => {
         <Stack.Screen name="AmountSpentCharts" component={AmountSpentChartsScreen} />
         <Stack.Screen name="NamesCharts" component={NamesCharts} />
         <Stack.Screen name="TypesCharts" component={TypesCharts} />
+        <Stack.Screen name="Rankings" component={Rankings} />
+        {/* <Stack.Screen name="DrunkRankings" component={DrunkRankings} />
+        <Stack.Screen name="MostDrankRankings" component={MostDrankRankings} /> */}
+        <Stack.Screen name="UnitsRankings" component={UnitRankingsScreen} />
+        <Stack.Screen name="SpentRankings" component={SpentRankingsScreen} />
+        <Stack.Screen name="AcceptRankings" component={AcceptRankingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

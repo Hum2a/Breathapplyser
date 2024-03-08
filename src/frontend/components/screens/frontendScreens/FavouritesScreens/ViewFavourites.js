@@ -4,6 +4,7 @@ import { UserContext } from '../../../../context/UserContext';
 import FavouriteList from './FavouritesList';
 import { AddNewFavouritesButton } from '../../../buttons/FavoutitesComponents/FavouritesButtons';
 import { appStyles } from '../../../styles/appStyles';
+import { favouriteStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
 
 const FavouritesScreen = ({ navigation }) => {
   const { user } = useContext(UserContext);
@@ -14,7 +15,7 @@ const FavouritesScreen = ({ navigation }) => {
   };
 
   return (
-    <View>
+    <View style={favouriteStyles.container}>
       <AddNewFavouritesButton onPress={navigateToAddFavorite}/>
       <FavouriteList user={user} navigation={navigation} />
     </View>

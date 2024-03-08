@@ -111,8 +111,8 @@ const CompareNightsOutScreen = ({ route }) => {
   const screenWidth = Dimensions.get('window').width;
   const linechartConfig = {
     backgroundColor: '#ffffff',
-    backgroundGradientFrom: '#fb8c00',
-    backgroundGradientTo: '#ffa726',
+    backgroundGradientFrom: '#01BCC2', // Light blue
+    backgroundGradientTo: '#B2DFEE', // Lighter shade of blue
     decimalPlaces: 2, // optional, defaults to 2dp
     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
     labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,

@@ -7,18 +7,23 @@ export const bacComparisonStyles = StyleSheet.create({
       justifyContent: 'center',
       paddingHorizontal: 20, // Adjust the horizontal padding
       paddingTop: 40, // Add padding top for spacing
+      backgroundColor: '#E1F5FE', // Light blue background for the container
     },
     pickersContainer: {
       flexDirection: 'row',
       marginTop: 20, // Add margin top for spacing
+      backgroundColor: '#B3E5FC', // Slightly darker shade for the picker container
+      borderRadius: 5,
+      padding: 5,
     },
     pickerStyle: {
       flex: 1,
       height: 40,
       marginHorizontal: 5, // Adjust horizontal margin for spacing
       borderWidth: 1,
-      borderColor: '#ccc',
+      borderColor: '#29B6F6', // Light blue border color
       borderRadius: 5,
+      backgroundColor: '#E1F5FE', // Lighter blue background for the picker
     },
     legendContainer: {
       flexDirection: 'row',
@@ -34,11 +39,13 @@ export const bacComparisonStyles = StyleSheet.create({
     },
     legendLabel: {
       fontSize: 14,
+      color: '#01579b', // Using the darker blue for better readability
     },
     graphTitle: {
-      fontSize: 16,
+      color: '#01579b', // Darker blue for the title text for contrast
+      fontSize: 18, // Slightly larger font size for better visibility
       fontWeight: 'bold',
       textAlign: 'center',
-      marginBottom: 20, // Increase margin bottom for spacing
+      marginBottom: 10,
     },
-  });
+});

@@ -7,11 +7,12 @@ export const RecentStyles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     margin: 10,
-    maxHeight: 200,
+    maxHeight: 250,
     maxWidth: screenWidth * 0.5,
-    backgroundColor: '#92DDFE',
-    borderColor: 'gold',
-    borderWidth: 0.5,
+    // backgroundColor: '#92DDFE',
+    // borderColor: 'gold',
+    // borderWidth: 0.5,
+    backgroundColor: 'transparent',
   },
   listItem: {
     backgroundColor: 'rgba(249, 249, 249, 0.5)', // Making background slightly transparent

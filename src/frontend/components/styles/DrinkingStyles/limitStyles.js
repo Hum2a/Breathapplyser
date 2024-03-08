@@ -1,4 +1,6 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
+
+const screenWidth = Dimensions.get('window').width;
 
 export const limitStyles = StyleSheet.create({
   container: {
@@ -20,9 +22,11 @@ export const limitStyles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 10,
     color: '#333',
+    textAlign: 'center',
   },
   slider: {
     width: '80%',
+    left: screenWidth/10,
   },
   button: {
     backgroundColor: '#007AFF',

@@ -6,8 +6,8 @@ import { AmountSpentChart } from '../../../../charts/chartIndex';
 const AmountSpentCharts = () => {
   return (
     <SafeAreaView style={chartStyles.fullScreen}>
-      <ScrollView style={chartStyles.chartContainer}>
-          <View>
+      <ScrollView >
+          <View style={chartStyles.chartContainer}>
               <AmountSpentChart />
           </View>
       </ScrollView>

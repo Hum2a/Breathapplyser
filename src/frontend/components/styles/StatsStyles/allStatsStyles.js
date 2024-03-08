@@ -4,6 +4,7 @@ export const allStatsStyles = StyleSheet.create({
     container: {
       flex: 1,
       padding: 16,
+      backgroundColor: '#BAEAFF',
     },
     title: {
       fontSize: 20,

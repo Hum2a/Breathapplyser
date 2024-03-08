@@ -1,11 +1,9 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, Animated, Easing, Dimensions, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { StartStyles as styles } from '../../styles/StartUpStyles/startStyles';
 
 const StartScreen = ({ navigation }) => {
-  const windowWidth = Dimensions.get('window').width;
-  const windowHeight = Dimensions.get('window').height;
-
   const navigateToRegister = () => {
     navigation.navigate('Register');
   };
@@ -14,44 +12,26 @@ const StartScreen = ({ navigation }) => {
     navigation.navigate('Login');
   };
 
-  const navigateToHome = () => {
-    navigation.navigate('Home');
-  };
-
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        onPress={navigateToRegister}
-        style={[
-          styles.button,
-          styles.registerButton,
-          {
-            top: windowHeight / 2,
-            left: windowWidth / 4,
-          },
-        ]}
-      >
-        <Text style={styles.buttonText}>Register</Text>
+      <Text style={styles.title}>Breathapplyser</Text>
+      <TouchableOpacity onPress={navigateToRegister}>
+        <LinearGradient
+          colors={['#4c669f', '#3b5998', '#192f6a']} // Adjust the colors to fit your theme
+          style={styles.button}>
+          <Text style={styles.buttonText}>Register</Text>
+        </LinearGradient>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={navigateToLogin}
-        style={[
-          styles.button,
-          styles.loginButton,
-          {
-            top: windowHeight / 3,
-            left: windowWidth / 4,
-          },
-        ]}
-      >
-        <Text style={styles.buttonText}>Login</Text>
+      <TouchableOpacity onPress={navigateToLogin}>
+        <LinearGradient
+          colors={['#ff6e7f', '#bfe9ff']} // Adjust the colors to fit your theme
+          style={styles.button}>
+          <Text style={styles.buttonText}>Login</Text>
+        </LinearGradient>
       </TouchableOpacity>
-
     </View>
   );
 };
-
-
 
 export default StartScreen;

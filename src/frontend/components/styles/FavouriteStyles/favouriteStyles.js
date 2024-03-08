@@ -2,13 +2,12 @@ import { StyleSheet } from 'react-native';
 
 export const favouriteStyles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#9CEEF1',
+    backgroundColor: '#BAEAFF', // A lighter shade of blue for background
     padding: 10,
     marginBottom: 10,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#0077B6', // A brighter blue for border, providing contrast
   },
   infoContainer: {
     marginBottom: 5,
@@ -17,14 +16,15 @@ export const favouriteStyles = StyleSheet.create({
     fontWeight: 'bold',
     fontStyle: 'italic',
     fontSize: 18,
-    color: 'black',
+    color: '#005f73', // A darker blue for text, ensuring readability
   },
   detailsText: {
     fontSize: 16,
+    color: '#003366', // Even darker blue for more important details, enhancing contrast
     marginBottom: 5,
   },
   deleteButton: {
-    backgroundColor: 'red',
+    backgroundColor: '#FF3B30', // Red color for delete button to stand out for caution
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 5,
@@ -38,31 +38,30 @@ export const favouriteStyles = StyleSheet.create({
     marginBottom: 20,
   },
   starContent: {
-    alignItems: 'center', // Center content horizontally in the star
-    justifyContent: 'center', // Center content vertically in the star
-    // Adjust padding as needed to fit your star shape
+    alignItems: 'center', 
+    justifyContent: 'center', 
   },
   pulsatingBorder: {
     position: 'absolute',
-    width: "110%", // Adjust based on the size of your SVG
-    height: "110%", // Adjust based on the size of your SVG
-    borderRadius: 100, // Adjust for rounded corners, if desired
-    backgroundColor: 'transparent', // Or any color for the border
+    width: "110%", 
+    height: "110%", 
+    borderRadius: 100, 
+    backgroundColor: 'transparent', 
     justifyContent: 'center',
     alignItems: 'center',
   },
   addNewFavouriteButton: {
-    backgroundColor: '#9CEEF1',
+    backgroundColor: '#0077B6', // A consistent blue theme for action buttons
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 50,
-    borderColor: 'black',
-    borderwidth: 2,
+    borderColor: '#005f73', // A slightly darker blue for border, adding depth
+    borderWidth: 2,
     marginBottom: 10,
     marginTop: 5,
   },
   addNewFavouriteButtonText: {
-    color: 'black',
+    color: 'white', // White text for clarity and contrast
     fontWeight: 'bold',
     fontSize: 18,
     textAlign: 'center',

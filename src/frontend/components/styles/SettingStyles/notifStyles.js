@@ -4,13 +4,13 @@ export const notifStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    // backgroundColor: "#FFFFFF", // Background color for the entire screen
+    backgroundColor: "#BAEAFF", // Light blue background for the entire screen
   },
   categoryHeader: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
-    color: "#333", // Dark text color
+    color: "#003366", // Darker shade of blue for headers
   },
   notificationItem: {
     flexDirection: "row",
@@ -19,22 +19,22 @@ export const notifStyles = StyleSheet.create({
     marginBottom: 12,
     paddingVertical: 12,
     paddingHorizontal: 20,
-    backgroundColor: "#F0F0F0", // Background color for each notification item
+    backgroundColor: "#E7F2F8", // Very light blue, almost white, for notification items
     borderRadius: 8,
-    shadowColor: "#000", // Shadow color
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.2, // Shadow opacity
-    shadowRadius: 3, // Shadow radius
-    elevation: 3, // Android elevation for shadow
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2, // Subtle elevation for Android
   },
   notificationText: {
     fontSize: 18,
-    color: "#333", // Dark text color
+    color: "#005f73", // Slightly darker blue for text, ensures good readability
   },
   switchContainer: {
-    transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }], // Adjust switch size
+    transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }], // Adjust switch size, maintain original scaling if preferred
   },
 });

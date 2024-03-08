@@ -38,7 +38,7 @@ const EditFavourite = ({ route, navigation }) => {
 
   return (
     <View style={editStyles.container}>
-      <Text>Edit Favorite Drink</Text>
+      <Text style={editStyles.title}>Edit Favorite Drink</Text>
       <TextInput
         style={editStyles.input}
         placeholder="Alcohol"

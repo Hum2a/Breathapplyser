@@ -6,7 +6,8 @@ import { Picker } from '@react-native-picker/picker';
 import moment from 'moment';
 import { UserContext } from '../../../../context/UserContext';
 import { chartConfig } from '../chart-handling/chartConfig';
-import { totalUnitsStyles as styles } from '../../../styles/ChartStyles/totalUnitsStyles';
+// import { totalUnitsStyles as styles } from '../../../styles/ChartStyles/totalUnitsStyles';
+import { amountSpentStyles as styles } from '../../../styles/ChartStyles/amountSpentStyles';
 
 const TotalUnitsChart = () => {
   const [totalUnitsValues, setTotalUnitsValues] = useState([]);
@@ -164,8 +165,10 @@ const TotalUnitsChart = () => {
               color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
               style: { borderRadius: 16 },
               withVerticalLabels: true,
+              fromZero: true,
             }}
             bezier
+            fromZero
           />
           <View style={styles.legendContainer}>
             <View style={[styles.legendItem, { backgroundColor: '#2979FF' }]} />

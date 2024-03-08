@@ -83,6 +83,7 @@ const DrunknessChart = () => {
               withVerticalLabels: true,
             }}
             bezier
+            fromZero
           />
           <View style={styles.legendContainer}>
             <View style={[styles.legendItem, { backgroundColor: '#7B1FA2' }]} />

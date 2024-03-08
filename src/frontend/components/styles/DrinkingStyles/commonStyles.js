@@ -7,11 +7,12 @@ export const CommonStyles = StyleSheet.create({
       padding: 10,
       borderRadius: 10,
       margin: 10,
-      maxHeight: 200,
-      maxWidth: screenWidth * 0.5,
-      backgroundColor: '#92DDFE',
-      borderColor: 'gold',
-      borderWidth: 0.5,
+      maxHeight: 300,
+      maxWidth: screenWidth * 0.45,
+      // backgroundColor: '#92DDFE',
+      backgroundColor: 'transparent',
+      // borderColor: 'gold',
+      // borderWidth: 0.5,
     },
     listItem: {
       backgroundColor: 'rgba(249, 249, 249, 0.5)', // Making background slightly transparent

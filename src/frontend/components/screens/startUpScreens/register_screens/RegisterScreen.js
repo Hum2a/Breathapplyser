@@ -4,6 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import { RegisterStyles } from '../../../styles/StartUpStyles/registerStyles';
 import { registerUser } from '../../../../../backend/firebase/database/firebase';
+import { getFirestore } from '@firebase/firestore';
 
 
 const RegisterScreen = ({ navigation }) => {
@@ -13,6 +14,7 @@ const RegisterScreen = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+  const firestore = getFirestore();
 
 
   const handleRegister = () => {

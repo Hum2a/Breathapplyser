@@ -3,14 +3,40 @@ import { StyleSheet } from "react-native";
 export const editStyles = StyleSheet.create({
     container: {
       flex: 1,
-      paddingHorizontal: 16,
-      paddingTop: 16,
+      paddingHorizontal: 20,
+      paddingTop: 20,
+      backgroundColor: '#BAEAFF', // Light blue background for consistency
+    },
+    input: {
+      height: 40,
+      borderColor: '#0077B6', // Brighter blue for border, providing good contrast
+      borderWidth: 1,
+      borderRadius: 8,
+      padding: 10,
+      marginBottom: 16,
+      backgroundColor: '#E7F2F8', // Very light blue for input background, enhancing readability
+      color: '#003366', // Dark blue for input text for better visibility
     },
     title: {
       fontSize: 24,
       fontWeight: 'bold',
       marginBottom: 16,
+      color: '#005f73', // Darker blue for titles, ensuring readability
+      textAlign: 'center',
     },
+    button: {
+      backgroundColor: '#007AFF', // Use a consistent theme blue for buttons
+      borderRadius: 8,
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      marginTop: 16,
+      alignItems: 'center',
+    },
+    buttonText: {
+      color: '#ffffff', // White text for button for clarity
+      fontSize: 16,
+      fontWeight: 'bold',
+    },  
     entry: {
       backgroundColor: '#f0f0f0',
       borderRadius: 8,
@@ -31,27 +57,6 @@ export const editStyles = StyleSheet.create({
       fontSize: 20,
       fontWeight: 'bold',
       marginBottom: 8,
-    },
-    input: {
-      borderWidth: 1,
-      borderColor: '#ccc',
-      borderRadius: 8,
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      marginBottom: 8,
-    },
-    button: {
-      backgroundColor: '#0066cc',
-      borderRadius: 8,
-      paddingVertical: 12,
-      paddingHorizontal: 16,
-      alignItems: 'center',
-      marginTop: 16,
-    },
-    buttonText: {
-      color: '#ffffff',
-      fontSize: 16,
-      fontWeight: 'bold',
     },
   });
 

@@ -1,8 +1,8 @@
-// src/screens/LoginScreen.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { LoginStyles } from '../../../styles/StartUpStyles/loginStyles';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import LinearGradient from 'react-native-linear-gradient'; // Import LinearGradient
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('Humzab1711@hotmail.com');
@@ -15,12 +15,10 @@ const LoginScreen = ({ navigation }) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log('Login successful:', userCredential);
-        // Navigate to the Home screen after successful login
         navigation.navigate('Home');
       })
       .catch((error) => {
         console.error('Error during login:', error);
-        // Optionally, update state to show an error message to the user
       });
   };
 
@@ -31,7 +29,7 @@ const LoginScreen = ({ navigation }) => {
         placeholder="Email" 
         value={email} 
         onChangeText={setEmail} 
-        placeholderTextColor="#999" // Placeholder text color
+        placeholderTextColor="#999"
       />
       <TextInput 
         style={LoginStyles.input} 
@@ -39,12 +37,16 @@ const LoginScreen = ({ navigation }) => {
         value={password} 
         onChangeText={setPassword} 
         secureTextEntry 
-        placeholderTextColor="#999" // Placeholder text color
+        placeholderTextColor="#999"
       />
       <TouchableOpacity 
-        style={LoginStyles.loginButton} // Stylish login button
+        style={LoginStyles.loginButton} // Use this to maintain the touchable area
         onPress={handleLogin}>
-        <Text style={LoginStyles.loginButtonText}>Login</Text>
+        <LinearGradient
+          colors={['#6dd5ed', '#2193b0']} // Example gradient colors
+          style={LoginStyles.loginButtonGradient}>
+          <Text style={LoginStyles.loginButtonText}>Login</Text>
+        </LinearGradient>
       </TouchableOpacity>
     </View>
   );

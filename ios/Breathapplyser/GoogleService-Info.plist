@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyAvK5TyNDsyMoE0s2_qCF15w0UutWEmW0A</string>
+	<key>GCM_SENDER_ID</key>
+	<string>846693325075</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.breathapplyser</string>
+	<key>PROJECT_ID</key>
+	<string>breathappdb</string>
+	<key>STORAGE_BUCKET</key>
+	<string>breathappdb.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:846693325075:ios:ba8f693a7ce1570aa7a2e6</string>
+	<key>DATABASE_URL</key>
+	<string>https://breathappdb-default-rtdb.europe-west1.firebasedatabase.app</string>
+</dict>
+</plist>

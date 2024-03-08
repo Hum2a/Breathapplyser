@@ -1,9 +1,11 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const screenWidth = Dimensions.get('window').width;
 
 export const DetailedHistoryStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#BAEAFF',
   },
   title: {
     fontSize: 24,
@@ -24,11 +26,13 @@ export const DetailedHistoryStyles = StyleSheet.create({
     marginBottom: 10,
   },
   entryItem: {
-    backgroundColor: 'white',
+    backgroundColor: '#92DDFE',
     padding: 16,
     marginBottom: 10,
     borderRadius: 8,
     elevation: 2,
+    width: screenWidth * 0.95,
+    left: screenWidth/40,
   },
   entryText: {
     fontSize: 16,

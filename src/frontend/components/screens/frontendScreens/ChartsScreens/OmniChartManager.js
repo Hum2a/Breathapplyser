@@ -15,7 +15,7 @@ const ChartsScreen = ({ navigation }) => {
         <Text style={styles.buttonText}>BAC Charts</Text>
         <Image
               source={require('../../../../assets/images/blood.png')}
-              style={homeStyles.smallIcon}
+              style={styles.smallIcon}
             />
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigateToChart('UnitsCharts')}>

@@ -5,149 +5,136 @@ export const addStyles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 30,
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#BAEAFF', // Lighter shade of blue for background
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#333',
+    color: '#003366', // Dark blue for titles
     textAlign: 'center',
   },
   input: {
     width: '100%',
     height: 40,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#0077B6', // Bright blue for input borders
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#E7F2F8', // Very light blue for input background
+    color: '#003366', // Use dark blue for input text for contrast
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#007AFF', // Preset, consider using a gradient if applicable
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 5,
     marginBottom: 10,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: '#FFFFFF', // White for button text
     fontSize: 18,
     textAlign: 'center',
   },
   timeText: {
-    fontSize: 18, // A size that is easily readable
-    color: '#333', // A color that contrasts well with the background, dark grey for professionalism
-    fontFamily: 'Helvetica Neue', // A clean, professional font-family, choose one that suits your app
-    textAlign: 'center', // Center align text, adjust as needed
-    marginVertical: 10, // Provides space above and below the text
-    paddingHorizontal: 10, // Provides horizontal padding
-    borderWidth: 1, // Optional: Adds a border for more definition
-    borderColor: '#ddd', // Optional: Light grey border color
-    borderRadius: 5, // Optional: Rounds the corners of the border
-    backgroundColor: '#fff', // A neutral background color, white
-    shadowColor: '#000', // Optional: Adds a shadow for depth, adjust color as needed
-    shadowOffset: { width: 0, height: 1 }, // Optional: Adjusts the shadow offset
-    shadowOpacity: 0.2, // Optional: Adjusts the shadow visibility
-    shadowRadius: 1.41, // Optional: Adjusts the blur radius of the shadow
-    elevation: 2, // Optional: Adds elevation for Android (shadow equivalent)
+    fontSize: 18,
+    color: '#003366', // Dark blue for time texts
+    marginVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: '#E7F2F8', // Very light blue background for time texts
+    borderRadius: 5,
   },
   priceInputContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-start', // Align items to the start of the container
+    justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%', // Ensure the container takes the full width
+    width: '100%',
   },
   currencyPicker: {
-    position: 'absolute',
-    top: 50,  // Adjust as needed
-    left: 50,  // Adjust as needed
-    width: 100,  // Adjust as needed
+    width: 100,
     height: 40,
-    borderWidth: 1,
-    borderColor: 'blue',
+    borderColor: '#0077B6', // Bright blue border
+    borderRadius: 5,
+    marginLeft: 10,
+    backgroundColor: '#E7F2F8', // Very light blue for picker background
   },
   priceInput: {
-    flex: 2, // Takes twice the space of currencyPicker
+    flex: 1,
     height: 40,
-    borderColor: '#ccc',
+    borderColor: '#0077B6', // Bright blue for input borders
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
-    marginRight: 10, // Ensure there's some space between the input and the picker
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#E7F2F8', // Very light blue for input background
+    color: '#003366', // Dark blue for input text
   },
   priceUnitPicker: {
     width: 80,
   },
   amountSpentContainer: {
     flexDirection: 'column',
-    alignItems: 'flex-start', 
+    alignItems: 'flex-start',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#92DDFE', // Soft, light blue
   },
   amountSpentText: {
     fontSize: 16,
-    marginBottom: 5, 
+    color: '#003366', // Dark blue for text
+    marginBottom: 5,
   },
   scrollContainer: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#BAEAFF', // Consistent light blue background for scrollable area
   },
   statsContainer: {
-    flexDirection: 'row', // Align items in a row
-    justifyContent: 'space-around', // Space items evenly
-    alignItems: 'center', // Align items vertically in the center
-    backgroundColor: '#f7f7f7', // A light background color for the container
-    paddingVertical: 10, // Vertical padding for the container
-    paddingHorizontal: 20, // Horizontal padding for the container
-    borderRadius: 5, // Optional: Rounds the corners of the container
-    shadowColor: '#000', // Optional: Adds a shadow for depth, adjust color as needed
-    shadowOffset: { width: 0, height: 1 }, // Optional: Adjusts the shadow offset
-    shadowOpacity: 0.1, // Optional: Adjusts the shadow visibility
-    shadowRadius: 1.41, // Optional: Adjusts the blur radius of the shadow
-    elevation: 2, // Optional: Adds elevation for Android (shadow equivalent)
-    marginVertical: 10, // Margin to separate from other elements
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#92DDFE', // Soft, light blue for stats container background
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
   },
   statText: {
-    fontSize: 16, // A size that is easily readable
-    color: '#333', // A color that contrasts well with the background
-    fontFamily: 'Helvetica Neue', // A clean, professional font-family
+    fontSize: 16,
+    color: '#003366', // Dark blue for stats text
   },
   saveEntryButton: {
-    backgroundColor: '#ffbf00',
+    backgroundColor: '#0077B6', // Consistent blue theme for buttons
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 5,
     marginBottom: 10,
   },
   saveEntryButtonText: {
-    color: 'black',
+    color: '#FFFFFF', // White text for readability
     fontSize: 18,
     textAlign: 'center',
   },
   favouriteButton: {
-    backgroundColor: 'pink',
+    backgroundColor: '#005f73', // A darker shade of blue for contrast
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 5,
     marginBottom: 10,
   },
   favouriteButtonText: {
-    color: 'black',
+    color: '#FFFFFF', // White text for readability
     fontSize: 18,
     textAlign: 'center',
   },
   scanButton: {
-    backgroundColor: '#2979FF', // Button background color
-    padding: 10, // Padding around the button text
-    borderRadius: 8, // Border radius to make the button rounded
-    marginTop: 20, // Margin at the top to separate from other elements
+    backgroundColor: '#2979FF', // A vibrant blue for the scan button
+    padding: 10,
+    borderRadius: 8,
+    marginTop: 20,
   },
   scanButtonText: {
-    color: 'white', // Button text color
-    fontSize: 16, // Font size of the button text
-    textAlign: 'center', // Center-align the text
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
   },
-  
 });

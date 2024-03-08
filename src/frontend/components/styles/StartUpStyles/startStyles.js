@@ -1,45 +1,35 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export const StartStyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0', // Background color
+    backgroundColor: '#ADD8E6', // Light blue background color
     padding: 20,
+  },
+  title: {
+    fontSize: 36, // Larger font size for the title
+    fontWeight: 'bold',
+    color: '#005f73', // A contrasting darker blue for better readability
+    marginBottom: 60, // Increase spacing before the buttons start
+    textAlign: 'center',
   },
   button: {
     width: 200,
     height: 50,
     borderRadius: 25,
-    marginVertical: 10,
-    marginHorizontal: 10,
-    marginBottom: 20,
-    elevation: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    backgroundColor: 'blue',
-  },
-  registerButton: {
-    backgroundColor: 'transparent', // Transparent background for the bubbly effect
-    borderWidth: 2, // Add a border to make it appear bubbly
-    borderColor: 'blue', // Color of the border
-  },
-  loginButton: {
-    backgroundColor: 'transparent', // Transparent background for the bubbly effect
-    borderWidth: 2, // Add a border to make it appear bubbly
-    borderColor: 'purple', // Color of the border
-  },
-  homeButton: {
-    backgroundColor: 'transparent', // Transparent background for the bubbly effect
-    borderWidth: 2, // Add a border to make it appear bubbly
-    borderColor: 'green', // Color of the border
+    marginBottom: 20,
+    elevation: 5,
   },
   buttonText: {
     fontSize: 18,
-    color: '#000', // Change text color to make it visible
+    color: '#FFFFFF', // Ensure text color contrasts well with the gradient
     fontWeight: 'bold',
-    textAlign: 'center',
   },
 });

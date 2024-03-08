@@ -17,37 +17,32 @@ const BACDecrease = ({ user, updateCount }) => {
       const firestore = getFirestore();
       const userUid = user.uid;
 
-      // Loop until a BAC level document is found
       let bacLevelDoc;
       while (!bacLevelDoc) {
         const selectedDateStr = selectedDate.format('YYYY-MM-DD');
         console.log("Selected Date 1: ", selectedDateStr);
         
-        // Fetch the current BAC level from Firebase for the selected date
         const bacLevelRef = doc(firestore, userUid, "Daily Totals", "BAC Level", selectedDateStr);
         bacLevelDoc = await getDoc(bacLevelRef);
-        console.log("BAC Level Document Found:", bacLevelDoc.data());
         
         if (bacLevelDoc.exists()) {
           console.log("BAC Level Document Found:", bacLevelDoc.data());
-          break; // Exit the loop if a document is found
+          break;
         }
         
-        // If no document is found, decrement the date by one day
-        setSelectedDate(prevDate => prevDate.clone().subtract(1, 'days')); // Use clone to avoid mutating the original moment object
+        setSelectedDate(prevDate => prevDate.clone().subtract(1, 'days'));
         console.log("Selected Date 2: ", selectedDate.format('YYYY-MM-DD'));
       }      
 
       if (bacLevelDoc) {
-        // Check if bacLevelDoc exists
-        const currentBAC = bacLevelDoc.data()?.value;
+        let currentBAC = bacLevelDoc.data()?.value;
+        
+        // Check if the current BAC is NaN, and if so, change it to 0
+        currentBAC = isNaN(currentBAC) ? 0 : currentBAC;
 
-        // Calculate the time difference since the last update
         const lastUpdateTime = moment(bacLevelDoc.data()?.lastUpdated, 'YYYY-MM-DD HH:mm:ss');
         const currentTime = moment();
         const timeDifferenceInSeconds = currentTime.diff(lastUpdateTime, 'seconds');
-
-        // Calculate the new BAC based on the time difference
         const newBAC = Math.max(0, currentBAC - BACDecreaseRatePerSecond * timeDifferenceInSeconds);
 
         console.log('==============================');
@@ -58,17 +53,14 @@ const BACDecrease = ({ user, updateCount }) => {
         console.log("newBAC:", newBAC);
         console.log('==============================');
 
-        // Update the BAC level in Firebase and the lastUpdated field
         await setDoc(doc(firestore, userUid, "Daily Totals", "BAC Level", moment().format("YYYY-MM-DD")), { value: newBAC, lastUpdated: moment().format('YYYY-MM-DD HH:mm:ss') });
         console.log("Daily Totals Updated");
 
-        // Create a reference to the new collection and set the document with the same data
         const dateTime = moment().format('YYYY-MM-DD HH:mm:ss');
         const bacUpdateStr = `BAC_AUTO_UPDATE_${dateTime}`;
         const newCollectionRef = doc(firestore, userUid, 'Alcohol Stuff', 'BAC Level', bacUpdateStr);
         await setDoc(newCollectionRef, { value: newBAC, lastUpdated: moment().format('YYYY-MM-DD HH:mm:ss') });
 
-        // Update the last update timestamp
         setLastUpdateTimestamp(currentTime);
         console.log("BACDecrease: Updated lastUpdateTimestamp state");
       } else {
@@ -76,9 +68,8 @@ const BACDecrease = ({ user, updateCount }) => {
       }
     }, 10000); 
 
-    // Run the BAC decrease logic immediately when the component mounts
     return () => clearInterval(decreaseBAC);
-  }, [user, selectedDate]); // Include selectedDate in the dependency array
+  }, [user, selectedDate]);
 
   return null; // Assuming this component does not render anything
 };

@@ -84,7 +84,9 @@ const FavouriteList = ({ user, navigation }) => {
         <Svg height='350' width='350' viewBox="0 0 100 100">
           <Polygon
             points="50,0 61,35 98,35 67,57 76,91 50,70 24,91 33,57 2,35 39,35"
-            fill="#9CEEF1"
+            fill="#65C5F9" // Light blue fill color for the star
+            stroke="#003366" // Dark blue for the border color to contrast with the fill
+            strokeWidth="1" // Thickness of the border
           />
         </Svg>
         <View style={[favouriteStyles.starContent, { position: 'absolute', top: '34%', left: '10%', right: '10%' }]}>
@@ -103,11 +105,12 @@ const FavouriteList = ({ user, navigation }) => {
       </View>
     </TouchableOpacity>
   );
+  
 
   return (
       <FlatList
         data={Favourites}
-        renderItem={renderItem}
+        renderItem={({ item }) => renderItem({ item, navigation })}
         keyExtractor={(item) => item.id}
       />
   );

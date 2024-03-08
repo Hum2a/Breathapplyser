@@ -459,13 +459,13 @@ const handleCheckLimits = async () => {
           <Text style={addStyles.scanButtonText}>Scan Barcode</Text>
         </TouchableOpacity> */}
 
-        <View style={addStyles.amountSpentContainer}>
+        {/* <View style={addStyles.amountSpentContainer}>
           {currencies.map((currency) => (
             <Text key={currency.value}>
               {currency.label}: {amountSpent[currency.value] || 0}
             </Text>
           ))}
-        </View>
+        </View> */}
       </Animated.View>
     </ScrollView>
   );

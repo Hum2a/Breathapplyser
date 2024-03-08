@@ -59,7 +59,7 @@ const HistoryCalendar = ({ navigation }) => {
   return (
     <SafeAreaView style={appStyles.fullScreen}>
       <View style={styles.container}>
-        <Text style={styles.title}>History Calendar</Text>
+        <Text style={styles.calendarTitle}>History Calendar</Text>
         <Calendar
           markedDates={{
               ...dates.reduce((markedDates, item) => {
@@ -67,67 +67,33 @@ const HistoryCalendar = ({ navigation }) => {
               return markedDates;
               }, {}),
           }}
+          style={styles.calendar}
           onDayPress={(day) => handleDateClick(day.dateString)}
           theme={{
-            backgroundColor: '#282c34', // Dark background for contrast
-            calendarBackground: '#282c34', // Matching calendar background
-            textSectionTitleColor: '#9FB3C8', // Subtle blue for month titles
-            textSectionTitleDisabledColor: '#555e68', // Disabled color for non-active months
-            selectedDayBackgroundColor: '#DAA520', // Gold color for selected day
-            selectedDayTextColor: '#282c34', // Dark text on selected day for contrast
-            todayTextColor: '#FF6347', // Tomato color for today
-            dayTextColor: '#CCCCCC', // Light grey for days
-            textDisabledColor: '#555e68', // Disabled day color
-            dotColor: '#DAA520', // Dot color matching selected day
-            selectedDotColor: '#282c34', // Dark color for dots on selected day
-            arrowColor: '#DAA520', // Gold color for navigation arrows
-            disabledArrowColor: '#555e68', // Disabled navigation arrow
-            monthTextColor: '#FFD700', // Gold color for the month text
-            indicatorColor: 'blue', // Indicator for loading or other statuses
-            textDayFontWeight: '500', // Medium weight for day text
-            textMonthFontWeight: 'bold', // Bold for month text for emphasis
-            textDayHeaderFontWeight: '500', // Medium weight for day headers
-            textDayFontSize: 16, // Standard size for day text
-            textMonthFontSize: 24, // Larger size for month to stand out
-            textDayHeaderFontSize: 16, // Standard size for day headers
-            'stylesheet.calendar.header': {
-                week: {
-                    marginTop: 5,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    paddingBottom: 10, // Add padding for visual spacing
-                },
-                dayHeader: {
-                    marginTop: 2,
-                    marginBottom: 7,
-                    color: '#9FB3C8', // Use the subtle blue for headers
-                    fontSize: 16,
-                    fontWeight: 'bold', // Bold headers for clarity
-                },
-            },
-            'stylesheet.day.basic': {
-                selected: {
-                    backgroundColor: '#DAA520',
-                    borderRadius: 50, // Circular selection for a modern look
-                },
-                today: {
-                    borderColor: '#FF6347',
-                    borderWidth: 2, // Border for today without filling background
-                    borderRadius: 50,
-                },
-                todayText: {
-                    color: '#FF6347',
-                    fontWeight: 'bold',
-                },
-                dot: {
-                    width: 6,
-                    height: 6,
-                    marginTop: 1,
-                    borderRadius: 3,
-                },
-            },
-        }}        
-          />
+            backgroundColor: '#ADD8E6', // Light blue background
+            calendarBackground: '#ADD8E6', // Light blue calendar background
+            textSectionTitleColor: '#5F9EA0', // Darker shade of light blue for month titles
+            selectedDayBackgroundColor: '#007AFF', // Selected day background color
+            selectedDayTextColor: '#ffffff', // White text color for selected day
+            todayTextColor: '#00FFFF', // Cyan color for the current day
+            dayTextColor: '#000000', // Black color for the day numbers
+            textDisabledColor: '#d9e1e8', // Light grey for disabled days
+            dotColor: '#007AFF', // Dot color for marked days
+            selectedDotColor: '#ffffff', // White color for dots on selected day
+            arrowColor: 'blue', // Blue color for the arrows
+            monthTextColor: '#007AFF', // Blue color for the month text
+            indicatorColor: '#007AFF', // Blue color for the loading indicator
+            textDayFontFamily: 'Montserrat', // Your font family for day numbers
+            textMonthFontFamily: 'Montserrat-Bold', // Your font family for month title
+            textDayHeaderFontFamily: 'Montserrat', // Your font family for day headers
+            textDayFontWeight: '300', // Font weight for day numbers
+            textMonthFontWeight: 'bold', // Bold font weight for month title
+            textDayHeaderFontWeight: '300', // Font weight for day headers
+            textDayFontSize: 16, // Font size for day numbers
+            textMonthFontSize: 20, // Font size for month title
+            textDayHeaderFontSize: 16 // Font size for day headers
+          }}
+        />
       </View>
     </SafeAreaView>
   );

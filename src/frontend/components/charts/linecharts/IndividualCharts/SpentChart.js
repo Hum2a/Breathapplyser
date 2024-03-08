@@ -163,6 +163,7 @@ const AmountSpentChart = () => {
                             withVerticalLabels: true,
                         }}
                         bezier
+                        fromZero
                     />
                     <View style={styles.legendContainer}>
                         <View style={[styles.legendItem, { backgroundColor: '#2979FF' }]} />

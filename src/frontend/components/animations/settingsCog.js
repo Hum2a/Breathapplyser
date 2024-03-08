@@ -10,7 +10,7 @@ const SpinningCog = () => {
     Animated.loop(
       Animated.timing(spinValue, {
         toValue: 1, // Rotate from 0 to 1 (full rotation)
-        duration: 2000, // Duration of one full rotation
+        duration: 3000, // Duration of one full rotation
         easing: Easing.linear, // Linear easing for constant speed
         useNativeDriver: true, // Use native driver for better performance
       })

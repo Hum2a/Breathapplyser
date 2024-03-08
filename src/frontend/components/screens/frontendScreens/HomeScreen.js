@@ -6,7 +6,7 @@ import { homeStyles } from '../../styles/StartUpStyles/homeStyles';
 import { appStyles } from '../../styles/appStyles';
 import StatsScreen from './StatsScreens/TodaysStats';
 import BACDecrease from '../../../../backend/app/background/BAC/bacDecreaser';
-import { getFirestore, deleteDoc, doc, collection, query, getDocs } from 'firebase/firestore';
+import { getFirestore, deleteDoc, doc, collection, query, getDocs, getDoc } from 'firebase/firestore';
 import { UserContext } from '../../../context/UserContext';
 import RecentDrinks from './DrinkingScreens/RecentDrinks';
 import CommonDrinks from './DrinkingScreens/CommonDrinks';
@@ -21,6 +21,7 @@ const HomeScreen = () => {
   const [bacUpdateCount, setBACUpdateCount] = useState(0);
   const [playStarAnimation, setPlayStarAnimation] = useState(false);
   const [playBeerAnimation, setPlayBeerAnimation] = useState(false);
+  const firestore = getFirestore();
 
   const toggleBeerAnimation = () => {
     setPlayBeerAnimation(!playBeerAnimation);
@@ -61,9 +62,23 @@ const HomeScreen = () => {
     navigation.navigate('Achievements');
   };
 
-  const NavigateToOnlineRankings = () => {
-    navigation.navigate('Rankings');
-  }
+  const NavigateToOnlineRankings = async () => {
+    const userDocRef = doc(firestore, 'Users', user.uid);
+  
+    try {
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        // Document exists, navigate to the rankings screen
+        navigation.navigate('Rankings');
+      } else {
+        // No document found, navigate to AcceptOnlineRankings screen
+        navigation.navigate('AcceptRankings');
+      }
+    } catch (error) {
+      console.error('Error checking user document:', error);
+      // Handle any errors, such as showing an error message or defaulting to a specific screen
+    }
+  }  
 
   const handleClearBAC = async () => {
     const firestore = getFirestore();

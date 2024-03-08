@@ -8,8 +8,18 @@ export const HistoryStyles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginVertical: 20,
     alignSelf: 'center',
+  },
+  calendarTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    marginVertical: 10,
+  },
+  calendar: {
+    marginTop: 0,
+    borderColor: 'lightgrey',
+    borderWidth: 1,
   },
   historyItem: {
     backgroundColor: '#92DDFE',

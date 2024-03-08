@@ -16,6 +16,7 @@ const BACComparisonGraph = () => {
   const { user } = useContext(UserContext);
 
   useEffect(() => {
+    console.log('Fetching BAC data...');
     const fetchData = async () => {
       try {
         const q = query(collection(firestore, user.uid, "Alcohol Stuff", "BAC Level"), orderBy("lastUpdated"));
@@ -24,14 +25,17 @@ const BACComparisonGraph = () => {
         querySnapshot.forEach(doc => {
           const data = doc.data();
           const formattedDate = moment(data.lastUpdated, "YYYY-MM-DD HH:mm:ss").format('YYYY-MM-DD');
+          console.log(`Processing data for date: ${formattedDate}`);
           if (!entries[formattedDate]) {
             entries[formattedDate] = [];
           }
           entries[formattedDate].push(data);
         });
+        console.log('BAC data fetched and processed:', entries);
         setBacData(entries);
   
         // Set the unique dates from the fetched data
+        console.log('Unique dates set:', Object.keys(entries));
         setUniqueDates(Object.keys(entries));
       } catch (error) {
         console.error('Error fetching BAC data:', error);
@@ -39,31 +43,34 @@ const BACComparisonGraph = () => {
     };
   
     fetchData();
-  }, []);
-  
+  }, [user, firestore]);
 
   const processDataForChart = (date) => {
+    console.log(`Processing data for chart on date: ${date}`);
     const dayEntries = bacData[date] || [];
-    let hourlyBAC = new Array(24).fill(0); // Array to hold BAC values for each hour
+    let hourlyBAC = new Array(24).fill(0);
   
     for (let hour = 0; hour < 24; hour++) {
       const entry = dayEntries.find(entry => moment(entry.lastUpdated, "YYYY-MM-DD HH:mm:ss").hour() === hour);
-      if (entry) {
-        hourlyBAC[hour] = entry.value; // Modify this line to access the BAC value field in your Firestore document
+      // Check if entry exists and entry.value is a number
+      if (entry && !isNaN(entry.value)) {
+        hourlyBAC[hour] = entry.value;
       }
     }
   
+    console.log(`Data for chart processed:`, hourlyBAC);
     return {
       labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
-      values: hourlyBAC
+      values: hourlyBAC.filter(value => !isNaN(value)) // Filter out any NaN values just to be extra safe
     };
   };
+  
 
   const data1 = processDataForChart(selectedDate1);
   const data2 = processDataForChart(selectedDate2);
 
-  console.log("Data for graph 1:", data1);
-  console.log("Data for graph 2:", data2);
+  console.log("Data prepared for graph 1:", data1);
+  console.log("Data prepared for graph 2:", data2);
 
   return (
     <View style={styles.container}>
@@ -88,7 +95,7 @@ const BACComparisonGraph = () => {
           ))}
         </Picker>
       </View>
-      {data1?.values && data2?.values && (
+      {data1.values.length > 0 && data2.values.length > 0 ? (
         <LineChart
           data={{
             labels: data1.labels,
@@ -106,16 +113,31 @@ const BACComparisonGraph = () => {
           width={350}
           height={200}
           chartConfig={{
-            backgroundColor: '#ffffff',
-            backgroundGradientFrom: '#ffffff',
-            backgroundGradientTo: '#ffffff',
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            style: { borderRadius: 16 },
-            withVerticalLabels: true,
+            backgroundColor: '#b6e6fd', // Light blue background
+            backgroundGradientFrom: '#81d4fa', // Lighter shade of blue
+            backgroundGradientTo: '#4fc3f7', // Slightly darker shade of blue for gradient end
+            decimalPlaces: 4, // Keep the precision for BAC values
+            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // White color for the chart lines
+            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Using black for readability against the light blue background
+            style: {
+              borderRadius: 16
+            },
+            propsForDots: {
+              r: '6',
+              strokeWidth: '2',
+              stroke: '#0293ee' // A blue color that fits well with the theme for the dots stroke
+            },
+            propsForLabels: { // Customizing label font size
+              fontSize: 10,
+            }
           }}
+          
           bezier
-        />
-      )}
+          fromZero
+          />
+          ) : (
+              <Text>Loading data...</Text> // Show a loading message or a spinner
+          )}
       <View style={styles.legendContainer}>
         {data1?.values && (
           <>
