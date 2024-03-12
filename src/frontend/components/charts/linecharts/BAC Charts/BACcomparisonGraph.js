@@ -5,7 +5,7 @@ import { LineChart } from 'react-native-chart-kit';
 import { getFirestore, collection, query, orderBy, getDocs } from 'firebase/firestore';
 import moment from 'moment';
 import { UserContext } from '../../../../context/UserContext';
-import { bacComparisonStyles as styles } from '../../../styles/ChartStyles/bacComparisonStyles';
+import { combinedBacStyles as styles } from '../../../styles/ChartStyles/BACCStyles/bacChartsStyles';
 
 const BACComparisonGraph = () => {
   const [bacData, setBacData] = useState({});

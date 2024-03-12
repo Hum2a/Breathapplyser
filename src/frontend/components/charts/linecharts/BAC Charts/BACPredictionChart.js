@@ -3,7 +3,7 @@ import { View, Text, Dimensions, TouchableOpacity } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { getFirestore, collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { UserContext } from '../../../../context/UserContext';
-import { bacPredictionStyles as styles } from '../../../styles/ChartStyles/bacPredicitionStyles';
+import { combinedBacStyles as styles } from '../../../styles/ChartStyles/BACCStyles/bacChartsStyles';
 
 const PredictBACDecrease = () => {
   const [predictionData, setPredictionData] = useState(null);
@@ -58,7 +58,7 @@ const PredictBACDecrease = () => {
   };
 
   return (
-    <View style={{ alignItems: 'center' }}>
+    <View style={styles.container}>
       <Text style={styles.graphTitle}>{isPredictedTime ? 'Predicted BAC Decrease Over Time' : 'Real-Time BAC Decrease Over Time'}</Text>
       {predictionData && (
         <LineChart

@@ -6,6 +6,7 @@ import { homeStyles } from '../../styles/StartUpStyles/homeStyles';
 import { appStyles } from '../../styles/appStyles';
 import StatsScreen from './StatsScreens/TodaysStats';
 import BACDecrease from '../../../../backend/app/background/BAC/bacDecreaser';
+import DrunkennessLevel from '../../../../backend/app/background/Drunkness/drunknessCalculator';
 import { getFirestore, deleteDoc, doc, collection, query, getDocs, getDoc } from 'firebase/firestore';
 import { UserContext } from '../../../context/UserContext';
 import RecentDrinks from './DrinkingScreens/RecentDrinks';
@@ -19,6 +20,7 @@ const HomeScreen = () => {
   const { user } = useContext(UserContext);
   const [statUpdateCount, setStatUpdateCount] = useState(0);
   const [bacUpdateCount, setBACUpdateCount] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
   const [playStarAnimation, setPlayStarAnimation] = useState(false);
   const [playBeerAnimation, setPlayBeerAnimation] = useState(false);
   const firestore = getFirestore();
@@ -103,18 +105,17 @@ const HomeScreen = () => {
       // Increment the update count to trigger a re-render of StatsScreen
       setStatUpdateCount(prevCount => prevCount + 1);
       setBACUpdateCount(prevBacCount => prevBacCount + 1);
-    }, 60000); // 1 minute interval
+      setRefreshKey(prevKey => prevKey + 1);
+      console.log('HomeScreen refreshed at:', new Date().toLocaleTimeString());
+    }, 15000); 
 
     return () => clearInterval(interval); // Clean up the interval when the component unmounts
-  }, []);
+  }, []);  
 
   return (
     <SafeAreaView style={appStyles.fullScreen}>
       <View style={homeStyles.container}>
-        <View style={homeStyles.statsAndAchievementsContainer}>
-          {/* <StatsScreen key={statUpdateCount} /> */}
-          <BACDecrease user={user} key={bacUpdateCount} />
-        </View>
+        <BACDecrease user={user} key={refreshKey} />
 
       <View style={homeStyles.drinksWidgetContainer}>
         <CommonDrinks />
@@ -124,6 +125,7 @@ const HomeScreen = () => {
       <TouchableOpacity onPress={() => { toggleBeerAnimation(); NavigateToDrinking(); }} style={homeStyles.beerContainer}>
         <BeerAnimation frameRate={24} play={playBeerAnimation} />
         <Text style={homeStyles.buttonText}>Tap to Start Drinking</Text>
+        <DrunkennessLevel />
       </TouchableOpacity>
 
         <View style={homeStyles.bottomContainer}>

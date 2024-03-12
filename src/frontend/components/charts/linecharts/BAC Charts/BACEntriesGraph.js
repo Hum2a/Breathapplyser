@@ -1,0 +1,102 @@
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { LineChart } from 'react-native-chart-kit';
+import { collection, getFirestore, query, orderBy, getDocs } from 'firebase/firestore';
+import { UserContext } from '../../../../context/UserContext';
+import moment from 'moment';
+import { chartConfig } from '../chart-handling/chartConfig';
+import { combinedBacStyles as styles } from '../../../styles/ChartStyles/BACCStyles/bacChartsStyles';
+
+const BACIncreaseChart = () => {
+    const [BACIncreaseValues, setBACIncreaseValues] = useState([]);
+    const [chartLabels, setChartLabels] = useState([]);
+    const [allEntries, setAllEntries] = useState([]);
+    const [selectedDate, setSelectedDate] = useState('');
+    const firestore = getFirestore();
+    const { user } = useContext(UserContext);
+
+    useEffect(() => {
+        const fetchAllEntries = async () => {
+            const allEntriesData = [];
+            const q = query(collection(firestore, user.uid, "Alcohol Stuff", "Entries"));
+            const entriesSnapshot = await getDocs(q);
+
+            entriesSnapshot.forEach(doc => {
+                const dateStr = doc.id;
+                const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
+                getDocs(entriesRef).then(entriesSnapshot => {
+                    entriesSnapshot.forEach(entryDoc => {
+                        const entry = entryDoc.data();
+                        entry.date = dateStr; // Add date to entry
+                        allEntriesData.push(entry);
+                    });
+
+                    // Sort and filter after all entries are pushed
+                    allEntriesData.sort((a, b) => moment(a.date, 'YYYY-MM-DD').diff(moment(b.date, 'YYYY-MM-DD')));
+                    setAllEntries(allEntriesData);
+                    if (allEntriesData.length > 0) {
+                        filterDataByDate(allEntriesData, allEntriesData[0].date);
+                    }
+                });
+            });
+        };
+
+        fetchAllEntries();
+    }, [user.uid, firestore]);
+
+    const filterDataByDate = (entries, date) => {
+        setSelectedDate(date);
+        const filteredEntries = entries.filter(entry => entry.date === date);
+        const BACValues = filteredEntries.map(entry => entry.BACIncrease ? parseFloat(entry.BACIncrease) : 0);
+        const labels = filteredEntries.map(entry => moment(entry.startTime, 'YYYY-MM-DD HH:mm:ss').format('HH:mm') || 'Unknown');
+
+        setBACIncreaseValues(BACValues);
+        setChartLabels(labels);
+    };
+
+    const uniqueDates = [...new Set(allEntries.map(entry => entry.date))];
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.graphTitle}>BAC Increase Chart</Text>
+            <View style={styles.pickersContainer}>
+                <Picker
+                    selectedValue={selectedDate}
+                    onValueChange={(itemValue) => filterDataByDate(allEntries, itemValue)}
+                    style={styles.pickerStyle}
+                >
+                    {uniqueDates.map(date => (
+                        <Picker.Item key={date} label={date} value={date} />
+                    ))}
+                </Picker>
+            </View>
+            {BACIncreaseValues.length > 0 ? (
+                <LineChart
+                    data={{
+                        labels: chartLabels,
+                        datasets: [{ data: BACIncreaseValues, color: () => '#2979FF' }]
+                    }}
+                    width={350}
+                    height={200}
+                    chartConfig={{
+                        ...chartConfig,
+                        backgroundColor: '#ffffff',
+                        backgroundGradientFrom: '#ffffff',
+                        backgroundGradientTo: '#ffffff',
+                        decimalPlaces: 4,
+                        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                        style: { borderRadius: 16 },
+                        withVerticalLabels: true,
+                    }}
+                    bezier
+                    fromZero
+                />
+            ) : (
+                <Text>No data available for this date.</Text>
+            )}
+        </View>
+    );
+};
+
+export default BACIncreaseChart;

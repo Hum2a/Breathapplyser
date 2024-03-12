@@ -12,13 +12,21 @@ export const totalUnitsStyles = StyleSheet.create({
       fontSize: 18,
       marginBottom: 10,
     },
-    pickerStyle: {
-      width: '80%',
-      height: 40,
-      marginBottom: 10,
-      borderWidth: 1,
-      borderColor: '#ccc',
+    pickersContainer: {
+      flexDirection: 'row',
+      marginTop: 5, // Add margin top for spacing
+      backgroundColor: 'transparent',
       borderRadius: 5,
+      padding: 5,
+    },
+    pickerStyle: {
+      flex: 1,
+      height: 40,
+      marginHorizontal: 5, // Adjust horizontal margin for spacing
+      borderWidth: 10,
+      borderColor: '#29B6F6', // Light blue border color
+      borderRadius: 50,
+      backgroundColor: '#E1F5FE', // Lighter blue background for the picker
     },
     legendContainer: {
       flexDirection: 'row',

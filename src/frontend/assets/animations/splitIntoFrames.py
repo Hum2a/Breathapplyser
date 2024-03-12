@@ -43,6 +43,6 @@ def split_video_into_frames(video_path, output_dir):
         print(f"Saved {frame_file_path}")
 
 if __name__ == "__main__":
-    video_path = "C:/Users/Humza/OneDrive/Documents/Programming/Apps/Breathapplyser/src/frontend/assets/animations/BeerAnimation.mov"  # Update this path to your video file
-    output_dir = "C:/Users/Humza/OneDrive/Documents/Programming/Apps/Breathapplyser/src/frontend/assets/animations/beerFrames"  # Update this path to where you want to save the frames
+    video_path = "C:/Users/Humza/OneDrive/Documents/Programming/Apps/Breathapplyser/src/frontend/assets/animations/Profile Icon Wave.mov"  # Update this path to your video file
+    output_dir = "C:/Users/Humza/OneDrive/Documents/Programming/Apps/Breathapplyser/src/frontend/assets/animations/profileWaveFrames"  # Update this path to where you want to save the frames
     split_video_into_frames(video_path, output_dir)

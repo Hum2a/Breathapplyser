@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const chartStyles = StyleSheet.create({
   fullScreen: {
     flex: 1,
-    backgroundColor: '#BAEAFF', // Consistent light blue background
+    backgroundColor: '#E7F2F8', // Consistent light blue background
   },
   chartContainer: {
     flex: 1,

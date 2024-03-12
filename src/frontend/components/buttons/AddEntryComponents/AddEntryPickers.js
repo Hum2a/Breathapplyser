@@ -7,7 +7,7 @@ import { TimePickerModal } from 'react-native-paper-dates';
 export const CurrencyPicker = ({ selectedValue, onValueChange, currencies }) => (
   <Picker
     selectedValue={selectedValue}
-    style={addStyles.priceUnitPicker}
+    style={addStyles.currencyPicker}
     onValueChange={onValueChange}
   >
     {currencies.map((currency) => (

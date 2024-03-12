@@ -10,5 +10,7 @@ export { default as CombinedChart } from './linecharts/CombinedChart';
 export { default as BACChart } from './linecharts/BAC Charts/BacOverTimeChart';
 export { default as BACPredictionChart } from './linecharts/BAC Charts/BACPredictionChart';
 export { default as BACComparisonGraph } from './linecharts/BAC Charts/BACcomparisonGraph';
+export { default as BACEntriesChart } from './linecharts/BAC Charts/BACEntriesGraph';
+export { default as BAC12Hours } from './linecharts/BAC Charts/BAC24Hours';
 
 

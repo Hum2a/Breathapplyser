@@ -18,6 +18,7 @@ import { StartTimeButton, EndTimeButton, DatePickerButton, SaveEntryButton, Pick
 import { AlcoholInput, TypeInput, AmountInput, UnitsInput, PriceInput } from '../../../buttons/AddEntryComponents/AddEntryInputs';
 import { CurrencyPicker } from '../../../buttons/AddEntryComponents/AddEntryPickers';
 import { addEntryToFavourites } from '../../../../../backend/app/utils/handles/addToFavourites';
+import { AnimatedButton } from '../../../buttons/AddEntryComponents/AnimatedButton';
 
 const AddEntryScreen = ({ navigation }) => {
   const [drinks, setDrinks] = useState([]);
@@ -355,19 +356,13 @@ const handleCheckLimits = async () => {
   return (
     <ScrollView contentContainerStyle={addStyles.scrollContainer}>
       <Animated.View style={containerStyle}>
-        <Text style={addStyles.title}>Add Entry</Text>
-
+  
         <View style={addStyles.statsContainer}>
           <Text style={addStyles.statText}>Total Drinks: {totalDrinks}</Text>
           <Text style={addStyles.statText}>Units: {totalUnits}</Text>
           <Text style={addStyles.statText}>Spending: {totalSpending}</Text>
         </View>
         
-        {/* <View style={addStyles.favouriteButtonsContainer}>
-          <AddToFavouritesButton onPress={handleAddToFavourites} />
-          <PickFromFavouritesButton onPress={handlePickFromFavourites} />
-        </View>
-         */}
         <AlcoholInput value={alcohol} onChangeText={setAlcohol} />
         <>
           <Picker
@@ -409,15 +404,23 @@ const handleCheckLimits = async () => {
           />
         </View>
 
+        <AnimatedButton
+          title={`Start Time: ${selectedStartTime}`}
+          textStyle={addStyles.timeText}
+          onPress={showStartTimePicker}
+        />  
 
-        <Text style={addStyles.timeText}>{`Start Time: ${selectedStartTime}`}</Text>
-        <StartTimeButton onPress={showStartTimePicker} />
-    
-        <Text style={addStyles.timeText}>{`End Time: ${selectedEndTime}`}</Text>
-        <EndTimeButton onPress={showEndTimePicker} />
+        <AnimatedButton
+            title={`End Time: ${selectedEndTime}`}
+            textStyle={addStyles.timeText}
+            onPress={showEndTimePicker}
+          />  
 
-        <Text style={addStyles.timeText}>{`Date: ${selectedDate}`}</Text>
-        <DatePickerButton onPress={() => setDatePickerVisible(true)} />
+        <AnimatedButton
+          title={`Date: ${moment(selectedDate).format('MMMM Do YYYY')}`}
+          textStyle={addStyles.timeText}
+          onPress={() => setDatePickerVisible(true)}
+        />
 
         <TimePickerModal
           visible={isStartTimePickerVisible}
@@ -454,18 +457,7 @@ const handleCheckLimits = async () => {
         )}
 
         <PickFromFavouritesButton onPress = {handlePickFromFavourites} />
-{/* 
-        <TouchableOpacity style={addStyles.scanButton} onPress={handleBarcodeScan}>
-          <Text style={addStyles.scanButtonText}>Scan Barcode</Text>
-        </TouchableOpacity> */}
 
-        {/* <View style={addStyles.amountSpentContainer}>
-          {currencies.map((currency) => (
-            <Text key={currency.value}>
-              {currency.label}: {amountSpent[currency.value] || 0}
-            </Text>
-          ))}
-        </View> */}
       </Animated.View>
     </ScrollView>
   );

@@ -75,6 +75,7 @@ export const homeStyles = StyleSheet.create({
       color: 'black', // Text color (change as needed)
       fontSize: 18, // Font size (adjust as needed)
       fontWeight: 'bold', // Font weight (adjust as needed)
+      fontFamily: 'Roboto',
     },
     
     chart: {

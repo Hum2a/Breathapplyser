@@ -1,12 +1,14 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, TouchableOpacity, TouchableWithoutFeedback, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SettingStyles as styles } from '../../../styles/SettingStyles/settingStyles';
 import { homeStyles } from '../../../styles/StartUpStyles/homeStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import ProfileWaveAnimation from '../../../animations/profileWave';
 
 const Settings = () => {
   const navigation = useNavigation();
+  const [ playProfileWaveAnimation, setPlayProfileWaveAnimation ] = useState(false); 
 
   const navigateToProfile = () => {
     navigation.navigate('Profile'); // Replace 'Profile' with your actual profile screen name
@@ -27,13 +29,21 @@ const Settings = () => {
   return (
     <SafeAreaView style={styles.fullscreen}>
       <View style={styles.container}>
-        <TouchableOpacity onPress={navigateToProfile} style={styles.row}>
+        {/* <TouchableOpacity onPress={navigateToProfile} style={styles.row}>
           <Text style={styles.text}>Profile</Text>
           <Image
               source={require('../../../../assets/images/person.png')}
               style={homeStyles.smallIcon}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+
+        <TouchableWithoutFeedback onPressIn={() => setPlayProfileWaveAnimation(true)} onPressOut={() => { setPlayProfileWaveAnimation(false); navigateToProfile(); } } style={styles.row}>
+          <View style={styles.row}>
+              <Text style={styles.text}>Profile</Text>
+              <ProfileWaveAnimation play={playProfileWaveAnimation} frameRate={24} />
+          </View>
+        </TouchableWithoutFeedback>
+
 
         <TouchableOpacity onPress={navigateToLimits} style={styles.row}>
           <Text style={styles.text}>Limits</Text>

@@ -5,6 +5,7 @@ import moment from 'moment';
 import { RegisterStyles } from '../../../styles/StartUpStyles/registerStyles';
 import { registerUser } from '../../../../../backend/firebase/database/firebase';
 import { getFirestore } from '@firebase/firestore';
+import LinearGradient from 'react-native-linear-gradient'; // Import LinearGradient
 
 
 const RegisterScreen = ({ navigation }) => {
@@ -76,16 +77,10 @@ const RegisterScreen = ({ navigation }) => {
         secureTextEntry
       />
 
-      <TouchableOpacity 
-        style={RegisterStyles.datePickerButton} 
-        onPress={() => setDatePickerVisible(true)}
-      >
-        <Text style={RegisterStyles.datePickerButtonText}>
-          Select your Date of Birth
-        </Text>
+      <TouchableOpacity onPress={() => setDatePickerVisible(true)} style={RegisterStyles.datePickerButton}>
+        <Text style={RegisterStyles.datePickerButtonText}>Select your Date of Birth</Text>
       </TouchableOpacity>
-      <Text>Date of Birth: {moment(dateOfBirth).format('YYYY-MM-DD')}</Text>
-
+      <Text style={RegisterStyles.dateOfBirthText}>Date of Birth: {moment(dateOfBirth).format('YYYY-MM-DD')}</Text>
 
       {isDatePickerVisible && (
         <DateTimePicker
@@ -93,16 +88,27 @@ const RegisterScreen = ({ navigation }) => {
           mode="date"
           display="default"
           onChange={handleDateChange}
-          maximumDate={new Date()} // Optional: Disallow future dates
+          maximumDate={new Date()} // Disallow future dates
         />
       )}
 
-      <TouchableOpacity onPress={handleRegister}>
-        <Text>Register</Text>
+      {/* Gradient Button for Register */}
+      <TouchableOpacity onPress={handleRegister} style={RegisterStyles.gradientButton}>
+        <LinearGradient
+          colors={['#6dd5ed', '#2193b0']} // Gradient colors
+          style={RegisterStyles.gradientButtonGradient}>
+          <Text style={RegisterStyles.gradientButtonText}>Register</Text>
+        </LinearGradient>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={navigateToBodyStats}>
-        <Text>BodyStats</Text>
+
+      {/* Mock Button for Navigation, style it similarly to the Register button for consistency */}
+      <TouchableOpacity style={RegisterStyles.gradientButton} onPress={navigateToBodyStats}>
+      <LinearGradient
+          colors={['#6dd5ed', '#2193b0']} // Gradient colors
+          style={RegisterStyles.gradientButtonGradient}>
+          <Text style={RegisterStyles.gradientButtonText}>BodyStats</Text>
+        </LinearGradient>
       </TouchableOpacity>
     </View>
   );

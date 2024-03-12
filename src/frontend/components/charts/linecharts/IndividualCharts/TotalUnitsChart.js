@@ -7,7 +7,7 @@ import moment from 'moment';
 import { UserContext } from '../../../../context/UserContext';
 import { chartConfig } from '../chart-handling/chartConfig';
 // import { totalUnitsStyles as styles } from '../../../styles/ChartStyles/totalUnitsStyles';
-import { amountSpentStyles as styles } from '../../../styles/ChartStyles/amountSpentStyles';
+import { totalUnitsStyles as styles } from '../../../styles/ChartStyles/totalUnitsStyles';
 
 const TotalUnitsChart = () => {
   const [totalUnitsValues, setTotalUnitsValues] = useState([]);
@@ -113,7 +113,7 @@ const TotalUnitsChart = () => {
           setSelectedDate2('');
         }}
       />
-
+      <View style={styles.pickersContainer}>
       {/* Picker for the first date */}
       <Picker
         selectedValue={selectedDate}
@@ -140,6 +140,7 @@ const TotalUnitsChart = () => {
           ))}
         </Picker>
       )}
+      </View>
 
       {totalUnitsValues.length > 0 ? (
         <View>
