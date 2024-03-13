@@ -86,7 +86,6 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
     navigation.navigate('EditEntries', { entry }); // Navigate to EditEntryScreen with the entry data
   };
   
-
   const handleDeleteEntry = async (entry) => {
     console.log('DetailedHistoryScreen: Delete Entry:', entry); // Logging the entry to be deleted
     const firestorePath = `${user.uid}/Alcohol Stuff/Entries/${date}/EntryDocs`;
@@ -116,18 +115,43 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
             style={styles.entryItem}
             onLongPress={() => handleLongPressEntry(item)}
           >
-            <Text style={styles.entryText}>Date: {item.date}</Text>
-            <Text style={styles.entryText}>Start Time: {moment(item.start_time).format('HH:mm')}</Text>
-            <Text style={styles.entryText}>End Time: {moment(item.end_time).format('HH:mm')}</Text>
-            <Text style={styles.entryText}>Amount: {item.amount}</Text>
-            <Text style={styles.entryText}>Alcohol: {item.alcohol}</Text>
-            <Text style={styles.entryText}>Units: {item.units}</Text>
-            <Text style={styles.entryText}>Price: {item.price}</Text>
-            <Text style={styles.entryText}>Type: {item.type}</Text>
+            <View style={styles.entryRow}>
+              <Text style={[styles.entryText, styles.entryLabel]}>Date:</Text>
+              <Text style={[styles.entryText, styles.entryValue]}> {item.date}</Text>
+            </View>
+            <View style={styles.entryRow}>
+              <Text style={[styles.entryText, styles.entryLabel]}>Start Time:</Text>
+              <Text style={[styles.entryText, styles.entryValue]}> {moment(item.start_time).format('HH:mm')}</Text>
+            </View>
+            <View style={styles.entryRow}>
+              <Text style={[styles.entryText, styles.entryLabel]}>End Time:</Text>
+              <Text style={[styles.entryText, styles.entryValue]}> {moment(item.end_time).format('HH:mm')}</Text>
+            </View>
+            <View style={styles.entryRow}>
+              <Text style={[styles.entryText, styles.entryLabel]}>Amount:</Text>
+              <Text style={[styles.entryText, styles.entryValue]}> {item.amount}</Text>
+            </View>
+            <View style={styles.entryRow}>
+              <Text style={[styles.entryText, styles.entryLabel]}>Alcohol:</Text>
+              <Text style={[styles.entryText, styles.entryValue]}> {item.alcohol}</Text>
+            </View>
+            <View style={styles.entryRow}>
+              <Text style={[styles.entryText, styles.entryLabel]}>Units:</Text>
+              <Text style={[styles.entryText, styles.entryValue]}> {item.units}</Text>
+            </View>
+            <View style={styles.entryRow}>
+              <Text style={[styles.entryText, styles.entryLabel]}>Price:</Text>
+              <Text style={[styles.entryText, styles.entryValue]}> {item.price}</Text>
+            </View>
+            <View style={styles.entryRow}>
+              <Text style={[styles.entryText, styles.entryLabel]}>Type:</Text>
+              <Text style={[styles.entryText, styles.entryValue]}> {item.type}</Text>
+            </View>
           </TouchableOpacity>
         )}
         keyExtractor={(item, index) => index.toString()}
       />
+
     </View>
   );
 };

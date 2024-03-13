@@ -6,10 +6,11 @@ import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import moment from 'moment';
 
 const getDrunkennessLevel = (bac) => {
+    if (isNaN(bac)) return { simple: "Boring", detailed: "You're just a buzzkill to be completely honest with you" };
     if (bac <= 0.01) return { simple: "Sober", detailed: "You're completely unintoxicated... probably." };
     if (bac <= 0.03) return { simple: "Buzzed", detailed: 'Mild relaxation, slight body warmth, mood elevation.' };
     if (bac <= 0.06) return { simple: "Relaxed", detailed: 'Feelings of well-being, relaxation, lower inhibitions, sensation of warmth, minor impairment of reasoning and memory.' };
-    if (bac <= 0.09) return { simple: "Bit of a liability", detailed: 'Mild impairment of balance, speech, vision, reaction time, and hearing. Euphoria. Judgement and self-control reduced, and caution, reason, and memory impaired.' };
+    if (bac <= 0.09) return { simple: "A Bit of a liability", detailed: 'Mild impairment of balance, speech, vision, reaction time, and hearing. Euphoria. Judgement and self-control reduced, and caution, reason, and memory impaired.' };
     if (bac <= 0.12) return { simple: "Visibly Drunk", detailed: 'Significant impairment of motor coordination and loss of good judgement. Speech may be slurred; balance, vision, reaction time, and hearing will be impaired.' };
     if (bac <= 0.15) return { simple: "Embarassing", detailed: 'Gross motor impairment and lack of physical control. Blurred vision and major loss of balance. Euphoria is reduced and dysphoria (anxiety, restlessness) begins to appear.' };
     if (bac <= 0.19) return { simple: "Sickly", detailed: 'Dysphoria predominates, nausea may appear. The drinker has the appearance of a "sloppy drunk."' };
@@ -21,6 +22,7 @@ const getDrunkennessLevel = (bac) => {
 };
 
 const getTextColor = (bac) => {
+    if (isNaN(bac)) return 'black'
     if (bac <= 0.01) return '#14ABFF'; // Light Blue
     if (bac <= 0.03) return '#00c853'; // Greenish
     if (bac <= 0.06) return '#64dd17'; // Light green
@@ -38,6 +40,7 @@ const DrunkennessLevel = () => {
     const { user } = useContext(UserContext);
     const [currentBAC, setCurrentBAC] = useState(0);
     const [modalVisible, setModalVisible] = useState(false);
+    const [documentExists, setDocumentExists] = useState(false);
 
     const fetchCurrentBAC = async () => {
         const firestore = getFirestore();
@@ -48,8 +51,10 @@ const DrunkennessLevel = () => {
             const docSnap = await getDoc(bacLevelRef);
             if (docSnap.exists()) {
                 setCurrentBAC(docSnap.data().value);
+                setDocumentExists(true); // Set true if document exists
             } else {
                 console.log("No such document!");
+                setDocumentExists(false); // Set false if no document found
             }
         } catch (error) {
             console.error("Error getting document:", error);
@@ -62,6 +67,11 @@ const DrunkennessLevel = () => {
 
         return () => clearInterval(intervalId); // Cleanup on unmount
     }, [user.uid]); // Re-run the effect if user.uid changes
+
+    // Early return null if no document exists
+    if (!documentExists) {
+        return null;
+    }
 
     const level = getDrunkennessLevel(currentBAC);
 

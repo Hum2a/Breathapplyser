@@ -4,6 +4,7 @@ import { LineChart } from 'react-native-chart-kit';
 import { getFirestore, collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { UserContext } from '../../../../context/UserContext';
 import { combinedBacStyles as styles } from '../../../styles/ChartStyles/BACCStyles/bacChartsStyles';
+import moment from 'moment';
 
 const PredictBACDecrease = () => {
   const [predictionData, setPredictionData] = useState(null);
@@ -32,6 +33,7 @@ const PredictBACDecrease = () => {
     const metabolismRate = 0.015;
     let hours = 0;
     const dataPoints = [];
+    const now = moment(); // Current time
 
     while (currentBAC > 0) {
       dataPoints.push(currentBAC.toFixed(4));
@@ -39,19 +41,26 @@ const PredictBACDecrease = () => {
       hours++;
     }
 
-    // Filter out every N-th hour to reduce the number of labels
+    // Generate labels for predicted time (in hours)
     const interval = Math.max(Math.floor(hours / 6), 1);
-    const labels = Array.from({ length: hours }, (_, i) => (i % interval === 0 ? `${i}h` : ''));
+    const predictedLabels = Array.from({ length: hours }, (_, i) => (i % interval === 0 ? `${i}h` : ''));
+
+    // Generate labels for real-world time
+    const realTimeLabels = Array.from({ length: hours }, (_, i) => {
+        const futureTime = now.clone().add(i, 'hours');
+        return i % interval === 0 ? futureTime.format('HH:mm') : '';
+    });
 
     return {
-      labels,
+      predictedLabels,
+      realTimeLabels,
       datasets: [{
         data: dataPoints,
         color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
         strokeWidth: 2
       }]
     };
-  }
+}
 
   const toggleTimeDisplay = () => {
     setIsPredictedTime(!isPredictedTime);
@@ -62,7 +71,10 @@ const PredictBACDecrease = () => {
       <Text style={styles.graphTitle}>{isPredictedTime ? 'Predicted BAC Decrease Over Time' : 'Real-Time BAC Decrease Over Time'}</Text>
       {predictionData && (
         <LineChart
-          data={predictionData}
+            data={{
+                labels: isPredictedTime ? predictionData.predictedLabels : predictionData.realTimeLabels,
+                datasets: predictionData.datasets
+            }}
           width={Dimensions.get('window').width - 16}
           height={220}
           chartConfig={{

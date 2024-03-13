@@ -45,12 +45,13 @@ export const homeStyles = StyleSheet.create({
     position: 'absolute', // Positioning it absolutely to ensure it stays in the center
     justifyContent: 'center',
     alignItems: 'center',
+    top: 80,
     // width: '100%', // Take up the full width to center horizontally
     // height: '100%', // Take up the full height to center vertically
   },
   beer: {
-    width: 200,
-    height: 200,
+    width: 400,
+    height: 400,
   },
     topContainer: {
       flex: 1,
@@ -91,8 +92,8 @@ export const homeStyles = StyleSheet.create({
       backgroundColor: '#fff',
     },
     smallIcon: {
-      width: 50,
-      height: 50,
+      width: 70,
+      height: 70,
       backgroundColor: 'transparent',
     },
     statsAndAchievementsContainer: {
@@ -143,9 +144,15 @@ export const homeStyles = StyleSheet.create({
       left: 0,
       right: 0,
       backgroundColor: 'transparent', // Optional: Makes the background of the container transparent
-      padding: 10, // Adds some padding inside the container
+      padding: 1, // Adds some padding inside the container
     },
     buttonRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-around', // This will distribute space evenly around each button
+      alignItems: 'center',
+      marginBottom: 10, // Adds a margin at the bottom if needed
+    },
+    buttonRow2: {
       flexDirection: 'row',
       justifyContent: 'space-around', // This will distribute space evenly around each button
       alignItems: 'center',
