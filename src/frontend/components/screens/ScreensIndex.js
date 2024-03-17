@@ -5,6 +5,7 @@ export { default as BubbleStartScreen } from './startUpScreens/BubbleStartScreen
 export { default as StartScreen } from './startUpScreens/StartScreen';
 export { default as RegisterScreen } from './startUpScreens/register_screens/RegisterScreen';
 export { default as BodyStatsScreen } from './startUpScreens/register_screens/BodyStats';
+export { default as BodyLimitsScreen } from './startUpScreens/register_screens/BodyLimits';
 export { default as HomeScreen } from './frontendScreens/HomeScreen';
 
 // Drinking
@@ -31,6 +32,7 @@ export { default as SettingsScreen } from './frontendScreens/UsersAndSettingsScr
 export { default as ProfileScreen } from './frontendScreens/UsersAndSettingsScreens/Profile';
 export { default as LimitsScreen } from './frontendScreens/UsersAndSettingsScreens/Limits';
 export { default as NotificationManagerScreen } from './frontendScreens/UsersAndSettingsScreens/NotificationsManager';
+export { default as DataManagerScreen } from './frontendScreens/UsersAndSettingsScreens/DataManager';
 
 // Charts
 export { default as ChartsScreen } from './frontendScreens/ChartsScreens/OmniChartManager';

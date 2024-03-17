@@ -4,10 +4,11 @@ import { Text, View, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 import { UserContext } from '../../../../frontend/context/UserContext';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import moment from 'moment';
+import PushNotification from 'react-native-push-notification';
 
 const getDrunkennessLevel = (bac) => {
-    if (isNaN(bac)) return { simple: "Boring", detailed: "You're just a buzzkill to be completely honest with you" };
-    if (bac <= 0.01) return { simple: "Sober", detailed: "You're completely unintoxicated... probably." };
+    let adjustedBac = isNaN(bac) ? 0 : bac;
+    if (adjustedBac <= 0.01) return { simple: "Sober", detailed: "You're completely unintoxicated... probably." };
     if (bac <= 0.03) return { simple: "Buzzed", detailed: 'Mild relaxation, slight body warmth, mood elevation.' };
     if (bac <= 0.06) return { simple: "Relaxed", detailed: 'Feelings of well-being, relaxation, lower inhibitions, sensation of warmth, minor impairment of reasoning and memory.' };
     if (bac <= 0.09) return { simple: "A Bit of a liability", detailed: 'Mild impairment of balance, speech, vision, reaction time, and hearing. Euphoria. Judgement and self-control reduced, and caution, reason, and memory impaired.' };
@@ -42,36 +43,55 @@ const DrunkennessLevel = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [documentExists, setDocumentExists] = useState(false);
 
-    const fetchCurrentBAC = async () => {
-        const firestore = getFirestore();
-        const todayStr = moment().format('YYYY-MM-DD');
-        const bacLevelRef = doc(firestore, user.uid, "Daily Totals", "BAC Level", todayStr);
+    useEffect(() => {
+        if (user) { // Ensure there's a user before fetching BAC
+            const fetchCurrentBAC = async () => {
+                const firestore = getFirestore();
+                const todayStr = moment().format('YYYY-MM-DD');
+                const bacLevelRef = doc(firestore, user.uid, "Daily Totals", "BAC Level", todayStr);
 
-        try {
-            const docSnap = await getDoc(bacLevelRef);
-            if (docSnap.exists()) {
-                setCurrentBAC(docSnap.data().value);
-                setDocumentExists(true); // Set true if document exists
-            } else {
-                console.log("No such document!");
-                setDocumentExists(false); // Set false if no document found
-            }
-        } catch (error) {
-            console.error("Error getting document:", error);
+                try {
+                    const docSnap = await getDoc(bacLevelRef);
+                    if (docSnap.exists() && !isNaN(docSnap.data().value)) {
+                        setCurrentBAC(docSnap.data().value);
+                    } else {
+                        setCurrentBAC(0); // Treat as 0 if NaN or document doesn't exist
+                    }
+                    setDocumentExists(docSnap.exists());
+                } catch (error) {
+                    console.error("Error getting document:", error);
+                    setCurrentBAC(0); // Treat as 0 if error occurs
+                    setDocumentExists(false);
+                }
+            };
+
+            fetchCurrentBAC();
+            const intervalId = setInterval(fetchCurrentBAC, 10000); // Refresh every 10 seconds
+
+            return () => clearInterval(intervalId); // Cleanup on unmount
+        } else {
+            // Handle case when there's no user
+            setCurrentBAC(0);
+            setDocumentExists(false);
         }
-    };
+    }, [user?.uid]); // Now dependent on user existence and user.uid
 
     useEffect(() => {
-        fetchCurrentBAC();
-        const intervalId = setInterval(fetchCurrentBAC, 10000); // Refresh every 10 seconds
-
-        return () => clearInterval(intervalId); // Cleanup on unmount
-    }, [user.uid]); // Re-run the effect if user.uid changes
-
-    // Early return null if no document exists
-    if (!documentExists) {
-        return null;
-    }
+        if (documentExists) {
+            const level = getDrunkennessLevel(currentBAC);
+            // Logging to see if we reach this point and what the level details are
+            console.log("Triggering notification with level:", level);
+    
+            PushNotification.localNotification({
+                channelId: "drunkenness-level-channel",
+                title: "Drunkenness Level Update",
+                message: `You are currently: ${level.simple}`,
+                bigText: level.detailed,
+                color: getTextColor(currentBAC),
+            });
+        }
+    }, [currentBAC, documentExists]); // This useEffect depends on currentBAC and documentExists
+    
 
     const level = getDrunkennessLevel(currentBAC);
 

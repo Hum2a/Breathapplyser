@@ -6,7 +6,7 @@ import { getFirestore, doc, setDoc, updateDoc } from 'firebase/firestore';
 import moment from 'moment';
 import { UserContext } from '../../../../context/UserContext';
 
-const BodyStats = ({ route }) => {
+const BodyStats = ({ route, navigation }) => {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [heightUnit, setHeightUnit] = useState('cm'); // Default unit for height
@@ -32,8 +32,6 @@ const BodyStats = ({ route }) => {
     const profileDoc = {
       height,
       weight,
-      heightUnit,
-      weightUnit,
       age,
       sex,
       bmi,
@@ -46,7 +44,7 @@ const BodyStats = ({ route }) => {
     updateDoc(docRef, profileDoc)
     .then(() => {
       console.log('Profile updated successfully');
-      navigateToHome(); // Navigate to the home screen upon success
+      navigateToLimits(); // Navigate to the home screen upon success
     })
     .catch(error => {
       console.error('Error updating profile:', error);
@@ -56,16 +54,20 @@ const BodyStats = ({ route }) => {
   const handleClearProfile = () => {
     setHeight('');
     setWeight('');
-    setHeightUnit('cm'); // Reset height unit to default
-    setWeightUnit('kg'); // Reset weight unit to default
+    // setHeightUnit('cm'); // Reset height unit to default
+    // setWeightUnit('kg'); // Reset weight unit to default
     setAge('');
-    setSex('male');
+    setSex('');
     setBMI('');
   };
 
   const navigateToHome = () => {
     navigation.navigate('Home');
   };
+
+  const navigateToLimits = () => {
+    navigation.navigate('BodyLimits');
+  }
 
   return (
     <View style={profStyles.container}>
@@ -131,9 +133,9 @@ const BodyStats = ({ route }) => {
       <TouchableOpacity style={profStyles.clearButton} onPress={handleClearProfile}>
         <Text style={profStyles.clearButtonText}>Clear Information</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={profStyles.clearButton} onPress={navigateToHome}>
+      {/* <TouchableOpacity style={profStyles.clearButton} onPress={navigateToHome}>
         <Text style={profStyles.clearButtonText}>Home Screen</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };

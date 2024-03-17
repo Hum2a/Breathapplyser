@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, TouchableWithoutFeedback, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, Image, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, Alert } from 'react-native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import { SettingStyles as styles } from '../../../styles/SettingStyles/settingStyles';
 import { homeStyles } from '../../../styles/StartUpStyles/homeStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProfileWaveAnimation from '../../../animations/profileWave';
+import { useUser } from '../../../../context/UserContext';
 
 const Settings = () => {
   const navigation = useNavigation();
+  const { logout } = useUser(); // Use the logout function from UserContext
   const [ playProfileWaveAnimation, setPlayProfileWaveAnimation ] = useState(false); 
 
   const navigateToProfile = () => {
@@ -26,16 +28,35 @@ const Settings = () => {
     navigation.navigate('NotificationManger'); // Replace 'Notifications' with your actual notifications screen name
   };
 
+  const navigateToData = () => {
+    navigation.navigate('DataManager');
+  }
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to log out?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Logout", onPress: () => {
+            logout(); // Call your logout function from the UserContext
+            // Use CommonActions.reset to clear the navigation stack and navigate to the initial screen
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: 'Start' }], // Replace 'InitialScreenName' with the name of your initial screen
+              })
+            );
+          }
+        }
+      ]
+    );
+  };
+
   return (
     <SafeAreaView style={styles.fullscreen}>
       <View style={styles.container}>
-        {/* <TouchableOpacity onPress={navigateToProfile} style={styles.row}>
-          <Text style={styles.text}>Profile</Text>
-          <Image
-              source={require('../../../../assets/images/person.png')}
-              style={homeStyles.smallIcon}
-          />
-        </TouchableOpacity> */}
 
         <TouchableWithoutFeedback onPressIn={() => setPlayProfileWaveAnimation(true)} onPressOut={() => { setPlayProfileWaveAnimation(false); navigateToProfile(); } } style={styles.row}>
           <View style={styles.row}>
@@ -67,6 +88,22 @@ const Settings = () => {
               source={require('../../../../assets/images/notification.png')}
               style={homeStyles.smallIcon}
               />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={navigateToData} style={styles.row}>
+          <Text style={styles.text}>Data</Text>
+          <Image
+              source={require('../../../../assets/images/file.png')}
+              style={homeStyles.smallIcon}
+              />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={handleLogout} style={styles.row}>
+          <Text style={styles.text}>Logout</Text>
+          <Image
+            source={require('../../../../assets/images/logout.png')} // Update this path to your actual logout icon
+            style={homeStyles.smallIcon}
+          />
         </TouchableOpacity>
       </View>
     </SafeAreaView>

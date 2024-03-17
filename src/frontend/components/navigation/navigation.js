@@ -16,12 +16,14 @@ import {
   LoginScreen,
   RegisterScreen,
   BodyStatsScreen,
+  BodyLimitsScreen,
   FavouritesScreen,
   PickFavouritesScreen,
   AddFavouritesScreen,
   EditFavouritesScreen,
   FavouriteListScreen,
   NotificationManagerScreen,
+  DataManagerScreen,
   GetStartedScreen,
   TodaysStatsScreen,
   AllStatsScreen,
@@ -66,12 +68,14 @@ const AppNavigation = () => {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="BodyStats" component={BodyStatsScreen} />
+        <Stack.Screen name='BodyLimits' component={BodyLimitsScreen} />
         <Stack.Screen name="Favourites" component={FavouritesScreen} />
         <Stack.Screen name="PickFavourites" component={PickFavouritesScreen} />
         <Stack.Screen name="AddFavourite" component={AddFavouritesScreen} />
         <Stack.Screen name="EditFavourite" component={EditFavouritesScreen} />
         <Stack.Screen name="FavouriteList" component={FavouriteListScreen} />
         <Stack.Screen name="NotificationManger" component={NotificationManagerScreen} />
+        <Stack.Screen name="DataManager" component={DataManagerScreen} />
         <Stack.Screen name="GetStarted" component={GetStartedScreen} />
         <Stack.Screen name="TodaysStats" component={TodaysStatsScreen} />
         <Stack.Screen name="AllStats" component={AllStatsScreen} />

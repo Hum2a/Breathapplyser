@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setLogLevel } from 'firebase/firestore';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'; // Import signOut
+import { getFirestore, doc, getDoc, setLogLevel, deleteDoc } from 'firebase/firestore'; // Ensure deleteDoc is imported if you're using it
 import { app, auth } from '../../backend/firebase/database/firebase';
 
 export const UserContext = createContext(null);
@@ -49,6 +49,17 @@ export const UserProvider = ({ children }) => {
     return unsubscribe; // Unsubscribe on unmount
   }, []);
 
+  const logout = async () => {
+    try {
+      await signOut(auth); // Sign out from Firebase Authentication
+      setUser(null); // Set user state to null
+      await AsyncStorage.removeItem('userData'); // Optionally clear stored user data if you are using AsyncStorage
+      console.log('UserContext.js: User signed out successfully');
+    } catch (error) {
+      console.error('UserContext.js: Error signing out', error);
+    }
+  };
+
   const storeUserData = async (userData) => {
     console.log('UserContext.js: Attempting to store user data:', userData);
     if (user) {
@@ -86,10 +97,11 @@ export const UserProvider = ({ children }) => {
   
 
   return (
-    <UserContext.Provider value={{ user, setUser, storeUserData, clearUserData }}>
+    <UserContext.Provider value={{ user, setUser, storeUserData, clearUserData, logout }}>
       {children}
     </UserContext.Provider>
   );
 };
+
 
 export const useUser = () => useContext(UserContext);

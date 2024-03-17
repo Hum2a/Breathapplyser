@@ -9,10 +9,10 @@ import LinearGradient from 'react-native-linear-gradient'; // Import LinearGradi
 
 
 const RegisterScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [username, setUsername] = useState('tester');
+  const [email, setEmail] = useState('test@test.test');
+  const [password, setPassword] = useState('tester');
+  const [confirmPassword, setConfirmPassword] = useState('tester');
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
   const firestore = getFirestore();
@@ -101,15 +101,6 @@ const RegisterScreen = ({ navigation }) => {
         </LinearGradient>
       </TouchableOpacity>
 
-
-      {/* Mock Button for Navigation, style it similarly to the Register button for consistency */}
-      <TouchableOpacity style={RegisterStyles.gradientButton} onPress={navigateToBodyStats}>
-      <LinearGradient
-          colors={['#6dd5ed', '#2193b0']} // Gradient colors
-          style={RegisterStyles.gradientButtonGradient}>
-          <Text style={RegisterStyles.gradientButtonText}>BodyStats</Text>
-        </LinearGradient>
-      </TouchableOpacity>
     </View>
   );
 };
