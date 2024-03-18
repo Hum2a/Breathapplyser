@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { DetailedHistoryStyles as styles } from '../../../styles/HistoryStyles/detailedHistoryStyles';
-import { collection, query, where, getDocs, getFirestore, Timestamp, doc, deleteDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, getFirestore, Timestamp, doc, deleteDoc, getDoc, setDoc } from 'firebase/firestore';
 import moment from 'moment';
 import AllCharts from '../../../charts/linecharts/IndividualCharts';
 import { UserContext } from '../../../../context/UserContext';
@@ -87,23 +87,51 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
   };
   
   const handleDeleteEntry = async (entry) => {
-    console.log('DetailedHistoryScreen: Delete Entry:', entry); // Logging the entry to be deleted
-    const firestorePath = `${user.uid}/Alcohol Stuff/Entries/${date}/EntryDocs`;
-    console.log('Firestore Path for Deletion:', firestorePath); // Logging Firestore Path for deletion
+    console.log('DetailedHistoryScreen: Delete Entry:', entry);
+    // Assuming 'date' is in the format 'YYYY-MM-DD'
+    const entryDateFormatted = moment(entry.date, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD');
+    const firestorePathEntries = `${user.uid}/Alcohol Stuff/Entries/${entryDateFormatted}/EntryDocs`;
   
     try {
-      const entryRef = doc(firestore, firestorePath, entry.id);
-      await deleteDoc(entryRef);
+      // Delete the entry
+      await deleteDoc(doc(firestore, firestorePathEntries, entry.id));
+  
+      // Adjust the daily totals
+      const dailyTotalsPath = `${user.uid}/Daily Totals`;
+      const amountSpentDocRef = doc(firestore, dailyTotalsPath, "Amount Spent", entryDateFormatted);
+      const unitsIntakeDocRef = doc(firestore, dailyTotalsPath, "Unit Intake", entryDateFormatted);
+      const bacLevelDocRef = doc(firestore, dailyTotalsPath, "BAC Level", entryDateFormatted);
+  
+      // Fetch current totals
+      const [amountSpentDoc, unitsIntakeDoc, bacLevelDoc] = await Promise.all([
+        getDoc(amountSpentDocRef),
+        getDoc(unitsIntakeDocRef),
+        getDoc(bacLevelDocRef),
+      ]);
+  
+      // Subtract the values from the deleted entry
+      const updatedAmountSpent = amountSpentDoc.exists() ? amountSpentDoc.data().value - entry.price * entry.amount : 0;
+      const updatedUnitsIntake = unitsIntakeDoc.exists() ? unitsIntakeDoc.data().value - entry.units * entry.amount : 0;
+      const updatedBACLevel = bacLevelDoc.exists() ? bacLevelDoc.data().value - entry.BACIncrease : 0;
+  
+      // Update the daily totals
+      await Promise.all([
+        setDoc(amountSpentDocRef, { value: updatedAmountSpent }, { merge: true }),
+        setDoc(unitsIntakeDocRef, { value: updatedUnitsIntake }, { merge: true }),
+        setDoc(bacLevelDocRef, { value: updatedBACLevel }, { merge: true }),
+      ]);
+  
+      // Update the UI
+      setEntries(previousEntries => previousEntries.filter(e => e.id !== entry.id));
+      Alert.alert("Entry Deleted", "The entry and its impact on daily totals have been successfully removed.");
     } catch (error) {
-      console.error('Detailed error during deletion:', error);
-      if (error instanceof TypeError) {
-        console.error('TypeError details:', {
-          message: error.message,
-          stack: error.stack,
-        });
-      }
+      console.error("Error deleting entry or updating totals: ", error);
+      Alert.alert("Error", "Could not delete the entry or update the daily totals.");
     }
   };
+  
+  
+  
 
   return (
     <View style={styles.container}>
