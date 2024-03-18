@@ -7,6 +7,7 @@ import { appStyles } from '../../styles/AppStyles/appStyles';
 import StatsScreen from './StatsScreens/TodaysStats';
 import BACDecrease from '../../../../backend/app/background/BAC/bacDecreaser';
 import DrunkennessLevel from '../../../../backend/app/background/Drunkness/drunknessCalculator';
+import BacWiper from '../../../../backend/app/background/BAC/bacWiper';
 import { getFirestore, deleteDoc, doc, collection, query, getDocs, getDoc } from 'firebase/firestore';
 import { UserContext } from '../../../context/UserContext';
 import RecentDrinks from './DrinkingScreens/RecentDrinks';
@@ -126,6 +127,7 @@ const HomeScreen = () => {
         <BeerAnimation frameRate={24} play={playBeerAnimation} />
         <Text style={homeStyles.buttonText}>Tap to Start Drinking</Text>
         <DrunkennessLevel />
+        <BacWiper />
       </TouchableOpacity>
 
         <View style={homeStyles.bottomContainer}>

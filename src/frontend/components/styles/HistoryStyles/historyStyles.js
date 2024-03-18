@@ -49,6 +49,11 @@ export const HistoryStyles = StyleSheet.create({
     color: '#0277bd', // Light blue theme color
     fontWeight: 'bold',
   },
+  calendarIcon: {
+    width: 50,
+    height: 50,
+    alignSelf: 'center',
+  }
 });
 
 export default HistoryStyles;

@@ -10,31 +10,31 @@ const getDrunkennessLevel = (bac) => {
     let adjustedBac = isNaN(bac) ? 0 : bac;
     if (adjustedBac <= 0.01) return { simple: "Sober", detailed: "You're completely unintoxicated... probably." };
     if (bac <= 0.03) return { simple: "Buzzed", detailed: 'Mild relaxation, slight body warmth, mood elevation.' };
-    if (bac <= 0.06) return { simple: "Relaxed", detailed: 'Feelings of well-being, relaxation, lower inhibitions, sensation of warmth, minor impairment of reasoning and memory.' };
-    if (bac <= 0.09) return { simple: "A Bit of a liability", detailed: 'Mild impairment of balance, speech, vision, reaction time, and hearing. Euphoria. Judgement and self-control reduced, and caution, reason, and memory impaired.' };
-    if (bac <= 0.12) return { simple: "Visibly Drunk", detailed: 'Significant impairment of motor coordination and loss of good judgement. Speech may be slurred; balance, vision, reaction time, and hearing will be impaired.' };
-    if (bac <= 0.15) return { simple: "Embarassing", detailed: 'Gross motor impairment and lack of physical control. Blurred vision and major loss of balance. Euphoria is reduced and dysphoria (anxiety, restlessness) begins to appear.' };
-    if (bac <= 0.19) return { simple: "Sickly", detailed: 'Dysphoria predominates, nausea may appear. The drinker has the appearance of a "sloppy drunk."' };
-    if (bac <= 0.24) return { simple: "Take a seat bro", detailed: 'Feeling dazed, confused, or otherwise disoriented. May need help to stand or walk. If injured, may not feel the pain. Nausea and vomiting are possible.' };
-    if (bac <= 0.29) return { simple: "Find a friend", detailed: 'Severe intoxication, needs assistance in walking; total mental confusion. Dysphoria with nausea and some vomiting.' };
-    if (bac <= 0.34) return { simple: "Gonna Pass out", detailed: 'Loss of consciousness. The risk of death due to respiratory arrest is possible.' };
-    if (bac <= 0.39) return { simple: "Call and Ambulance", detailed: 'This BAC level is comparable to surgical anesthesia and is considered a very life-threatening level of alcohol intoxication.' }
-    if (bac > 0.39) return { simple: "Critical", detailed: "Onset of coma, and likelihood of death due to respiratory arrest." };
+    if (bac <= 0.10) return { simple: "Relaxed", detailed: 'Feelings of well-being, relaxation, lower inhibitions, sensation of warmth, minor impairment of reasoning and memory.' };
+    if (bac <= 0.15) return { simple: "A Bit of a liability", detailed: 'Mild impairment of balance, speech, vision, reaction time, and hearing. Euphoria. Judgement and self-control reduced, and caution, reason, and memory impaired.' };
+    if (bac <= 0.20) return { simple: "Visibly Drunk", detailed: 'Significant impairment of motor coordination and loss of good judgement. Speech may be slurred; balance, vision, reaction time, and hearing will be impaired.' };
+    if (bac <= 0.25) return { simple: "Embarassing", detailed: 'Gross motor impairment and lack of physical control. Blurred vision and major loss of balance. Euphoria is reduced and dysphoria (anxiety, restlessness) begins to appear.' };
+    if (bac <= 0.30) return { simple: "Sickly", detailed: 'Dysphoria predominates, nausea may appear. The drinker has the appearance of a "sloppy drunk."' };
+    if (bac <= 0.35) return { simple: "Take a seat bro", detailed: 'Feeling dazed, confused, or otherwise disoriented. May need help to stand or walk. If injured, may not feel the pain. Nausea and vomiting are possible.' };
+    if (bac <= 0.40) return { simple: "Find a friend", detailed: 'Severe intoxication, needs assistance in walking; total mental confusion. Dysphoria with nausea and some vomiting.' };
+    if (bac <= 0.45) return { simple: "Gonna Pass out", detailed: 'Loss of consciousness. The risk of death due to respiratory arrest is possible.' };
+    if (bac <= 0.50) return { simple: "Call and Ambulance", detailed: 'This BAC level is comparable to surgical anesthesia and is considered a very life-threatening level of alcohol intoxication.' }
+    if (bac > 0.50) return { simple: "Critical", detailed: "Onset of coma, and likelihood of death due to respiratory arrest." };
 };
 
 const getTextColor = (bac) => {
     if (isNaN(bac)) return 'black'
     if (bac <= 0.01) return '#14ABFF'; // Light Blue
-    if (bac <= 0.03) return '#00c853'; // Greenish
-    if (bac <= 0.06) return '#64dd17'; // Light green
-    if (bac <= 0.09) return '#aeea00'; // Lime
-    if (bac <= 0.12) return '#ffd600'; // Yellow
-    if (bac <= 0.15) return '#ffab00'; // Amber
-    if (bac <= 0.19) return '#ff6d00'; // Orange
-    if (bac <= 0.24) return '#dd2c00'; // Deep orange
-    if (bac <= 0.29) return '#d50000'; // Red
-    if (bac <= 0.34) return '#c51162'; // Pink
-    if (bac > 0.34) return '#b71c1c'; // Crimson
+    if (bac <= 0.10) return '#00c853'; // Greenish
+    if (bac <= 0.15) return '#64dd17'; // Light green
+    if (bac <= 0.20) return '#aeea00'; // Lime
+    if (bac <= 0.25) return '#ffd600'; // Yellow
+    if (bac <= 0.30) return '#ffab00'; // Amber
+    if (bac <= 0.35) return '#ff6d00'; // Orange
+    if (bac <= 0.40) return '#dd2c00'; // Deep orange
+    if (bac <= 0.45) return '#d50000'; // Red
+    if (bac <= 0.50) return '#c51162'; // Pink
+    if (bac > 0.50) return '#b71c1c'; // Crimson
 };
 
 const DrunkennessLevel = () => {

@@ -113,10 +113,10 @@ const HistoryScreen = ({ navigation }) => {
         <TouchableOpacity onPress={() => handleCalenderClick()}>
           <Image
             source={require('./../../../../assets/images/calendar.png')}
-            style={homeStyles.smallIcon}
+            style={styles.calendarIcon}
             />
         </TouchableOpacity>
-        <Text style={styles.title}>History</Text>
+        {/* <Text style={styles.title}>History</Text> */}
         <FlatList
           data={dates}
           renderItem={({ item }) => (
