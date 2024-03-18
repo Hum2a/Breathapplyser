@@ -5,7 +5,7 @@ import { UserContext } from '../../../../context/UserContext';
 import moment from 'moment';
 import { Calendar } from 'react-native-calendars';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
-import { appStyles } from '../../../styles/appStyles';
+import { appStyles } from '../../../styles/AppStyles/appStyles';
 
 const HistoryCalendar = ({ navigation }) => {
   const [dates, setDates] = useState([]); // Dates with entries

@@ -25,7 +25,7 @@ const StartScreen = ({ navigation }) => {
 
       <TouchableOpacity onPress={navigateToLogin}>
         <LinearGradient
-          colors={['#ff6e7f', '#bfe9ff']} // Adjust the colors to fit your theme
+          colors={['#6AE2B8', '#bfe9ff']} // Adjust the colors to fit your theme
           style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </LinearGradient>

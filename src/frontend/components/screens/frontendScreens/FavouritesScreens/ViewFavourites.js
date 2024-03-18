@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View, SafeAreaView } from 'react-native';
 import { UserContext } from '../../../../context/UserContext';
 import FavouriteList from './FavouritesList';
 import { AddNewFavouritesButton } from '../../../buttons/FavoutitesComponents/FavouritesButtons';
-import { appStyles } from '../../../styles/appStyles';
+import { appStyles } from '../../../styles/AppStyles/appStyles';
 import { favouriteStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
 
 const FavouritesScreen = ({ navigation }) => {
@@ -15,10 +15,10 @@ const FavouritesScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={favouriteStyles.container}>
-      <AddNewFavouritesButton onPress={navigateToAddFavorite}/>
-      <FavouriteList user={user} navigation={navigation} />
-    </View>
+      <View style={favouriteStyles.container}>
+        <AddNewFavouritesButton onPress={navigateToAddFavorite}/>
+        <FavouriteList user={user} navigation={navigation} />
+      </View>
   );
 };
 

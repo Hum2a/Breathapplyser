@@ -36,6 +36,19 @@ export const HistoryStyles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
   },
+  weekHeader: {
+    // Style for week header
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: '#f0faff', // Light blue background
+    borderBottomWidth: 1,
+    borderBottomColor: '#d6d7da', // Faint line color
+  },
+  weekHeaderText: {
+    // Style for week header text
+    color: '#0277bd', // Light blue theme color
+    fontWeight: 'bold',
+  },
 });
 
 export default HistoryStyles;

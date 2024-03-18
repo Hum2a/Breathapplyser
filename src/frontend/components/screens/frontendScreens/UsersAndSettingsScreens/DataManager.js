@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, StyleSheet, Image } from 'react-native';
 import { auth, firestore } from '../../../../../backend/firebase/database/firebase';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { useUser } from '../../../../context/UserContext';
@@ -69,6 +69,10 @@ const DataManagerScreen = ({ navigation }) => {
           </View>
           <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
             <Text style={styles.deleteButtonText}>Delete Account</Text>
+            <Image
+              source={require('../../../../assets/images/bin.png')}
+              style={styles.binIcon}
+              />
           </TouchableOpacity>
         </View>
       ) : (
@@ -111,7 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   deleteButton: {
-    backgroundColor: '#029be5',
+    backgroundColor: '#FF0000',
     borderRadius: 25,
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -120,13 +124,20 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   noDataText: {
     color: '#0277bd',
     fontSize: 18,
   },
+  binIcon: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'transparent',
+    alignSelf: 'center',
+    margin: 5,
+  }
 });
 
 export default DataManagerScreen;

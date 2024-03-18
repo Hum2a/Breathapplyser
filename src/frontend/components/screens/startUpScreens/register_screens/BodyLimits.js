@@ -6,7 +6,7 @@ import { UserContext } from '../../../../context/UserContext';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const BodyLimitsScreen = ({ Navigation }) => {
+const BodyLimitsScreen = ({ navigation }) => {
   const { user } = useContext(UserContext);
   const [spendingLimit, setSpendingLimit] = useState(0);
   const [drinkingLimit, setDrinkingLimit] = useState(0);
@@ -41,7 +41,7 @@ const BodyLimitsScreen = ({ Navigation }) => {
       try {
         await setDoc(docRef, { spendingLimit, drinkingLimit });
         console.log('Limits saved successfully');
-        Navigation.navigate('Home');
+        navigation.navigate('Home');
       } catch (error) {
         console.error('Error saving Limits:', error);
       }

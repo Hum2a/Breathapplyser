@@ -3,7 +3,7 @@ import { View, Image, TouchableOpacity, Text, SafeAreaView, TouchableWithoutFeed
 import Video from 'react-native-video';
 import { useNavigation } from '@react-navigation/native';
 import { homeStyles } from '../../styles/StartUpStyles/homeStyles';
-import { appStyles } from '../../styles/appStyles';
+import { appStyles } from '../../styles/AppStyles/appStyles';
 import StatsScreen from './StatsScreens/TodaysStats';
 import BACDecrease from '../../../../backend/app/background/BAC/bacDecreaser';
 import DrunkennessLevel from '../../../../backend/app/background/Drunkness/drunknessCalculator';
@@ -147,26 +147,6 @@ const HomeScreen = () => {
                 style={homeStyles.smallIcon}
               />
             </TouchableOpacity>
-
-            {/* <TouchableWithoutFeedback onPressIn={() => setPlayStarAnimation(true)} onPressOut={() => { setPlayStarAnimation(false); NavigateToFavourites(); }}>
-                <View style={homeStyles.buttonContainer}>
-                    <StarAnimation play={playStarAnimation} frameRate={24} />
-                </View>
-            </TouchableWithoutFeedback>
-
-            <TouchableOpacity style={homeStyles.buttonContainer} onPress={NavigateToAllStats}>
-              <Image
-                source={require('../../../assets/images/stats.png')}
-                style={homeStyles.smallIcon}
-              />
-             </TouchableOpacity>
-
-            <TouchableOpacity style={homeStyles.buttonContainer} onPress={NavigateToCurrentNight}>
-              <Image
-                source={require('../../../assets/images/discoball.png')}
-                style={homeStyles.smallIcon}
-              />
-            </TouchableOpacity> */}
 
           </View>
           <View style={homeStyles.buttonRow}>

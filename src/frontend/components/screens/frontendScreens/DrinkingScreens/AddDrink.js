@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Animated, Easing, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Animated, Easing, ScrollView, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
@@ -19,6 +19,8 @@ import { AlcoholInput, TypeInput, AmountInput, UnitsInput, PriceInput } from '..
 import { CurrencyPicker } from '../../../buttons/AddEntryComponents/AddEntryPickers';
 import { addEntryToFavourites } from '../../../../../backend/app/utils/handles/addToFavourites';
 import { AnimatedButton } from '../../../buttons/AddEntryComponents/AnimatedButton';
+import Dialog from 'react-native-dialog';
+import { dialogStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
 
 const AddEntryScreen = ({ navigation }) => {
   const [drinks, setDrinks] = useState([]);
@@ -42,69 +44,13 @@ const AddEntryScreen = ({ navigation }) => {
   const { shakeAnimation, runShakeAnimation } = useShakeAnimation();
   const { colorAnimation, runColourFlashAnimation } = useColourFlashAnimation();
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
+  const [isFavouriteDialogVisible, setIsFavouriteDialogVisible] = useState(false)
+  const [isSaveEntryDialogVisible, setIsSaveEntryDialogVisible] = useState(false);
+  const [saveEntryDialogMessage, setSaveEntryDialogMessage] = useState("");
+
   const firestore = getFirestore();
 
   const { user } = useContext(UserContext);
-
-
-const handleStartTimeConfirm = (time) => {
-  const formattedTime = moment(time).format('HH:mm');
-  const combinedDateTime = moment(`${selectedDate} ${formattedTime}`);
-  if (isFutureTime(combinedDateTime)) {
-    runShakeAnimation();
-    runColourFlashAnimation();
-    alert("Future times are not allowed.");
-    return;
-  }
-  setSelectedStartTime(formattedTime);
-  hideStartTimePicker();
-};
-
-const handleEndTimeConfirm = (time) => {
-  const formattedTime = moment(time).format('HH:mm');
-  const combinedDateTime = moment(`${selectedDate} ${formattedTime}`);
-  if (isFutureTime(combinedDateTime)) {
-    runShakeAnimation();
-    runColourFlashAnimation();
-    alert("Future times are not allowed.");
-    return;
-  }
-  setSelectedEndTime(formattedTime);
-  hideEndTimePicker();
-};
-
-
-  const handleDateChange = (event, selectedDate) => {
-    setDatePickerVisible(false); // Hide the date picker
-
-    const currentDate = selectedDate || new Date(); // Use selected date or current date
-    if (currentDate > new Date()) {
-      // If the selected date is in the future, show an alert and do not update the date
-      Alert.alert("Invalid Date", "Future dates are not allowed.");
-      return;
-    }
-    setSelectedDate(currentDate); // Update the selected date
-  };
-
-  const handleAddToFavourites = () => {
-    const drinkData = {
-      alcohol,
-      amount,
-      price,
-      type,
-      units,
-    };
-  
-    addEntryToFavourites(user, drinkData); // Pass the user object and drink data to addToFavorites
-  };
-
-  const handlePickFromFavourites = () => {
-    navigation.navigate('PickFavourites', { navigation }); // Pass navigation as a parameter
-  };
-
-  const handleBarcodeScan = () => {
-    navigation.navigate('BarcodeScan'); // Navigate to BarcodeScan screen
-  };
 
   useEffect(() => {
     console.log("useEffect called");
@@ -180,11 +126,79 @@ const handleEndTimeConfirm = (time) => {
     }
   }, [selectedDate, user]);
 
+    useEffect(() => {
+      updateFieldsFilledStatus();
+    }, [alcohol, amount, units, price, selectedStartTime, selectedEndTime]);
+
+
+  const handleStartTimeConfirm = (time) => {
+    const formattedTime = moment(time).format('HH:mm');
+    const combinedDateTime = moment(`${selectedDate} ${formattedTime}`);
+    if (isFutureTime(combinedDateTime)) {
+      runShakeAnimation();
+      runColourFlashAnimation();
+      alert("Future times are not allowed.");
+      return;
+    }
+    setSelectedStartTime(formattedTime);
+    hideStartTimePicker();
+  };
+
+  const handleEndTimeConfirm = (time) => {
+    const formattedTime = moment(time).format('HH:mm');
+    const combinedDateTime = moment(`${selectedDate} ${formattedTime}`);
+    if (isFutureTime(combinedDateTime)) {
+      runShakeAnimation();
+      runColourFlashAnimation();
+      alert("Future times are not allowed.");
+      return;
+    }
+    setSelectedEndTime(formattedTime);
+    hideEndTimePicker();
+  };
+
+
+  const handleDateChange = (event, selectedDate) => {
+    setDatePickerVisible(false); // Hide the date picker
+
+    const currentDate = selectedDate || new Date(); // Use selected date or current date
+    if (currentDate > new Date()) {
+      // If the selected date is in the future, show an alert and do not update the date
+      Alert.alert("Invalid Date", "Future dates are not allowed.");
+      return;
+    }
+    setSelectedDate(currentDate); // Update the selected date
+  };
+
+  const handleAddToFavourites = () => {
+    const drinkData = {
+      alcohol,
+      amount,
+      price,
+      type,
+      units,
+    };
+  
+    addEntryToFavourites(user, drinkData); // Pass the user object and drink data to addToFavorites
+  
+    // Show the dialog
+    setIsFavouriteDialogVisible(true);
+  };
+  
+
+  const handlePickFromFavourites = () => {
+    navigation.navigate('PickFavourites', { navigation }); // Pass navigation as a parameter
+  };
+
+  const handleBarcodeScan = () => {
+    navigation.navigate('BarcodeScan'); // Navigate to BarcodeScan screen
+  };
+
+
   const handleSaveEntry = async () => {
-    console.log("handleSaveEntry called");
-    console.log("Current state:", { amount, units, price, alcohol, type, selectedStartTime, selectedEndTime,});
     if (!validateAmount(amount) || !validateUnits(units) || !validatePrice(price)) {
-      alert('Please enter valid values for Amount, Units, and Price.');
+      setSaveEntryDialogMessage('Please enter valid values for Amount, Units, and Price.');
+      setIsSaveEntryDialogVisible(true);
       return;
     }
   
@@ -217,11 +231,6 @@ const handleEndTimeConfirm = (time) => {
       const BACIncrease = calculateBACIncrease(units, userProfile);
       entryDetails.BACIncrease = BACIncrease;
     }
-  
-    // Now you can use entryDetailsArray for further processing or outside of the loop
-  
-    // For example, you can access the first entryDetails like this:
-    console.log("First entryDetails:", entryDetailsArray[0]);
   
     // Update total amounts for the day
     const selectedDateStr = moment(selectedDate).format('YYYY-MM-DD');
@@ -257,54 +266,57 @@ const handleEndTimeConfirm = (time) => {
     const selectedCurrencyAmountSpent = amount * price;
     const updatedAmountSpent = { ...amountSpent, [selectedCurrency]: selectedCurrencyAmountSpent };
     setAmountSpent(updatedAmountSpent);
-  
+
+    setSaveEntryDialogMessage('Entry Added');
+    setIsSaveEntryDialogVisible(true);
     navigation.navigate('Home');
   };
-const handleCheckLimits = async () => {
-  console.log("handleCheckLimits called");
 
-  if (!user) {
-    console.error("User data is not available");
-    return;
-  }
+  const handleCheckLimits = async () => {
+    console.log("handleCheckLimits called");
 
-  const selectedDateStr = moment(selectedDate).format('YYYY-MM-DD'); // Format the date as 'YYYY-MM-DD'
-
-  // Fetch entries from Firestore for the specific date
-  const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", selectedDateStr, "EntryDocs");
-  try {
-    const entriesSnapshot = await getDocs(entriesRef);
-    const entriesData = entriesSnapshot.docs.map(doc => doc.data());
-
-    // Fetch user Limits from Firestore
-    const LimitsRef = doc(firestore, user.uid, "Limits");
-    const LimitsSnapshot = await getDoc(LimitsRef);
-    if (!LimitsSnapshot.exists()) {
-      console.error("No Limits document found!");
+    if (!user) {
+      console.error("User data is not available");
       return;
     }
-    const { spendingLimit, drinkingLimit } = LimitsSnapshot.data();
 
-    // Calculate total drinks, units, and spending for the specific date
-    const totalDrinks = entriesData.reduce((total, entry) => total + parseFloat(entry.amount), 0);
-    const totalUnits = entriesData.reduce((total, entry) => total + parseInt(entry.units), 0);
-    const totalSpending = entriesData.reduce((total, entry) => total + (parseFloat(entry.price) * parseFloat(entry.amount)), 0);
+    const selectedDateStr = moment(selectedDate).format('YYYY-MM-DD'); // Format the date as 'YYYY-MM-DD'
 
-    setTotalDrinks(totalDrinks);
-    setTotalUnits(totalUnits);
-    setTotalSpending(totalSpending);
+    // Fetch entries from Firestore for the specific date
+    const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", selectedDateStr, "EntryDocs");
+    try {
+      const entriesSnapshot = await getDocs(entriesRef);
+      const entriesData = entriesSnapshot.docs.map(doc => doc.data());
 
-    // Check against limits from Firestore
-    if (totalSpending > spendingLimit) {
-      sendNotification('Spending Limit Reached', 'You have exceeded your spending limit.');
+      // Fetch user Limits from Firestore
+      const LimitsRef = doc(firestore, user.uid, "Limits");
+      const LimitsSnapshot = await getDoc(LimitsRef);
+      if (!LimitsSnapshot.exists()) {
+        console.error("No Limits document found!");
+        return;
+      }
+      const { spendingLimit, drinkingLimit } = LimitsSnapshot.data();
+
+      // Calculate total drinks, units, and spending for the specific date
+      const totalDrinks = entriesData.reduce((total, entry) => total + parseFloat(entry.amount), 0);
+      const totalUnits = entriesData.reduce((total, entry) => total + parseInt(entry.units), 0);
+      const totalSpending = entriesData.reduce((total, entry) => total + (parseFloat(entry.price) * parseFloat(entry.amount)), 0);
+
+      setTotalDrinks(totalDrinks);
+      setTotalUnits(totalUnits);
+      setTotalSpending(totalSpending);
+
+      // Check against limits from Firestore
+      if (totalSpending > spendingLimit) {
+        sendNotification('Spending Limit Reached', 'You have exceeded your spending limit.');
+      }
+      if (totalDrinks > drinkingLimit) {
+        sendNotification('Drinking Limit Reached', 'You have reached your drinking limit.');
+      }
+    } catch (error) {
+      console.error("Error fetching entries or limits:", error);
     }
-    if (totalDrinks > drinkingLimit) {
-      sendNotification('Drinking Limit Reached', 'You have reached your drinking limit.');
-    }
-  } catch (error) {
-    console.error("Error fetching entries or limits:", error);
-  }
-};
+  };
 
 
   const showStartTimePicker = () => {
@@ -336,12 +348,6 @@ const handleCheckLimits = async () => {
     }
   };
 
-   // Use the useEffect hook to listen for changes in input fields
-   useEffect(() => {
-    updateFieldsFilledStatus();
-  }, [alcohol, amount, units, price, selectedStartTime, selectedEndTime]);
-
-
   const containerStyle = {
     ...addStyles.container,
     transform: [{ translateX: shakeAnimation }],
@@ -350,6 +356,7 @@ const handleCheckLimits = async () => {
       outputRange: ['white', 'red'], // Change 'white' to your default background color
     }),
   };
+
   const drinkTypes = ['Spirit', 'Beer', 'Lager', 'Wine', 'Liquers', 'Cocktail'];
 
 
@@ -459,6 +466,33 @@ const handleCheckLimits = async () => {
         <PickFromFavouritesButton onPress = {handlePickFromFavourites} />
 
       </Animated.View>
+
+      {/* Save Entry Dialogue */}
+
+      <Dialog.Container visible={isSaveEntryDialogVisible}>
+        <Dialog.Title style={dialogStyles.title}>{saveEntryDialogMessage.includes('Error') ? "Error" : "Success"}</Dialog.Title>
+        <Dialog.Description style={dialogStyles.description}>
+          {saveEntryDialogMessage}
+        </Dialog.Description>
+        <Dialog.Button style={dialogStyles.buttonLabel} label="OK" onPress={() => setIsSaveEntryDialogVisible(false)} />
+      </Dialog.Container>
+
+      {/* Favourite Dialogue  */}
+
+      <Dialog.Container 
+        visible={isFavouriteDialogVisible}
+        contentStyle={{
+          backgroundColor: 'black', // Light Blue background; solid color as gradient is not directly supported
+          borderRadius: 10,
+        }}
+        >
+        <Dialog.Title style={dialogStyles.title}>Success</Dialog.Title>
+        <Dialog.Description style={dialogStyles.description}>
+          Added to favourites.
+        </Dialog.Description>
+        <Dialog.Button style={dialogStyles.buttonLabel} label="OK" onPress={() => setIsFavouriteDialogVisible(false)} />
+      </Dialog.Container>
+
     </ScrollView>
   );
 };

@@ -5,7 +5,7 @@ import { UserContext } from '../../../../context/UserContext';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import moment from 'moment';
 import { homeStyles } from '../../../styles/StartUpStyles/homeStyles';
-import { appStyles } from '../../../styles/appStyles';
+import { appStyles } from '../../../styles/AppStyles/appStyles';
 
 const HistoryScreen = ({ navigation }) => {
   const [dates, setDates] = useState([]); // Dates with entries

@@ -26,7 +26,7 @@ const SpinningCog = () => {
   return (
     <View style={styles.container}>
       <Animated.Image
-        source={require('../../assets/images/gear.png')} // Replace with the correct path
+        source={require('../../assets/images/cog.png')} // Replace with the correct path
         style={[styles.cog, { transform: [{ rotate: spin }] }]}
       />
     </View>

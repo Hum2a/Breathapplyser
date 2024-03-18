@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import moment from 'moment';
 import { Picker } from '@react-native-picker/picker';
 import { profStyles } from '../../../styles/SettingStyles/profileStyles';
-import { appStyles } from '../../../styles/appStyles';
+import { appStyles } from '../../../styles/AppStyles/appStyles';
 import { UserContext } from '../../../../context/UserContext';
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 import { SafeAreaView } from 'react-native-safe-area-context';

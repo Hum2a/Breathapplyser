@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, ScrollView, Dimensions } from 'react-native';
-import { favouriteStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
+import { View, Text, FlatList, TouchableOpacity, Alert, ScrollView, Dimensions, Image, SafeAreaView } from 'react-native';
+import { favouriteStyles, dialogStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
 import { getFirestore, collection, getDocs, doc, deleteDoc, setDoc } from 'firebase/firestore';
 import moment from 'moment';
 import Svg, { Polygon } from 'react-native-svg';
+import Dialog from 'react-native-dialog';
 
 const FavouriteList = ({ user, navigation }) => {
   const [Favourites, setFavourites] = useState([]);
   const firestore = getFirestore();
   const { width, height } = Dimensions.get('window');
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [selectedFavouriteId, setSelectedFavouriteId] = useState(null);
 
   useEffect(() => {
     const fetchFavourites = async () => {
@@ -28,59 +31,94 @@ const FavouriteList = ({ user, navigation }) => {
     }
   }, [user]);
 
-  const handleDeleteFavourite = async (FavouriteId) => {
-    try {
-      await deleteDoc(doc(firestore, user.uid, "Alcohol Stuff", "Favourites", FavouriteId));
-      setFavourites(Favourites.filter(favourite => favourite.id !== FavouriteId));
-    } catch (error) {
-      console.error('Error deleting favourite:', error);
-      Alert.alert('Error', 'Could not delete favourite.');
-    }
+  // const handleDeleteFavourite = async (FavouriteId) => {
+  //   Alert.alert(
+  //     "Delete Favourite",
+  //     "Are you sure you want to delete this favourite?",
+  //     [
+  //       {
+  //         text: "Cancel",
+  //         style: "cancel"
+  //       },
+  //       { text: "Yes", onPress: async () => {
+  //           try {
+  //             await deleteDoc(doc(firestore, user.uid, "Alcohol Stuff", "Favourites", FavouriteId));
+  //             setFavourites(Favourites.filter(favourite => favourite.id !== FavouriteId));
+  //             Alert.alert('Deleted', 'The favourite has been successfully deleted.');
+  //           } catch (error) {
+  //             console.error('Error deleting favourite:', error);
+  //             Alert.alert('Error', 'Could not delete favourite.');
+  //           }
+  //         } 
+  //       }
+  //     ]
+  //   );
+  // };
+
+  const showDeleteDialog = (FavouriteId) => {
+    setSelectedFavouriteId(FavouriteId);
+    setDialogVisible(true);
   };
 
-  const renderSquareItem = ({ item }) => (
-    <TouchableOpacity
-      style={favouriteStyles.container}
-      onPress={() => navigation.navigate('EditFavourite', { favorite: item })}
-    >
-      <View style={favouriteStyles.infoContainer}>
-        <Text style={favouriteStyles.categoryText}>Drink: </Text>
-        <Text style={favouriteStyles.detailsText}>{item.Alcohol}</Text>
-      </View>
+  const handleConfirmDelete = async () => {
+    if (selectedFavouriteId) {
+      try {
+        await deleteDoc(doc(firestore, user.uid, "Alcohol Stuff", "Favourites", selectedFavouriteId));
+        setFavourites(Favourites.filter(favourite => favourite.id !== selectedFavouriteId));
+        Alert.alert('Deleted', 'The favourite has been successfully deleted.');
+      } catch (error) {
+        console.error('Error deleting favourite:', error);
+        Alert.alert('Error', 'Could not delete favourite.');
+      }
+    }
+    setDialogVisible(false);
+    setSelectedFavouriteId(null);
+  };
+  
 
-      <View style={favouriteStyles.infoContainer}>
-        <Text style={favouriteStyles.categoryText}>Amount: </Text>
-        <Text style={favouriteStyles.detailsText}>{item.Amount}</Text>
-      </View>
+  // const renderSquareItem = ({ item }) => (
+  //   <TouchableOpacity
+  //     style={favouriteStyles.container}
+  //     onPress={() => navigation.navigate('EditFavourite', { favorite: item })}
+  //   >
+  //     <View style={favouriteStyles.infoContainer}>
+  //       <Text style={favouriteStyles.categoryText}>Drink: </Text>
+  //       <Text style={favouriteStyles.detailsText}>{item.Alcohol}</Text>
+  //     </View>
 
-      <View style={favouriteStyles.infoContainer}>
-        <Text style={favouriteStyles.categoryText}>Price: </Text>
-        <Text style={favouriteStyles.detailsText}>{item.Price}</Text>
-      </View>
+  //     <View style={favouriteStyles.infoContainer}>
+  //       <Text style={favouriteStyles.categoryText}>Amount: </Text>
+  //       <Text style={favouriteStyles.detailsText}>{item.Amount}</Text>
+  //     </View>
 
-      <View style={favouriteStyles.infoContainer}>
-        <Text style={favouriteStyles.categoryText}>Type: </Text>
-        <Text style={favouriteStyles.detailsText}>{item.Type}</Text>
-      </View>
+  //     <View style={favouriteStyles.infoContainer}>
+  //       <Text style={favouriteStyles.categoryText}>Price: </Text>
+  //       <Text style={favouriteStyles.detailsText}>{item.Price}</Text>
+  //     </View>
 
-      <View style={favouriteStyles.infoContainer}>
-        <Text style={favouriteStyles.categoryText}>Units: </Text>
-        <Text style={favouriteStyles.detailsText}>{item.Units}</Text>
-      </View>
+  //     <View style={favouriteStyles.infoContainer}>
+  //       <Text style={favouriteStyles.categoryText}>Type: </Text>
+  //       <Text style={favouriteStyles.detailsText}>{item.Type}</Text>
+  //     </View>
 
-      <TouchableOpacity
-        style={favouriteStyles.deleteButton}
-        onPress={() => handleDeleteFavourite(item.id)}
-      >
-        <Text style={favouriteStyles.deleteButtonText}>Delete</Text>
-      </TouchableOpacity>
-    </TouchableOpacity>
+  //     <View style={favouriteStyles.infoContainer}>
+  //       <Text style={favouriteStyles.categoryText}>Units: </Text>
+  //       <Text style={favouriteStyles.detailsText}>{item.Units}</Text>
+  //     </View>
+
+  //     <TouchableOpacity
+  //       style={favouriteStyles.deleteButton}
+  //       onPress={() => handleDeleteFavourite(item.id)}
+  //     >
+  //       <Text style={favouriteStyles.deleteButtonText}>Delete</Text>
+  //     </TouchableOpacity>
+  //   </TouchableOpacity>
     
-  );
+  // );
 
   const renderItem = ({ item, navigation }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('EditFavourite', { favorite: item })} style={{ alignItems: 'center', marginBottom: 20 }}>
-      <View style={{ position: 'relative' }}>
+    <TouchableOpacity onPress={() => navigation.navigate('EditFavourite', { favorite: item })} style={ favouriteStyles.flatlistContainer }>
+      <View style={ favouriteStyles.starView }>
         <Svg height='350' width='350' viewBox="0 0 100 100">
           <Polygon
             points="50,0 61,35 98,35 67,57 76,91 50,70 24,91 33,57 2,35 39,35"
@@ -97,9 +135,13 @@ const FavouriteList = ({ user, navigation }) => {
           <Text style={favouriteStyles.detailsText}>Units: {item.Units}</Text>
           <TouchableOpacity
             style={favouriteStyles.deleteButton}
-            onPress={() => handleDeleteFavourite(item.id)}
+            onPress={() => showDeleteDialog(item.id)}
           >
-            <Text style={favouriteStyles.deleteButtonText}>Delete</Text>
+            {/* <Text style={favouriteStyles.deleteButtonText}>Delete</Text> */}
+            <Image
+              source={require('../../../../assets/images/bin.png')}
+              style={favouriteStyles.binIcon}
+              />
           </TouchableOpacity>
         </View>
       </View>
@@ -108,11 +150,37 @@ const FavouriteList = ({ user, navigation }) => {
   
 
   return (
+    <View style={favouriteStyles.fullscreen}>
       <FlatList
         data={Favourites}
         renderItem={({ item }) => renderItem({ item, navigation })}
         keyExtractor={(item) => item.id}
       />
+
+      <Dialog.Container 
+        visible={dialogVisible} 
+        contentStyle={{
+          backgroundColor: 'black', // Light Blue background; solid color as gradient is not directly supported
+          borderRadius: 10,
+        }}
+        >
+        <Dialog.Title style={dialogStyles.title}>Delete Favourite</Dialog.Title>
+        <Dialog.Description style={dialogStyles.description}>
+          Are you sure you want to delete this favourite?
+        </Dialog.Description>
+        <Dialog.Button
+          label="Cancel"
+          onPress={() => setDialogVisible(false)}
+          style={[dialogStyles.buttonLabel, dialogStyles.cancelButton]}
+        />
+        <Dialog.Button
+          label="Delete"
+          onPress={handleConfirmDelete}
+          style={[dialogStyles.buttonLabel, dialogStyles.deleteButton]}
+        />
+      </Dialog.Container>
+
+    </View>
   );
 };
 

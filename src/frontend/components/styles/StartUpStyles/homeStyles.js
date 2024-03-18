@@ -50,8 +50,8 @@ export const homeStyles = StyleSheet.create({
     // height: '100%', // Take up the full height to center vertically
   },
   beer: {
-    width: 400,
-    height: 400,
+    width: 350,
+    height: 350,
   },
     topContainer: {
       flex: 1,
