@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { addStyles } from '../../../styles/DrinkingStyles/addStyles';
+import { favouriteStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
 import { addNewFavourite } from '../../../../../backend/app/utils/handles/addToFavourites';
 import { UserContext } from '../../../../context/UserContext';
 
@@ -80,7 +81,12 @@ const AddNewFavouriteScreen = ({ navigation }) => {
         onChangeText={setPrice}
       />
 
-      <Button title="Add Favorite" onPress={handleAddFavourite} />
+<TouchableOpacity 
+        style={favouriteStyles.addNewFavouriteButton}
+        onPress={handleAddFavourite}
+        >
+        <Text style={favouriteStyles.addNewFavouriteButtonText}> Save Changes </Text>
+        </TouchableOpacity>
     </View>
   );
 };

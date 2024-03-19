@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, Button, Alert } from 'react-native';
+import { View, Text, TextInput, Button, Alert, TouchableOpacity } from 'react-native';
 import { editStyles } from '../../../styles/HistoryStyles/editStyles';
+import { favouriteStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
 import { updateDoc, doc, getFirestore } from 'firebase/firestore';
 import { UserContext } from '../../../../context/UserContext';
 
@@ -72,7 +73,12 @@ const EditFavourite = ({ route, navigation }) => {
         value={editedUnitsValue}
         onChangeText={(text) => setEditedUnitsValue(text)}
       />
-      <Button title="Save Changes" onPress={handleSaveChanges} />
+      <TouchableOpacity 
+        style={favouriteStyles.addNewFavouriteButton}
+        onPress={handleSaveChanges}
+        >
+        <Text style={favouriteStyles.addNewFavouriteButtonText}> Save Changes </Text>
+        </TouchableOpacity>
     </View>
   );
 };
