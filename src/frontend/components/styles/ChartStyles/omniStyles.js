@@ -41,8 +41,8 @@ export const omniStyles = StyleSheet.create({
       paddingVertical: 10,
     },
     smallIcon: {
-      width: 30, // Specify icon size
-      height: 30, // Specify icon size
+      width: 60, // Specify icon size
+      height: 60, // Specify icon size
       resizeMode: 'contain', // Ensure the entire icon is visible and proportionate
     },
 });

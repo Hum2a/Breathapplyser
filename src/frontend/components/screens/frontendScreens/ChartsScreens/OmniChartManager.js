@@ -20,26 +20,30 @@ const ChartsScreen = ({ navigation }) => {
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigateToChart('UnitsCharts')}>
         <Text style={styles.buttonText}>Units Charts</Text>
+        <Image
+          source={require('../../../../assets/images/units.png')}
+          style={styles.smallIcon}
+          />
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigateToChart('AmountSpentCharts')}>
         <Text style={styles.buttonText}>Amount Spent Charts</Text>
         <Image
               source={require('../../../../assets/images/wallet.png')}
-              style={homeStyles.smallIcon}
+              style={styles.smallIcon}
             />
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigateToChart('TypesCharts')}>
         <Text style={styles.buttonText}>Types Charts</Text>
         <Image
-              source={require('../../../../assets/images/wine_bottle.png')}
-              style={homeStyles.smallIcon}
+              source={require('../../../../assets/images/bottle.png')}
+              style={styles.smallIcon}
             />
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigateToChart('NamesCharts')}>
         <Text style={styles.buttonText}>Names Charts</Text>
         <Image
               source={require('../../../../assets/images/writing.png')}
-              style={homeStyles.smallIcon}
+              style={styles.smallIcon}
             />
       </TouchableOpacity>
     </View>

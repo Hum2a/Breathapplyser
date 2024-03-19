@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignSelf: 'center',
     marginTop: 20,
+    elevation: 5,
   },
   deleteButtonText: {
     color: 'white',

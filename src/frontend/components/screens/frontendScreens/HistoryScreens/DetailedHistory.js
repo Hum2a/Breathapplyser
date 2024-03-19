@@ -129,9 +129,6 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
       Alert.alert("Error", "Could not delete the entry or update the daily totals.");
     }
   };
-  
-  
-  
 
   return (
     <View style={styles.container}>

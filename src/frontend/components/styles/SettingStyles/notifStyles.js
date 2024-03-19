@@ -11,6 +11,7 @@ export const notifStyles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 16,
     color: "#003366", // Darker shade of blue for headers
+    alignSelf: 'center',
   },
   notificationItem: {
     flexDirection: "row",

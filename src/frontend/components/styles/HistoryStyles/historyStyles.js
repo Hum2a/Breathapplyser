@@ -22,12 +22,22 @@ export const HistoryStyles = StyleSheet.create({
     borderWidth: 1,
   },
   historyItem: {
-    backgroundColor: '#92DDFE',
-    borderRadius: 8,
-    padding: 20,
-    margin: 10,
-    alignItems: 'center',
-  },
+    backgroundColor: '#92DDFE', // Light blue background
+    borderRadius: 8, // Rounded corners
+    borderWidth: 1.5, // Border width
+    borderColor: '#E9FAA6', // Yellowish-green border color
+    padding: 20, // Padding inside the item
+    margin: 10, // Margin around the item
+    alignItems: 'center', // Center items horizontally
+    // iOS shadow properties
+    shadowColor: '#000', // Black color for the shadow
+    shadowOffset: { width: 0, height: 2 }, // Shadow position
+    shadowOpacity: 0.25, // Shadow opacity
+    shadowRadius: 3.84, // Shadow blur radius
+    // Android elevation
+    elevation: 5, // Depth effect for Android
+},
+
   dateText: {
     fontSize: 18,
     fontWeight: 'bold',

@@ -18,6 +18,8 @@ export const profStyles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: 16,
+    fontWeight: 'bold',
+    alignSelf: 'center',
     marginBottom: 5,
     color: '#003366', // Dark blue for input labels
   },

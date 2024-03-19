@@ -9,6 +9,7 @@ const BACDecrease = ({ user, updateCount }) => {
 
   const BACDecreaseRatePerHour = 0.015; // Original decrease rate per hour
   const BACDecreaseRatePerSecond = BACDecreaseRatePerHour / 3600; // Convert to per second
+  const RefreshTimer = 600000
 
   useEffect(() => {
     if (!user) return;
@@ -66,7 +67,7 @@ const BACDecrease = ({ user, updateCount }) => {
       } else {
         console.log("BACDecrease: No BAC level document found for recent days");
       }
-    }, 10000); 
+    }, RefreshTimer); 
 
     return () => clearInterval(decreaseBAC);
   }, [user, selectedDate]);
