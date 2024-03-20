@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Image } from 'react-native';
-import { homeStyles } from '../styles/StartUpStyles/homeStyles';
 import FastImage from 'react-native-fast-image';
+import { SettingStyles } from '../styles/SettingStyles/settingStyles';
 
 // Pre-filled array with the required frame images
 const frames = [
@@ -70,7 +69,7 @@ const ProfileWaveAnimation = ({ frameRate, play, onComplete }) => {
   return (
     <FastImage
       source={frames[currentFrame]}
-      style={homeStyles.smallIcon}
+      style={SettingStyles.icon}
     />
   );
 };

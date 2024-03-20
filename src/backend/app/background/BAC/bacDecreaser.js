@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import moment from 'moment';
+import { refreshIntervalValue } from '../../../../frontend/components/screens/frontendScreens/UsersAndSettingsScreens/Statics/BACDecreaseRefreshPicker';
 
 const BACDecrease = ({ user, updateCount }) => {
   console.log("BACDecrease: Component Rendered");
@@ -9,7 +10,42 @@ const BACDecrease = ({ user, updateCount }) => {
 
   const BACDecreaseRatePerHour = 0.015; // Original decrease rate per hour
   const BACDecreaseRatePerSecond = BACDecreaseRatePerHour / 3600; // Convert to per second
-  const RefreshTimer = 600000
+  const [RefreshTimer, setRefreshTimer] = useState(10000);
+
+  useEffect(() => {
+    const fetchRefreshInterval = async () => {
+      const firestore = getFirestore();
+      const userUid = user.uid;
+      const refreshIntervalRef = doc(firestore, userUid, 'BAC Refresh Rate');
+
+      try {
+        const refreshIntervalDoc = await getDoc(refreshIntervalRef);
+        if (refreshIntervalDoc.exists()) {
+          const data = refreshIntervalDoc.data();
+          setRefreshTimer(data.refreshInterval);
+        } else {
+          console.log("BAC Refresh Rate document does not exist.");
+        }
+      } catch (error) {
+        console.error("Error fetching BAC Refresh Rate:", error);
+      }
+    };
+
+    if (user) {
+      fetchRefreshInterval();
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchInterval = setInterval(() => {
+      fetchRefreshInterval(); // Fetch refresh interval every minute
+    }, 60000);
+
+    return () => clearInterval(fetchInterval);
+  }, [user]);
+
 
   useEffect(() => {
     if (!user) return;

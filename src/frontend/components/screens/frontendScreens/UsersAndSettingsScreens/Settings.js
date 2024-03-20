@@ -29,7 +29,10 @@ const Settings = () => {
 
   const navigateToData = () => {
     navigation.navigate('DataManager');
-  }
+  };
+  const navigateToStatic = () => {
+    navigation.navigate('StaticVariables');
+  };
 
   const handleLogout = () => {
     Alert.alert(
@@ -54,57 +57,47 @@ const Settings = () => {
   };
 
   return (
-    <SafeAreaView style={styles.fullscreen}>
-      <View style={styles.container}>
-
-        <TouchableWithoutFeedback onPressIn={() => setPlayProfileWaveAnimation(true)} onPressOut={() => { setPlayProfileWaveAnimation(false); navigateToProfile(); } } style={styles.row}>
-          <View style={styles.row}>
+    <SafeAreaView style={styles.container}>
+        <TouchableWithoutFeedback
+         onPressIn={() => setPlayProfileWaveAnimation(true)}
+         onPressOut={() => { setPlayProfileWaveAnimation(false); navigateToProfile(); } }
+         style={styles.item}>
+          <View style={styles.item}>
               <Text style={styles.text}>Profile</Text>
               <ProfileWaveAnimation play={playProfileWaveAnimation} frameRate={24} />
           </View>
         </TouchableWithoutFeedback>
 
 
-        <TouchableOpacity onPress={navigateToLimits} style={styles.row}>
+        <TouchableOpacity onPress={navigateToLimits} style={styles.item}>
           <Text style={styles.text}>Limits</Text>
-          <Image
-              source={require('../../../../assets/images/goku_screaming.png')}
-              style={styles.smallIcon}
-              />
-        </TouchableOpacity>
+          <Image source={require('../../../../assets/images/goku_screaming.png')} style={styles.icon} />
+      </TouchableOpacity>
 
-        <TouchableOpacity onPress={navigateToThemes} style={styles.row}>
-          <Text style={styles.text}>Themes</Text>
-          <Image
-              source={require('../../../../assets/images/themes.png')}
-              style={styles.smallIcon}
-              />
-        </TouchableOpacity>
+      <TouchableOpacity onPress={navigateToStatic} style={styles.item}>
+        <Text style={styles.text}>Static</Text>
+        <Image source={require('../../../../assets/images/timer.png')} style={styles.icon} />
+      </TouchableOpacity>
 
-        <TouchableOpacity onPress={navigateToNotifications} style={styles.row}>
-          <Text style={styles.text}>Notifications</Text>
-          <Image
-              source={require('../../../../assets/images/notification.png')}
-              style={styles.smallIcon}
-              />
-        </TouchableOpacity>
+      <TouchableOpacity onPress={navigateToThemes} style={styles.item}>
+        <Text style={styles.text}>Themes</Text>
+        <Image source={require('../../../../assets/images/themes.png')} style={styles.icon} />
+      </TouchableOpacity>
 
-        <TouchableOpacity onPress={navigateToData} style={styles.row}>
-          <Text style={styles.text}>Data</Text>
-          <Image
-              source={require('../../../../assets/images/file.png')}
-              style={styles.fileManagerIcon}
-              />
-        </TouchableOpacity>
+      <TouchableOpacity onPress={navigateToNotifications} style={styles.item}>
+        <Text style={styles.text}>Notifications</Text>
+        <Image source={require('../../../../assets/images/notification.png')} style={styles.icon} />
+      </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleLogout} style={styles.row}>
-          <Text style={styles.text}>Logout</Text>
-          <Image
-            source={require('../../../../assets/images/logout.png')} // Update this path to your actual logout icon
-            style={styles.smallIcon}
-          />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={navigateToData} style={styles.item}>
+        <Text style={styles.text}>Data</Text>
+        <Image source={require('../../../../assets/images/file.png')} style={styles.fileManagerIcon} />
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={handleLogout} style={styles.item}>
+        <Text style={styles.text}>Logout</Text>
+        <Image source={require('../../../../assets/images/logout.png')} style={styles.icon} />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

@@ -3,8 +3,25 @@ import { StyleSheet } from "react-native";
 export const SettingStyles = StyleSheet.create({
     container: {
       flex: 1,
-    //   backgroundColor: 'white',
-      padding: 16,
+      backgroundColor: '#BAEAFF',
+      paddingVertical: 20,
+      paddingHorizontal: 15,
+    },
+    item: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      borderBottomWidth: 1,
+      borderBottomColor: '#ccc',
+      paddingVertical: 15,
+    },
+    text: {
+      fontSize: 18,
+      color: '#333',
+    },
+    icon: {
+      width: 30,
+      height: 30,
     },
     fullscreen: {
         flex: 1,
@@ -27,8 +44,8 @@ export const SettingStyles = StyleSheet.create({
       backgroundColor: 'transparent',
     },
     fileManagerIcon: {
-      width: 100,
-      height: 65,
+      width: 40,
+      height: 30,
       backgroundColor: 'transparent',
     },
   });
