@@ -6,7 +6,7 @@ import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import moment from 'moment';
 import PushNotification from 'react-native-push-notification';
 
-const getDrunkennessLevel = (bac) => {
+export const getDrunkennessLevel = (bac) => {
     let adjustedBac = isNaN(bac) ? 0 : bac;
     if (adjustedBac <= 0.01) return { simple: "Sober", detailed: "You're completely unintoxicated... probably." };
     if (bac <= 0.03) return { simple: "Buzzed", detailed: 'Mild relaxation, slight body warmth, mood elevation.' };
@@ -15,11 +15,11 @@ const getDrunkennessLevel = (bac) => {
     if (bac <= 0.20) return { simple: "Visibly Drunk", detailed: 'Significant impairment of motor coordination and loss of good judgement. Speech may be slurred; balance, vision, reaction time, and hearing will be impaired.' };
     if (bac <= 0.25) return { simple: "Embarassing", detailed: 'Gross motor impairment and lack of physical control. Blurred vision and major loss of balance. Euphoria is reduced and dysphoria (anxiety, restlessness) begins to appear.' };
     if (bac <= 0.30) return { simple: "Sickly", detailed: 'Dysphoria predominates, nausea may appear. The drinker has the appearance of a "sloppy drunk."' };
-    if (bac <= 0.35) return { simple: "Take a seat bro", detailed: 'Feeling dazed, confused, or otherwise disoriented. May need help to stand or walk. If injured, may not feel the pain. Nausea and vomiting are possible.' };
+    if (bac <= 0.35) return { simple: "Either pull or go home", detailed: 'Feeling dazed, confused, or otherwise disoriented. May need help to stand or walk. If injured, may not feel the pain. Nausea and vomiting are possible.' };
     if (bac <= 0.40) return { simple: "Find a friend", detailed: 'Severe intoxication, needs assistance in walking; total mental confusion. Dysphoria with nausea and some vomiting.' };
     if (bac <= 0.45) return { simple: "Gonna Pass out", detailed: 'Loss of consciousness. The risk of death due to respiratory arrest is possible.' };
     if (bac <= 0.50) return { simple: "Call and Ambulance", detailed: 'This BAC level is comparable to surgical anesthesia and is considered a very life-threatening level of alcohol intoxication.' }
-    if (bac > 0.50) return { simple: "Critical", detailed: "Onset of coma, and likelihood of death due to respiratory arrest." };
+    if (bac > 0.50) return { simple: "Death is coming", detailed: "Onset of coma, and likelihood of death due to respiratory arrest." };
 };
 
 const getTextColor = (bac) => {

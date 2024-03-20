@@ -107,6 +107,10 @@ export const editEntryStyles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  dateTimeText: {
+    top: 9,
+    color: '#003366', // Dark blue text for readability
+  },
   button: {
     backgroundColor: '#007AFF', // Vibrant blue for buttons
     paddingVertical: 12,

@@ -18,6 +18,13 @@ const ChartsScreen = ({ navigation }) => {
               style={styles.smallIcon}
             />
       </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => navigateToChart('DrunkCharts')}>
+        <Text style={styles.buttonText}>Drunkenness Charts</Text>
+        <Image
+              source={require('../../../../assets/images/puke.png')}
+              style={styles.smallIcon}
+            />
+      </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigateToChart('UnitsCharts')}>
         <Text style={styles.buttonText}>Units Charts</Text>
         <Image

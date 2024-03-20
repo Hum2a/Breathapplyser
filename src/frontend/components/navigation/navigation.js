@@ -36,6 +36,7 @@ import {
   AmountSpentChartsScreen,
   NamesCharts,
   TypesCharts,
+  DrunknessCharts,
   Rankings,
   SpentRankingsScreen,
   UnitRankingsScreen,
@@ -88,6 +89,7 @@ const AppNavigation = () => {
         <Stack.Screen name="AmountSpentCharts" component={AmountSpentChartsScreen} />
         <Stack.Screen name="NamesCharts" component={NamesCharts} />
         <Stack.Screen name="TypesCharts" component={TypesCharts} />
+        <Stack.Screen name="DrunkCharts" component={DrunknessCharts} />
         <Stack.Screen name="Rankings" component={Rankings} />
         {/* <Stack.Screen name="DrunkRankings" component={DrunkRankings} />
         <Stack.Screen name="MostDrankRankings" component={MostDrankRankings} /> */}

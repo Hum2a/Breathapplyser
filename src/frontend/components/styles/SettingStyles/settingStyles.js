@@ -21,5 +21,15 @@ export const SettingStyles = StyleSheet.create({
     text: {
       fontSize: 18,
     },
+    smallIcon: {
+      width: 70,
+      height: 70,
+      backgroundColor: 'transparent',
+    },
+    fileManagerIcon: {
+      width: 100,
+      height: 65,
+      backgroundColor: 'transparent',
+    },
   });
   

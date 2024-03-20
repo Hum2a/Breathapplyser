@@ -41,6 +41,7 @@ export { default as UnitsChartsScreen } from './frontendScreens/ChartsScreens/Ch
 export { default as AmountSpentChartsScreen } from './frontendScreens/ChartsScreens/ChartTypes/AmountSpentChartsScreens';
 export { default as NamesCharts } from './frontendScreens/ChartsScreens/ChartTypes/NamesChartsScreen';
 export { default as TypesCharts } from './frontendScreens/ChartsScreens/ChartTypes/TypesChartsScreen';
+export { default as DrunknessCharts } from './frontendScreens/ChartsScreens/ChartTypes/DrunkCharts';
 
 // Stats
 export { default as TodaysStatsScreen } from './frontendScreens/StatsScreens/TodaysStats';

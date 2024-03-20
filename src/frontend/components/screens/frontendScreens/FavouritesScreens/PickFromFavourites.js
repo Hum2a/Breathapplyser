@@ -18,7 +18,6 @@ const PickFavouritesScreen = ({ navigation }) => {
       <Text style={pickFavsStyles.title}>
         Pick a Favourite
       </Text>
-      {/* Render the FavoriteList component */}
       <FavouriteList user={user} onPress={handleSelectFavourite} navigation={navigation}/>
     </View>
   );

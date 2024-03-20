@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, Alert } from 'react-native';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { SettingStyles as styles } from '../../../styles/SettingStyles/settingStyles';
-import { homeStyles } from '../../../styles/StartUpStyles/homeStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProfileWaveAnimation from '../../../animations/profileWave';
 import { useUser } from '../../../../context/UserContext';
@@ -70,7 +69,7 @@ const Settings = () => {
           <Text style={styles.text}>Limits</Text>
           <Image
               source={require('../../../../assets/images/goku_screaming.png')}
-              style={homeStyles.smallIcon}
+              style={styles.smallIcon}
               />
         </TouchableOpacity>
 
@@ -78,7 +77,7 @@ const Settings = () => {
           <Text style={styles.text}>Themes</Text>
           <Image
               source={require('../../../../assets/images/themes.png')}
-              style={homeStyles.smallIcon}
+              style={styles.smallIcon}
               />
         </TouchableOpacity>
 
@@ -86,7 +85,7 @@ const Settings = () => {
           <Text style={styles.text}>Notifications</Text>
           <Image
               source={require('../../../../assets/images/notification.png')}
-              style={homeStyles.smallIcon}
+              style={styles.smallIcon}
               />
         </TouchableOpacity>
 
@@ -94,7 +93,7 @@ const Settings = () => {
           <Text style={styles.text}>Data</Text>
           <Image
               source={require('../../../../assets/images/file.png')}
-              style={homeStyles.smallIcon}
+              style={styles.fileManagerIcon}
               />
         </TouchableOpacity>
 
@@ -102,7 +101,7 @@ const Settings = () => {
           <Text style={styles.text}>Logout</Text>
           <Image
             source={require('../../../../assets/images/logout.png')} // Update this path to your actual logout icon
-            style={homeStyles.smallIcon}
+            style={styles.smallIcon}
           />
         </TouchableOpacity>
       </View>

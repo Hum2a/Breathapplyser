@@ -5,15 +5,16 @@ import { collection, query, where, getDocs, getFirestore, Timestamp, doc, delete
 import moment from 'moment';
 import AllCharts from '../../../charts/linecharts/IndividualCharts';
 import { UserContext } from '../../../../context/UserContext';
+import Dialog from 'react-native-dialog';
+import { dialogStyles } from '../../../styles/AppStyles/dialogueStyles';
 
 const DetailedHistoryScreen = ({ route, navigation }) => {
   const { date } = route.params;
-  console.log('Route parameters:', route.params); // Logging route parameters
-
   const [entries, setEntries] = useState([]);
+  const [selectedEntry, setSelectedEntry] = useState(null); // Track the selected entry for deletion
+  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
   const firestore = getFirestore();
   const { user } = useContext(UserContext);
-  console.log('UserContext:', user); // Logging UserContext
 
   useEffect(() => {
     console.log('DetailedHistoryScreen: Received date parameter:', date);
@@ -58,28 +59,28 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
   }));
   console.log('ChartData:', chartData); // Logging Chart Data
 
-  const handleLongPressEntry = (entry) => {
-    console.log('DetailedHistoryScreen: Long Pressed Entry:', entry); // Logging which entry was long-pressed
-    Alert.alert(
-      'Entry Options',
-      'Choose an action for this entry:',
-      [
-        {
-          text: 'Edit',
-          onPress: () => handleEditEntry(entry),
-        },
-        {
-          text: 'Delete',
-          onPress: () => handleDeleteEntry(entry),
-          style: 'destructive',
-        },
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-      ],
-    );
-  };
+  // const handleLongPressEntry = (entry) => {
+  //   console.log('DetailedHistoryScreen: Long Pressed Entry:', entry); // Logging which entry was long-pressed
+  //   Alert.alert(
+  //     'Entry Options',
+  //     'Choose an action for this entry:',
+  //     [
+  //       {
+  //         text: 'Edit',
+  //         onPress: () => handleEditEntry(entry),
+  //       },
+  //       {
+  //         text: 'Delete',
+  //         onPress: () => handleDeleteEntry(entry),
+  //         style: 'destructive',
+  //       },
+  //       {
+  //         text: 'Cancel',
+  //         style: 'cancel',
+  //       },
+  //     ],
+  //   );
+  // };
 
   const handleEditEntry = (entry) => {
     console.log('Editing Entry:', entry); // Logging the entry to be edited
@@ -130,6 +131,23 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
     }
   };
 
+  const handleLongPressEntry = (entry) => {
+    setSelectedEntry(entry); // Set the selected entry for deletion
+    setDeleteDialogVisible(true); // Show the delete dialog
+  };
+
+  const handleDeleteConfirmed = async () => {
+    setDeleteDialogVisible(false); // Hide the delete dialog
+    if (selectedEntry) {
+      handleDeleteEntry(selectedEntry); // Call the delete function with the selected entry
+    }
+  };
+
+  const handleDeleteCancelled = () => {
+    setDeleteDialogVisible(false); // Hide the delete dialog
+    setSelectedEntry(null); // Clear the selected entry
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Detailed History - {date}</Text>
@@ -176,6 +194,21 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
         )}
         keyExtractor={(item, index) => index.toString()}
       />
+      {/* Delete dialog */}
+      <Dialog.Container 
+        visible={deleteDialogVisible}
+        contentStyle={{
+          backgroundColor: 'black', // Light Blue background; solid color as gradient is not directly supported
+          borderRadius: 10,
+        }}>
+        <Dialog.Title style={dialogStyles.title}>You called?</Dialog.Title>
+        <Dialog.Description style={dialogStyles.description}>
+          What would you like to do?:
+        </Dialog.Description>
+        <Dialog.Button style={dialogStyles.editButton}label="Edit" onPress={handleEditEntry} />
+        <Dialog.Button style={dialogStyles.deleteButton}label="Delete" onPress={handleDeleteConfirmed} />
+        <Dialog.Button style={dialogStyles.cancelButton}label="Cancel" onPress={handleDeleteCancelled} />
+      </Dialog.Container>
 
     </View>
   );

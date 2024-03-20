@@ -158,12 +158,12 @@ const HomeScreen = () => {
                 </View>
             </TouchableWithoutFeedback>
 
-            <TouchableOpacity style={homeStyles.buttonContainer} onPress={NavigateToAllStats}>
+            {/* <TouchableOpacity style={homeStyles.buttonContainer} onPress={NavigateToAllStats}>
               <Image
                 source={require('../../../assets/images/stats.png')}
                 style={homeStyles.smallIcon}
               />
-             </TouchableOpacity>
+             </TouchableOpacity> */}
 
             <TouchableOpacity style={homeStyles.buttonContainer} onPress={NavigateToCurrentNight}>
               <Image

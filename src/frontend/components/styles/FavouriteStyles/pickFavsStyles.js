@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 export const pickFavsStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#BAEAFF',
   },
   title: {
     fontSize: 20,
