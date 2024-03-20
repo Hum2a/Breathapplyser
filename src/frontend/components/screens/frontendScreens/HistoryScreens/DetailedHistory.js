@@ -164,11 +164,11 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
             </View>
             <View style={styles.entryRow}>
               <Text style={[styles.entryText, styles.entryLabel]}>Start Time:</Text>
-              <Text style={[styles.entryText, styles.entryValue]}> {moment(item.start_time).format('HH:mm')}</Text>
+              <Text style={[styles.entryText, styles.entryValue]}> {moment(item.startTime).format('HH:mm')}</Text>
             </View>
             <View style={styles.entryRow}>
               <Text style={[styles.entryText, styles.entryLabel]}>End Time:</Text>
-              <Text style={[styles.entryText, styles.entryValue]}> {moment(item.end_time).format('HH:mm')}</Text>
+              <Text style={[styles.entryText, styles.entryValue]}> {moment(item.endTime).format('HH:mm')}</Text>
             </View>
             <View style={styles.entryRow}>
               <Text style={[styles.entryText, styles.entryLabel]}>Amount:</Text>
