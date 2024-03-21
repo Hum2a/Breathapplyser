@@ -70,5 +70,86 @@ export const DrunkStyles = StyleSheet.create({
     color: '#1565C0', // Dark blue no data text color
     alignSelf: 'center',
   },
+  drunknessLabel: {
+    fontWeight: 'bold',
+    marginRight: 10,
+    color: '#1565C0', // Dark blue level text color
+    alignSelf: 'center',
+  },
+  drunknessItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+    backgroundColor: '#B3E5FC', // Light blue background color for the row
+    padding: 10,
+    borderRadius: 5,
+  },
+  drunknessLevelsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+    paddingHorizontal: 20,
+  },
+  column: {
+    flex: 1,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  columnHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#1565C0',
+    alignSelf: 'center',
+  },
 });
+
+export const DrunkScreenStyles = StyleSheet.create({
+  fullScreen: {
+    flex: 1,
+    backgroundColor: '#F0F5F9', // Light grey background
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  chartContainer: {
+    marginVertical: 20,
+    backgroundColor: '#FFFFFF', // White background for charts
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  toggleButton: {
+    backgroundColor: '#007AFF', // Blue button background
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  toggleButtonText: {
+    color: '#FFFFFF', // White button text color
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
+
 
