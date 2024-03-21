@@ -33,8 +33,11 @@ export { default as ProfileScreen } from './frontendScreens/UsersAndSettingsScre
 export { default as LimitsScreen } from './frontendScreens/UsersAndSettingsScreens/Limits';
 export { default as NotificationManagerScreen } from './frontendScreens/UsersAndSettingsScreens/NotificationsManager';
 export { default as DataManagerScreen } from './frontendScreens/UsersAndSettingsScreens/DataManager';
-export { default as StaticVariablesScreen } from './frontendScreens/UsersAndSettingsScreens/StaticVariables';
+export { default as AlcoholicsScreen } from './frontendScreens/UsersAndSettingsScreens/Alcholics';
+export { default as BACRefreshRateScreen } from './frontendScreens/UsersAndSettingsScreens/Alcoholics/BACDecreaseRefreshPicker';
+export { default as DrunkParametersScreen } from './frontendScreens/UsersAndSettingsScreens/Alcoholics/DrunkParameters';
 export { default as DisplaySettingsScreen } from './frontendScreens/UsersAndSettingsScreens/DisplayScreen';
+export { default as EmojiCustomisationScreen } from './frontendScreens/UsersAndSettingsScreens/Display/EmojiCustomisation';
 
 // Charts
 export { default as ChartsScreen } from './frontendScreens/ChartsScreens/OmniChartManager';
