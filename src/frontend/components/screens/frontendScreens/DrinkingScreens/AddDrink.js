@@ -367,7 +367,7 @@ const AddEntryScreen = ({ navigation }) => {
         <View style={addStyles.statsContainer}>
           <Text style={addStyles.statText}>Total Drinks: {totalDrinks}</Text>
           <Text style={addStyles.statText}>Units: {totalUnits}</Text>
-          <Text style={addStyles.statText}>Spending: {totalSpending}</Text>
+          <Text style={addStyles.statText}>Spending: £{totalSpending}</Text>
         </View>
         
         <AlcoholInput value={alcohol} onChangeText={setAlcohol} />
