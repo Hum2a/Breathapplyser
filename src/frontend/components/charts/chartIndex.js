@@ -1,4 +1,3 @@
-export { default as DrunknessChart } from './linecharts/IndividualCharts/DrunknessChart';
 export { default as TotalUnitsChart } from './linecharts/IndividualCharts/TotalUnitsChart';
 export { default as RealTimeBACChart } from './linecharts/BAC Charts/old charts/RealTimeBACChart';
 export { default as AmountSpentChart } from './linecharts/IndividualCharts/SpentChart';
@@ -13,4 +12,7 @@ export { default as BACComparisonGraph } from './linecharts/BAC Charts/BACcompar
 export { default as BACEntriesChart } from './linecharts/BAC Charts/BACEntriesGraph';
 export { default as BAC12Hours } from './linecharts/BAC Charts/BAC24Hours';
 
+// Drunkenness
+export { default as DrunknessENTRIESChart } from './linecharts/DrunkCharts/DrunknessEntriesChart';
+export { default as DrunknessBLChart } from './linecharts/DrunkCharts/DrunknessBLChart';
 

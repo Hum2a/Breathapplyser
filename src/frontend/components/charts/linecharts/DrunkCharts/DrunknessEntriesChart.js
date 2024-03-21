@@ -101,7 +101,7 @@ const DrunkennessLevelChart = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.graphTitle}>Drunkness Chart</Text>
+            <Text style={styles.graphTitle}>Drunkness Chart Entries</Text>
             <Switch
                 value={comparisonMode}
                 onValueChange={() => {
