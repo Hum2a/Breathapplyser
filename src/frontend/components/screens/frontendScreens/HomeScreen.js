@@ -101,14 +101,13 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    // Set up an interval to update the component every 1 minute (adjust the interval as needed)
+    // Set up an interval to update the component every 5 seconds
     const interval = setInterval(() => {
-      // Increment the update count to trigger a re-render of StatsScreen
       setStatUpdateCount(prevCount => prevCount + 1);
       setBACUpdateCount(prevBacCount => prevBacCount + 1);
       setRefreshKey(prevKey => prevKey + 1);
       console.log('HomeScreen refreshed at:', new Date().toLocaleTimeString());
-    }, 15000); 
+    }, 60000); // 5000 milliseconds = 5 seconds
 
     return () => clearInterval(interval); // Clean up the interval when the component unmounts
   }, []);  

@@ -19,10 +19,6 @@ const Settings = () => {
     navigation.navigate('Limits'); // Replace 'Limits' with your actual limits screen name
   };
 
-  const navigateToThemes = () => {
-    navigation.navigate('Themes'); // Replace 'Themes' with your actual themes screen name
-  };
-
   const navigateToNotifications = () => {
     navigation.navigate('NotificationManger'); // Replace 'Notifications' with your actual notifications screen name
   };
@@ -32,6 +28,9 @@ const Settings = () => {
   };
   const navigateToStatic = () => {
     navigation.navigate('StaticVariables');
+  };
+  const navigateToDisplay = () => {
+    navigation.navigate('Display');
   };
 
   const handleLogout = () => {
@@ -79,8 +78,8 @@ const Settings = () => {
         <Image source={require('../../../../assets/images/timer.png')} style={styles.icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={navigateToThemes} style={styles.item}>
-        <Text style={styles.text}>Themes</Text>
+      <TouchableOpacity onPress={navigateToDisplay} style={styles.item}>
+        <Text style={styles.text}>Display</Text>
         <Image source={require('../../../../assets/images/themes.png')} style={styles.icon} />
       </TouchableOpacity>
 

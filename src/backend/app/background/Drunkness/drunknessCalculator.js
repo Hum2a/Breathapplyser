@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 import { UserContext } from '../../../../frontend/context/UserContext';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { DrunkCalcStyles as styles } from '../../../../frontend/components/styles/DrinkingStyles/drunkCalcStyles';
 import moment from 'moment';
 import PushNotification from 'react-native-push-notification';
 
@@ -37,158 +38,148 @@ const getTextColor = (bac) => {
     if (bac > 0.50) return '#b71c1c'; // Crimson
 };
 
-const DrunkennessLevel = () => {
+const emojiRepresentations = {
+    Sober: '😐',
+    Buzzed: '😉',
+    Relaxed: '😊',
+    'A Bit of a liability': '🫠',
+    'Visibly Drunk': '🙃',
+    Embarassing: '🫣',
+    Sickly: '🥲',
+    'Either pull or go home': '🫡',
+    'Find a friend': '🤐',
+    'Gonna Pass out': '🫨',
+    'Call and Ambulance': '😷',
+    'Death is coming': '🫥',
+  };
+  
+  // Define the text representations for each BAC level
+  const textRepresentations = {
+    Sober: 'Sober',
+    Buzzed: 'Buzzed',
+    Relaxed: 'Relaxed',
+    'A Bit of a liability': 'A Bit of a liability',
+    'Visibly Drunk': 'Visibly Drunk',
+    Embarassing: 'Embarassing',
+    Sickly: 'Sickly',
+    'Either pull or go home': 'Either pull or go home',
+    'Find a friend': 'Find a friend',
+    'Gonna Pass out': 'Gonna Pass out',
+    'Call and Ambulance': 'Call and Ambulance',
+    'Death is coming': 'Death is coming',
+  };
+
+  const DrunkennessLevel = () => {
     const { user } = useContext(UserContext);
     const [currentBAC, setCurrentBAC] = useState(0);
     const [modalVisible, setModalVisible] = useState(false);
     const [documentExists, setDocumentExists] = useState(false);
-
+    const [displayPreference, setDisplayPreference] = useState('emoji'); // Default to text
+  
     useEffect(() => {
-        if (user) { // Ensure there's a user before fetching BAC
-            const fetchCurrentBAC = async () => {
-                const firestore = getFirestore();
-                const todayStr = moment().format('YYYY-MM-DD');
-                const bacLevelRef = doc(firestore, user.uid, "Daily Totals", "BAC Level", todayStr);
-
-                try {
-                    const docSnap = await getDoc(bacLevelRef);
-                    if (docSnap.exists() && !isNaN(docSnap.data().value)) {
-                        setCurrentBAC(docSnap.data().value);
-                    } else {
-                        setCurrentBAC(0); // Treat as 0 if NaN or document doesn't exist
-                    }
-                    setDocumentExists(docSnap.exists());
-                } catch (error) {
-                    console.error("Error getting document:", error);
-                    setCurrentBAC(0); // Treat as 0 if error occurs
-                    setDocumentExists(false);
-                }
-            };
-
-            fetchCurrentBAC();
-            const intervalId = setInterval(fetchCurrentBAC, 10000); // Refresh every 10 seconds
-
-            return () => clearInterval(intervalId); // Cleanup on unmount
-        } else {
-            // Handle case when there's no user
-            setCurrentBAC(0);
+      if (user) {
+        const fetchDisplayPreference = async () => {
+          const firestore = getFirestore();
+          const userDocRef = doc(firestore, user.uid, "Display");
+  
+          try {
+            const docSnap = await getDoc(userDocRef);
+            if (docSnap.exists()) {
+              setDisplayPreference(docSnap.data().DrunkennessDisplay);
+            }
+          } catch (error) {
+            console.error("Error getting display preference:", error);
+          }
+        };
+  
+        fetchDisplayPreference();
+      }
+    }, [user]);
+  
+    useEffect(() => {
+      if (user) {
+        const fetchCurrentBAC = async () => {
+          const firestore = getFirestore();
+          const todayStr = moment().format('YYYY-MM-DD');
+          const bacLevelRef = doc(firestore, user.uid, "Daily Totals", "BAC Level", todayStr);
+  
+          try {
+            const docSnap = await getDoc(bacLevelRef);
+            if (docSnap.exists() && !isNaN(docSnap.data().value)) {
+              setCurrentBAC(docSnap.data().value);
+            } else {
+              setCurrentBAC(0); // Treat as 0 if NaN or document doesn't exist
+            }
+            setDocumentExists(docSnap.exists());
+          } catch (error) {
+            console.error("Error getting document:", error);
+            setCurrentBAC(0); // Treat as 0 if error occurs
             setDocumentExists(false);
-        }
-    }, [user?.uid]); // Now dependent on user existence and user.uid
-
+          }
+        };
+  
+        fetchCurrentBAC();
+        const intervalId = setInterval(fetchCurrentBAC, 10000); // Refresh every 10 seconds
+  
+        return () => clearInterval(intervalId); // Cleanup on unmount
+      } else {
+        setCurrentBAC(0);
+        setDocumentExists(false);
+      }
+    }, [user?.uid]);
+  
     useEffect(() => {
-        if (documentExists) {
-            const level = getDrunkennessLevel(currentBAC);
-            // Logging to see if we reach this point and what the level details are
-            console.log("Triggering notification with level:", level);
-    
-            PushNotification.localNotification({
-                channelId: "drunkenness-level-channel",
-                title: "Drunkenness Level Update",
-                message: `You are currently: ${level.simple}`,
-                bigText: level.detailed,
-                color: getTextColor(currentBAC),
-            });
-        }
-    }, [currentBAC, documentExists]); // This useEffect depends on currentBAC and documentExists
-    
-
+      if (documentExists) {
+        const level = getDrunkennessLevel(currentBAC);
+        console.log("Triggering notification with level:", level);
+  
+        PushNotification.localNotification({
+          channelId: "drunkenness-level-channel",
+          title: "Drunkenness Level Update",
+          message: `You are currently: ${level.simple}`,
+          bigText: level.detailed,
+          color: getTextColor(currentBAC),
+        });
+      }
+    }, [currentBAC, documentExists]);
+  
     const level = getDrunkennessLevel(currentBAC);
-
+    const displayValue = displayPreference === 'emojis' ? emojiRepresentations[level.simple] : displayPreference === 'both' ? `${emojiRepresentations[level.simple]} ${textRepresentations[level.simple]}` : textRepresentations[level.simple];
+  
     return (
-        <View>
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <Text>
-                    You are currently: <Text style={[{ color: getTextColor(currentBAC) }, styles.boldText]}>{level.simple}</Text>
-                </Text>
-                <Text style={styles.bacLevelText}>
-                    Current BAC: <Text style={styles.bacLevelNumber}>{currentBAC.toFixed(4)}</Text>
-                </Text>
-            </TouchableOpacity>
-
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}>
-
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Text style={styles.modalText}>{level.detailed}</Text>
-                        <Text style={styles.bacLevelText}>
-                            Current BAC: <Text style={styles.bacLevelNumber}>{currentBAC.toFixed(4)}</Text>
-                        </Text>
-                        <TouchableOpacity
-                            style={styles.hideButton}
-                            onPress={() => setModalVisible(!modalVisible)}>
-                            <Text style={styles.textStyle}>Hide Detail</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal>
-        </View>
+      <View>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
+          <Text>
+            You are currently: <Text style={[{ color: getTextColor(currentBAC) }, styles.boldText]}>{displayValue}</Text>
+          </Text>
+          <Text style={styles.bacLevelText}>
+            Current BAC: <Text style={styles.bacLevelNumber}>{currentBAC.toFixed(4)}</Text>
+          </Text>
+        </TouchableOpacity>
+  
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>{level.detailed}</Text>
+              <Text style={styles.bacLevelText}>
+                Current BAC: <Text style={styles.bacLevelNumber}>{currentBAC.toFixed(4)}</Text>
+              </Text>
+              <TouchableOpacity
+                style={styles.hideButton}
+                onPress={() => setModalVisible(!modalVisible)}>
+                <Text style={styles.textStyle}>Hide Detail</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </View>
     );
-};
-    
-const styles = StyleSheet.create({
-    centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "rgba(0,0,0,0.5)",
-    },
-    modalView: {
-        margin: 20,
-        backgroundColor: "white",
-        borderRadius: 20,
-        padding: 35,
-        alignItems: "center",
-        justifyContent: 'center',
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-        width: '80%',
-        height: '25%',
-    },
-    hideButton: {
-        backgroundColor: "#2196F3",
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2,
-        marginTop: 15,
-    },
-    textStyle: {
-        color: "white",
-        fontWeight: "bold",
-        textAlign: "center"
-    },
-    modalText: {
-        marginBottom: 15,
-        textAlign: "center"
-    },
-    boldText: {
-        fontWeight: 'bold',
-    },
-    bacLevelText: {
-        textAlign: 'center',
-        marginTop: 5,
-        fontSize: 14,
-        color: '#666', // A neutral, readable color
-    },
-    bacLevelNumber: {
-        textAlign: 'center',
-        fontWeight: 'bold',
-        color: '#000', // Bold and standout color
-    },
-});
+  };
 
-    
-    export default DrunkennessLevel;
-    
+  export default DrunkennessLevel;
