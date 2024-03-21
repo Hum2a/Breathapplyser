@@ -20,7 +20,7 @@ export const getDrunkennessLevel = (bac) => {
     if (bac <= 0.35) return { simple: "Either pull or go home", detailed: 'Feeling dazed, confused, or otherwise disoriented. May need help to stand or walk. If injured, may not feel the pain. Nausea and vomiting are possible.' };
     if (bac <= 0.40) return { simple: "Find a friend", detailed: 'Severe intoxication, needs assistance in walking; total mental confusion. Dysphoria with nausea and some vomiting.' };
     if (bac <= 0.45) return { simple: "Gonna Pass out", detailed: 'Loss of consciousness. The risk of death due to respiratory arrest is possible.' };
-    if (bac <= 0.50) return { simple: "Call and Ambulance", detailed: 'This BAC level is comparable to surgical anesthesia and is considered a very life-threatening level of alcohol intoxication.' }
+    if (bac <= 0.50) return { simple: "Call an Ambulance", detailed: 'This BAC level is comparable to surgical anesthesia and is considered a very life-threatening level of alcohol intoxication.' }
     if (bac > 0.50) return { simple: "Death is coming", detailed: "Onset of coma, and likelihood of death due to respiratory arrest." };
 };
 
@@ -50,7 +50,7 @@ const emojiRepresentations = {
     'Either pull or go home': '🫡',
     'Find a friend': '🤐',
     'Gonna Pass out': '🫨',
-    'Call and Ambulance': '😷',
+    'Call an Ambulance': '😷',
     'Death is coming': '🫥',
   };
   
@@ -66,7 +66,7 @@ const emojiRepresentations = {
     'Either pull or go home': 'Either pull or go home',
     'Find a friend': 'Find a friend',
     'Gonna Pass out': 'Gonna Pass out',
-    'Call and Ambulance': 'Call and Ambulance',
+    'Call an Ambulance': 'Call an Ambulance',
     'Death is coming': 'Death is coming',
   };
 
@@ -181,7 +181,7 @@ const emojiRepresentations = {
     return (
       <View>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <Text>
+          <Text style={styles.textStyle}>
             You are currently: <Text style={[{ color: getTextColor(currentBAC) }, styles.boldText]}>{displayValue}</Text>
           </Text>
           <Text style={styles.bacLevelText}>

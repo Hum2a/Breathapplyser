@@ -40,8 +40,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cog: {
-    width: 70, // Set the size of the cog
-    height: 70, // Set the size of the cog
+    width: 40, // Set the size of the cog
+    height: 40, // Set the size of the cog
   },
 });
 

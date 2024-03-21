@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#ff0000', // You can adjust the color of limits here
+    marginRight: 10,
   },
 });
 

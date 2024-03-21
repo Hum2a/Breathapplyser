@@ -33,9 +33,10 @@ export  const DrunkCalcStyles = StyleSheet.create({
       marginTop: 15,
     },
     textStyle: {
-      color: "white",
+      color: "#666",
       fontWeight: "bold",
-      textAlign: "center"
+      textAlign: "center",
+      fontSize: 18,
     },
     modalText: {
       marginBottom: 15,
@@ -48,6 +49,7 @@ export  const DrunkCalcStyles = StyleSheet.create({
       textAlign: 'center',
       marginTop: 5,
       fontSize: 14,
+      fontWeight: 'bold',
       color: '#666', // A neutral, readable color
     },
     bacLevelNumber: {

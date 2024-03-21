@@ -119,87 +119,95 @@ const HomeScreen = () => {
       <View style={homeStyles.container}>
         <BACDecrease user={user} key={refreshKey} />
 
-      {/* <View style={homeStyles.drinksWidgetContainer}>
-        <CommonDrinks />
-        <RecentDrinks navigation={navigation} />
-      </View> */}
-
         <View style={homeStyles.trackContainer}>
           <UnitTrack />
           <SpendingTrack />
         </View>
+
+        <View style={homeStyles.settingsContainer}>
+
+        <TouchableOpacity onPress={NavigateToOnlineRankings} style={homeStyles.settingsIcon}>
+          <Image
+            source={require('../../../assets/images/world.png')}
+            style={homeStyles.medalIcon}
+          />
+        </TouchableOpacity>
       
-      <TouchableOpacity onPress={() => { toggleBeerAnimation(); NavigateToDrinking(); }} style={homeStyles.beerContainer}>
-        <BeerAnimation frameRate={24} play={playBeerAnimation} />
-        <Text style={homeStyles.buttonText}>Tap to Start Drinking</Text>
-        <DrunkennessLevel />
-        <BacWiper />
-      </TouchableOpacity>
+          <TouchableOpacity onPress={NavigateToAchievements} style={homeStyles.settingsIcon}>
+            <Image
+              source={require('../../../assets/images/medal.png')}
+              style={homeStyles.medalIcon}
+            />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={homeStyles.settingsIcon} onPress={NavigateToSettings}>
+            <SpinningCog />
+          </TouchableOpacity>
 
-        <View style={homeStyles.bottomContainer}>
-          <View style={homeStyles.buttonRow}>
-            <TouchableOpacity style={homeStyles.buttonContainer} onPress={NavigateToHistory}>
-              <Image
-                source={require('../../../assets/images/Scroll.png')}
-                style={homeStyles.smallIcon}
-              />
-            </TouchableOpacity>
+        </View>
 
-            <TouchableOpacity style={homeStyles.buttonContainer} onPress={NavigateToSettings}>
-              <SpinningCog />
-            </TouchableOpacity>
+        <View style={homeStyles.drunknessContainer}>
+          <DrunkennessLevel />
+        </View>
 
-            <TouchableOpacity style={homeStyles.buttonContainer} onPress={NavigateToCharts}>
-              <Image
-                source={require('../../../assets/images/chart.png')}
-                style={homeStyles.smallIcon}
-              />
-            </TouchableOpacity>
+      <View style={homeStyles.middleContainer}>
 
-          </View>
-          <View style={homeStyles.buttonRow}>
-          <TouchableWithoutFeedback onPressIn={() => setPlayStarAnimation(true)} onPressOut={() => { setPlayStarAnimation(false); NavigateToFavourites(); }}>
-                <View style={homeStyles.buttonContainer}>
-                    <StarAnimation play={playStarAnimation} frameRate={24} />
-                </View>
-            </TouchableWithoutFeedback>
+      <TouchableOpacity style={homeStyles.scrollContainer} onPress={NavigateToHistory}>
+          <Image
+            source={require('../../../assets/images/Scroll.png')}
+            style={homeStyles.smallIcon}
+          />
+        </TouchableOpacity>
 
-            {/* <TouchableOpacity style={homeStyles.buttonContainer} onPress={NavigateToAllStats}>
+        <TouchableWithoutFeedback onPressIn={() => setPlayStarAnimation(true)} onPressOut={() => { setPlayStarAnimation(false); NavigateToFavourites(); }}>
+            <View style={homeStyles.starContainer}>
+                <StarAnimation play={playStarAnimation} frameRate={24} />
+            </View>
+        </TouchableWithoutFeedback>
+
+        
+        <TouchableOpacity onPress={() => { toggleBeerAnimation(); NavigateToDrinking(); }} style={homeStyles.beerContainer}>
+          <Text style={homeStyles.buttonText}>Tap to Start Drinking</Text>
+          <BeerAnimation frameRate={24} play={playBeerAnimation} />
+          <BacWiper />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={homeStyles.chartContainer} onPress={NavigateToCharts}>
+          <Image
+            source={require('../../../assets/images/chart.png')}
+            style={homeStyles.smallIcon}
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={homeStyles.nightoutContainer} onPress={NavigateToCurrentNight}>
+          <Image
+            source={require('../../../assets/images/discoball.png')}
+            style={homeStyles.smallIcon}
+          />
+        </TouchableOpacity>
+
+      </View>
+
+      <View style={homeStyles.drinksWidgetContainer}>
+          <CommonDrinks />
+          <RecentDrinks navigation={navigation} />
+        </View>
+
+        {/* <View style={homeStyles.bottomContainer}>
+
+          <TouchableOpacity style={homeStyles.buttonContainer} onPress={NavigateToAllStats}>
               <Image
                 source={require('../../../assets/images/stats.png')}
                 style={homeStyles.smallIcon}
               />
-             </TouchableOpacity> */}
-
-            <TouchableOpacity style={homeStyles.buttonContainer} onPress={NavigateToCurrentNight}>
-              <Image
-                source={require('../../../assets/images/discoball.png')}
-                style={homeStyles.smallIcon}
-              />
-            </TouchableOpacity>
-
-          </View>
-          {/* <View style={homeStyles.buttonRow}>
-            <TouchableOpacity onPress={NavigateToAchievements} style={homeStyles.smallCircularButton}>
-              <Image
-                source={require('../../../assets/images/medal.png')}
-                style={homeStyles.smallIcon}
-              />
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={NavigateToOnlineRankings} style={homeStyles.smallCircularButton}>
-              <Image
-                source={require('../../../assets/images/world.png')}
-                style={homeStyles.smallIcon}
-              />
-            </TouchableOpacity>
+             </TouchableOpacity>
+            
 
             <TouchableOpacity style={homeStyles.buttonContainer} onPress={handleClearBAC}>
             <Text style={homeStyles.buttonText}>Clear BAC</Text>
           </TouchableOpacity>
           </View> */}
         </View>
-      </View>
     </SafeAreaView>
   );
 };
