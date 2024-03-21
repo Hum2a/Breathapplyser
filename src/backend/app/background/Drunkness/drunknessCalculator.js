@@ -7,6 +7,8 @@ import { DrunkCalcStyles as styles } from '../../../../frontend/components/style
 import moment from 'moment';
 import PushNotification from 'react-native-push-notification';
 
+const refreshInterval = 10000; // Refresh interval in milliseconds
+
 export const getDrunkennessLevel = (bac) => {
     let adjustedBac = isNaN(bac) ? 0 : bac;
     if (adjustedBac <= 0.01) return { simple: "Sober", detailed: "You're completely unintoxicated... probably." };
@@ -70,6 +72,7 @@ const emojiRepresentations = {
   };
 
   const DrunkennessLevel = () => {
+    console.log("Drunkenness Level is loading");
     const { user } = useContext(UserContext);
     const [currentBAC, setCurrentBAC] = useState(0);
     const [modalVisible, setModalVisible] = useState(false);
@@ -119,7 +122,7 @@ const emojiRepresentations = {
         };
   
         fetchCurrentBAC();
-        const intervalId = setInterval(fetchCurrentBAC, 10000); // Refresh every 10 seconds
+        const intervalId = setInterval(fetchCurrentBAC, refreshInterval); // Refresh every 10 seconds
   
         return () => clearInterval(intervalId); // Cleanup on unmount
       } else {
@@ -144,8 +147,7 @@ const emojiRepresentations = {
     }, [currentBAC, documentExists]);
   
     const level = getDrunkennessLevel(currentBAC);
-    const displayValue = displayPreference === 'emojis' ? emojiRepresentations[level.simple] : displayPreference === 'both' ? `${emojiRepresentations[level.simple]} ${textRepresentations[level.simple]}` : textRepresentations[level.simple];
-  
+    const displayValue = displayPreference === 'emojis' ? emojiRepresentations[level.simple] : displayPreference === 'both' ? ` ${textRepresentations[level.simple]} ${emojiRepresentations[level.simple]} ` : textRepresentations[level.simple];
     return (
       <View>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
