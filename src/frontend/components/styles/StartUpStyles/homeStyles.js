@@ -166,6 +166,15 @@ export const homeStyles = StyleSheet.create({
     drinkButtonContainer: {
       alignItems: 'center', // Center the beer jug and text
     },
+    trackContainer: {
+      position: 'absolute',
+      top: 15,
+      right: 5,
+      flexDirection: 'column', // Arrange children vertically
+      justifyContent: 'flex-end', // Align children to the bottom
+      alignItems: 'flex-end', // Align children to the right
+      zIndex: 999, // Adjust the z-index as needed
+    },
     // recentDrinksContainer: {
     //   position: 'absolute',
     //   top: 10,

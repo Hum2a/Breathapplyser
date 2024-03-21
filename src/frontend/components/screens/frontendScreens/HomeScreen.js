@@ -12,6 +12,8 @@ import { getFirestore, deleteDoc, doc, collection, query, getDocs, getDoc } from
 import { UserContext } from '../../../context/UserContext';
 import RecentDrinks from './DrinkingScreens/RecentDrinks';
 import CommonDrinks from './DrinkingScreens/CommonDrinks';
+import UnitTrack from './StatsScreens/UnitTrack';
+import SpendingTrack from './StatsScreens/SpendTrack';
 import StarAnimation from '../../animations/favouriteStar';
 import BeerAnimation from '../../animations/beerjug';
 import SpinningCog from '../../animations/settingsCog';
@@ -121,6 +123,11 @@ const HomeScreen = () => {
         <CommonDrinks />
         <RecentDrinks navigation={navigation} />
       </View> */}
+
+        <View style={homeStyles.trackContainer}>
+          <UnitTrack />
+          <SpendingTrack />
+        </View>
       
       <TouchableOpacity onPress={() => { toggleBeerAnimation(); NavigateToDrinking(); }} style={homeStyles.beerContainer}>
         <BeerAnimation frameRate={24} play={playBeerAnimation} />
