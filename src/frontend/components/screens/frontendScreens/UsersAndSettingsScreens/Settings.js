@@ -26,9 +26,11 @@ const Settings = () => {
   const navigateToData = () => {
     navigation.navigate('DataManager');
   };
-  const navigateToStatic = () => {
-    navigation.navigate('StaticVariables');
+
+  const navigateToAlcoholics = () => {
+    navigation.navigate('Alcoholics');
   };
+
   const navigateToDisplay = () => {
     navigation.navigate('Display');
   };
@@ -73,8 +75,8 @@ const Settings = () => {
           <Image source={require('../../../../assets/images/goku_screaming.png')} style={styles.icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={navigateToStatic} style={styles.item}>
-        <Text style={styles.text}>Static</Text>
+      <TouchableOpacity onPress={navigateToAlcoholics} style={styles.item}>
+        <Text style={styles.text}>Alcoholics</Text>
         <Image source={require('../../../../assets/images/timer.png')} style={styles.icon} />
       </TouchableOpacity>
 

@@ -1,4 +1,3 @@
-// DrunkennessLevelDisplay.js
 import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 import { UserContext } from '../../../../frontend/context/UserContext';
@@ -77,7 +76,9 @@ const emojiRepresentations = {
     const [currentBAC, setCurrentBAC] = useState(0);
     const [modalVisible, setModalVisible] = useState(false);
     const [documentExists, setDocumentExists] = useState(false);
-    const [displayPreference, setDisplayPreference] = useState('emoji'); // Default to text
+    const [displayPreference, setDisplayPreference] = useState(null); // Default to text
+    const [emojis, setEmojis] = useState({});
+
   
     useEffect(() => {
       if (user) {
@@ -98,6 +99,30 @@ const emojiRepresentations = {
         fetchDisplayPreference();
       }
     }, [user]);
+
+    useEffect(() => {
+      if (user) {
+        const fetchEmojis = async () => {
+          try {
+            const firestore = getFirestore();
+            const userDocRef = doc(firestore, user.uid, 'Emojis');
+            const docSnap = await getDoc(userDocRef);
+            
+            if (docSnap.exists()) {
+              const emojisData = docSnap.data();
+              console.log('Emojis data:', emojisData);
+              setEmojis(emojisData);
+            }
+            
+          } catch (error) {
+            console.error('Error fetching emojis:', error);
+          }
+        };
+    
+        fetchEmojis();
+      }
+    }, [user]);
+    
   
     useEffect(() => {
       if (user) {
@@ -148,6 +173,11 @@ const emojiRepresentations = {
   
     const level = getDrunkennessLevel(currentBAC);
     const displayValue = displayPreference === 'emojis' ? emojiRepresentations[level.simple] : displayPreference === 'both' ? ` ${textRepresentations[level.simple]} ${emojiRepresentations[level.simple]} ` : textRepresentations[level.simple];
+    // const emojiKey = Object.keys(emojis).find(key => key.toLowerCase() === level.simple.toLowerCase());
+    // const displayValue = displayPreference === 'emojis' ? (emojiKey ? emojis[emojiKey] : '') : 
+    //                     displayPreference === 'both' ? `${textRepresentations[level.simple]} ${emojis[emojiKey]}` : 
+    //                     textRepresentations[level.simple];
+
     return (
       <View>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
