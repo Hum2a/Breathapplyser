@@ -1,32 +1,54 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../context/UserContext';
 
 const DisplaySettingsScreen = () => {
   const { user } = useContext(UserContext);
-  const [displayMode, setDisplayMode] = useState('both'); // 'emojis', 'text', or 'both'
+  const [displayMode, setDisplayMode] = useState(null); // Initially set to null
   const firestore = getFirestore();
 
   useEffect(() => {
-    const updateUserDisplay = async () => {
+    const fetchUserDisplay = async () => {
       try {
+        if (!user) return;
+
         const userDocRef = doc(firestore, user.uid, 'Display');
-        await setDoc(userDocRef, { DrunkennessDisplay: displayMode }, { merge: true });
-        console.log('User display mode updated:', displayMode);
+        const docSnap = await getDoc(userDocRef);
+
+        if (docSnap.exists()) {
+          setDisplayMode(docSnap.data().DrunkennessDisplay); // Set display mode if exists in Firebase
+        }
       } catch (error) {
-        console.error('Error updating user display mode:', error);
+        console.error('Error fetching user display mode:', error);
       }
     };
 
-    if (user) {
-      updateUserDisplay();
-    }
-  }, [displayMode, firestore, user]);
+    fetchUserDisplay(); // Fetch user display mode when component mounts
+  }, [firestore, user]);
 
-  const handleToggle = (mode) => {
-    setDisplayMode(mode);
+  const handleToggle = async (mode) => {
+    setDisplayMode(mode); // Update local state
+
+    try {
+      if (user) {
+        const userDocRef = doc(firestore, user.uid, 'Display');
+        await setDoc(userDocRef, { DrunkennessDisplay: mode }, { merge: true });
+        console.log('User display mode updated:', mode);
+      }
+    } catch (error) {
+      console.error('Error updating user display mode:', error);
+    }
   };
+
+  // Render loading indicator while fetching display mode from Firebase
+  if (displayMode === null) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
