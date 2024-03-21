@@ -150,6 +150,28 @@ export const DrunkScreenStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  button: {
+    backgroundColor: '#81D4FA', // A stylish light blue shade
+    padding: 12,
+    marginVertical: 8,
+    borderRadius: 8,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // For Android shadow effect
+  },
+  buttonText: {
+    color: '#0277BD', // A darker blue for text to ensure good readability
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  chartContainer: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#E7F2F8', // A lighter shade for the inner container for subtle contrast
+  },
 });
 
 

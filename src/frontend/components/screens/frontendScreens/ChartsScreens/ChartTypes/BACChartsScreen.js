@@ -16,6 +16,7 @@ const BACCharts = () => {
   const [showBACEntriesChart, setShowBACEntriesChart] = useState(false);
   const [showBACChart, setShowBACChart] = useState(false);
 
+  
   return (
     <SafeAreaView style={chartStyles.fullScreen}>
       <ScrollView>

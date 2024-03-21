@@ -9,13 +9,12 @@ const DrunkCharts = () => {
 
   return (
     <SafeAreaView style={DrunkScreenStyles.fullScreen}>
-      <ScrollView>
+      <ScrollView style={DrunkScreenStyles.chartContainer}>
         {/* Toggle button for Entries chart */}
-        <TouchableOpacity onPress={() => setShowEntriesChart(!showEntriesChart)} style={DrunkScreenStyles.toggleButton}>
-          <Text style={DrunkScreenStyles.toggleButtonText}>{showEntriesChart ? 'Hide Entries Chart' : 'Show Entries Chart'}</Text>
+        <TouchableOpacity onPress={() => setShowEntriesChart(!showEntriesChart)} style={DrunkScreenStyles.button}>
+          <Text style={DrunkScreenStyles.buttonText}>{showEntriesChart ? 'Hide Entries Chart' : 'Show Entries Chart'}</Text>
         </TouchableOpacity>
 
-        {/* Entries chart */}
         {showEntriesChart && (
           <View style={DrunkScreenStyles.chartContainer}>
             <DrunknessENTRIESChart />
@@ -23,8 +22,8 @@ const DrunkCharts = () => {
         )}
 
         {/* Toggle button for BL chart */}
-        <TouchableOpacity onPress={() => setShowBLChart(!showBLChart)} style={DrunkScreenStyles.toggleButton}>
-          <Text style={DrunkScreenStyles.toggleButtonText}>{showBLChart ? 'Hide BL Chart' : 'Show BL Chart'}</Text>
+        <TouchableOpacity onPress={() => setShowBLChart(!showBLChart)} style={DrunkScreenStyles.button}>
+          <Text style={DrunkScreenStyles.buttonText}>{showBLChart ? 'Hide BL Chart' : 'Show BL Chart'}</Text>
         </TouchableOpacity>
 
         {/* BL chart */}
