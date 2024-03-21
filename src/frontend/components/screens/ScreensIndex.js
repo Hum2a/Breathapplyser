@@ -34,6 +34,7 @@ export { default as LimitsScreen } from './frontendScreens/UsersAndSettingsScree
 export { default as NotificationManagerScreen } from './frontendScreens/UsersAndSettingsScreens/NotificationsManager';
 export { default as DataManagerScreen } from './frontendScreens/UsersAndSettingsScreens/DataManager';
 export { default as StaticVariablesScreen } from './frontendScreens/UsersAndSettingsScreens/StaticVariables';
+export { default as DisplaySettingsScreen } from './frontendScreens/UsersAndSettingsScreens/DisplayScreen';
 
 // Charts
 export { default as ChartsScreen } from './frontendScreens/ChartsScreens/OmniChartManager';

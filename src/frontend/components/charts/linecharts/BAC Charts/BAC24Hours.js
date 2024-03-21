@@ -8,20 +8,16 @@ import { UserContext } from '../../../../context/UserContext';
 const BACGraphLast12Hours = () => {
   const [bacData, setBacData] = useState([]);
   const firestore = getFirestore();
-  console.log("Firestore initialized:", firestore);
   const { user } = useContext(UserContext);
-  console.log("User from context:", user);
 
   useEffect(() => {
-    console.log("Effect to fetch BAC data triggered");
     const fetchBACDataLast12Hours = async () => {
       const twelveHoursAgo = moment().subtract(12, 'hours').format('YYYY-MM-DD HH:mm:ss');
       const now = moment().format('YYYY-MM-DD HH:mm:ss');
     
       try {
         const bacRef = collection(firestore, user.uid, "Alcohol Stuff", "BAC Level");
-        // Adjust query to compare strings
-        const q = query(bacRef, where("lastUpdated", ">=", twelveHoursAgo), where("lastUpdated", "<=", now), orderBy("lastUpdated"));
+        const q = query(bacRef, where("date", ">=", twelveHoursAgo), where("date", "<=", now), orderBy("date"));
         const querySnapshot = await getDocs(q);
         const fetchedData = [];
     
@@ -29,7 +25,7 @@ const BACGraphLast12Hours = () => {
           const data = doc.data();
           const entry = {
             value: data.currentBAC || data.value,
-            lastUpdated: data.lastUpdated, // Now a string
+            date: data.date, // Now a string
           };
           fetchedData.push(entry);
         });
@@ -40,21 +36,21 @@ const BACGraphLast12Hours = () => {
       }
     };
     
-
     if (user) {
-      console.log("User exists, fetching BAC data...");
       fetchBACDataLast12Hours();
-    } else {
-      console.log("No user found, skipping BAC data fetch.");
     }
   }, [user]);
 
-  console.log("BAC data state:", bacData);
   // Prepare the data for the graph
-  const labels = bacData.map(entry => moment(entry.lastUpdated).format('HH:mm'));
-  console.log("Chart labels:", labels);
-  const dataPoints = bacData.map(entry => entry.value);
-  console.log("Chart data points:", dataPoints);
+  const labels = [];
+  const dataPoints = [];
+  const currentHour = moment().startOf('hour');
+  for (let i = 11; i >= 0; i--) {
+    const hourLabel = currentHour.clone().subtract(i, 'hours').format('HH:mm');
+    labels.push(hourLabel);
+    const bacEntry = bacData.find(entry => moment(entry.date).format('HH') === currentHour.clone().subtract(i, 'hours').format('HH'));
+    dataPoints.push(bacEntry ? bacEntry.value : 0);
+  }
 
   return (
     <View>
@@ -70,21 +66,21 @@ const BACGraphLast12Hours = () => {
           yAxisSuffix=" BAC"
           yAxisInterval={1}
           chartConfig={{
-            backgroundColor: '#b6e6fd', // Light blue background
-            backgroundGradientFrom: '#81d4fa', // Lighter shade of blue
-            backgroundGradientTo: '#4fc3f7', // Slightly darker shade of blue for gradient end
-            decimalPlaces: 4, // Keep the precision for BAC values
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // White color for the chart lines
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Using black for readability against the light blue background
+            backgroundColor: '#b6e6fd',
+            backgroundGradientFrom: '#81d4fa',
+            backgroundGradientTo: '#4fc3f7',
+            decimalPlaces: 4,
+            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
             style: {
               borderRadius: 16
             },
             propsForDots: {
               r: '6',
               strokeWidth: '2',
-              stroke: '#0293ee' // A blue color that fits well with the theme for the dots stroke
+              stroke: '#0293ee'
             },
-            propsForLabels: { // Customizing label font size
+            propsForLabels: {
               fontSize: 10,
             }
           }}

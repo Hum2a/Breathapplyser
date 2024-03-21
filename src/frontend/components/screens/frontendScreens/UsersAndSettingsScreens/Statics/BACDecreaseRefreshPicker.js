@@ -1,13 +1,34 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../../context/UserContext';
 
 const BACDecreaseRefreshPicker = () => {
   const [refreshInterval, setRefreshInterval] = useState(10000); // Initial refresh interval value in milliseconds
   const firestore = getFirestore(); // Get the Firestore instance
   const { user } = useContext(UserContext);
+
+  useEffect(() => {
+    const fetchRefreshInterval = async () => {
+      try {
+        const refreshIntervalRef = doc(firestore, user.uid, 'BAC Refresh Rate');
+        const refreshIntervalDoc = await getDoc(refreshIntervalRef);
+        if (refreshIntervalDoc.exists()) {
+          const data = refreshIntervalDoc.data();
+          setRefreshInterval(data.refreshInterval);
+        } else {
+          console.log("BAC Refresh Rate document does not exist.");
+        }
+      } catch (error) {
+        console.error('Error fetching refresh interval:', error);
+      }
+    };
+
+    if (user) {
+      fetchRefreshInterval();
+    }
+  }, [user, firestore]);
 
   const handleIntervalChange = async (value) => {
     setRefreshInterval(value);
