@@ -41,8 +41,11 @@ import {
   SpentRankingsScreen,
   UnitRankingsScreen,
   AcceptRankingsScreen,
-  StaticVariablesScreen,
+  AlcoholicsScreen,
   DisplaySettingsScreen,
+  EmojiCustomisationScreen,
+  DrunkParametersScreen,
+  BACRefreshRateScreen,
 } from '../screens/ScreensIndex';
 
 const Stack = createNativeStackNavigator();
@@ -79,8 +82,11 @@ const AppNavigation = () => {
         <Stack.Screen name="FavouriteList" component={FavouriteListScreen} />
         <Stack.Screen name="NotificationManger" component={NotificationManagerScreen} />
         <Stack.Screen name="DataManager" component={DataManagerScreen} />
-        <Stack.Screen name="StaticVariables" component={StaticVariablesScreen} />
+        <Stack.Screen name="Alcoholics" component={AlcoholicsScreen} />
         <Stack.Screen name="Display" component={DisplaySettingsScreen} />
+        <Stack.Screen name="Emoji" component={EmojiCustomisationScreen} />
+        <Stack.Screen name='DrunkParams' component={DrunkParametersScreen} />
+        <Stack.Screen name="BACRefreshRate" component={BACRefreshRateScreen} />
         <Stack.Screen name="GetStarted" component={GetStartedScreen} />
         <Stack.Screen name="TodaysStats" component={TodaysStatsScreen} />
         <Stack.Screen name="AllStats" component={AllStatsScreen} />
