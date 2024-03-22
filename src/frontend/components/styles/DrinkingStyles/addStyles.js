@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-export const addStyles = StyleSheet.create({
+export const manualStyles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
@@ -179,4 +179,108 @@ export const addStyles = StyleSheet.create({
     backgroundColor: '#E3F2FD',
   },
  
+});
+
+export const autoStyles = StyleSheet.create({
+  container: {
+    backgroundColor: 'white', // Light blue background
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#03396c', // Deep blue title text
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  inputContainer: {
+    backgroundColor: '#E3F2FD', // Lighter blue input container
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  drinkContainer: {
+    marginBottom: 5,
+  },
+  drinkText: {
+    color: '#03396c', // Deep blue drink text
+    marginBottom: 5,
+  },
+  priceInput: {
+    width: '100%',
+    height: 45,
+    borderWidth: 1,
+    borderColor: '#0392cf', // Bright blue input borders
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    backgroundColor: '#E3F2FD', // Light blue input background
+    color: '#03396c', // Deep blue input text
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  button: {
+    backgroundColor: '#0275d8', // Darker blue button
+    borderRadius: 8,
+    elevation: 2,
+    height: 50,
+    width: 65,
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: '#FFFFFF', // White button text
+    fontSize: 14,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  timeText: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#005792', // Brighter blue time text
+    marginVertical: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: '#E1F5FE', // Lighter blue background for time text
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#0077B6', // Darker blue border
+    overflow: 'hidden',
+    textAlign: 'center',
+    elevation: 3,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#B3E5FC', // Light blue stats container background
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 20,
+  },
+  statText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#03396c', // Deep blue stat text
+  },
+  doubleToggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  doubleToggle: {
+    backgroundColor: '#DDDDDD',
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  doubleToggleActive: {
+    backgroundColor: '#0275d8',
+  },
+  doubleToggleText: {
+    color: '#333333',
+  },
+  doubleToggleTextActive: {
+    color: '#FFFFFF',
+  },
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Picker } from '@react-native-picker/picker';
-import { addStyles } from '../../styles/DrinkingStyles/addStyles';
+import { manualStyles as addStyles } from '../../styles/DrinkingStyles/addStyles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { TimePickerModal } from 'react-native-paper-dates';
 

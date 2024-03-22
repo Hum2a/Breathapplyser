@@ -1,5 +1,5 @@
 import React from 'react';
-import { addStyles } from '../../styles/DrinkingStyles/addStyles';
+import { manualStyles as addStyles } from '../../styles/DrinkingStyles/addStyles';
 import { AnimatedButton } from './AnimatedButton';
 
 export const StartTimeButton = ({ onPress }) => (

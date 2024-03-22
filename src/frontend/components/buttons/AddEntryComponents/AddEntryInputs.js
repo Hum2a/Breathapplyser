@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInput, View } from 'react-native';
-import { addStyles } from '../../styles/DrinkingStyles/addStyles';
+import { manualStyles as addStyles } from '../../styles/DrinkingStyles/addStyles';
 
 export const AlcoholInput = ({ value, onChangeText }) => (
   <TextInput

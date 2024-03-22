@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text } from 'react-native';
-import { addStyles } from '../../styles/DrinkingStyles/addStyles';
+import { manualStyles as addStyles } from '../../styles/DrinkingStyles/addStyles';
 import { favouriteStyles } from '../../styles/FavouriteStyles/favouriteStyles';
 
 export const AddNewFavouritesButton = ({ onPress }) => (
