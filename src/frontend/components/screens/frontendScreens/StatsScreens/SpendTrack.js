@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { getFirestore, doc, getDoc } from '@firebase/firestore';
+import { getFirestore, doc, onSnapshot } from '@firebase/firestore'; // Import onSnapshot
 import { UserContext } from '../../../../context/UserContext';
 import moment from 'moment';
 
@@ -11,51 +11,52 @@ const SpendingTrack = () => {
   const [spendingLimit, setSpendingLimit] = useState(0);
 
   useEffect(() => {
-    const fetchAmountSpent = async () => {
-      try {
-        const today = moment().format('YYYY-MM-DD')
-        const spentRef = doc(firestore, user.uid, 'Daily Totals', 'Amount Spent', today);
-        const docSnap = await getDoc(spentRef);
-        if (docSnap.exists()) {
-          setAmountSpent(docSnap.data().value);
+    const today = moment().format('YYYY-MM-DD');
+    if (user) {
+      const spentRef = doc(firestore, user.uid, 'Daily Totals', 'Amount Spent', today);
+      const limitsRef = doc(firestore, user.uid, 'Limits');
+
+      // Real-time listener for amount spent
+      const unsubscribeSpent = onSnapshot(spentRef, (doc) => {
+        if (doc.exists()) {
+          setAmountSpent(doc.data().value);
         } else {
           setAmountSpent(0);
         }
-      } catch (error) {
+      }, (error) => {
         console.error('Error fetching amount spent:', error);
-      }
-    };
+      });
 
-    const fetchSpendingLimit = async () => {
-      try {
-        const limitsRef = doc(firestore, user.uid, 'Limits');
-        const docSnap = await getDoc(limitsRef);
-        if (docSnap.exists()) {
-          setSpendingLimit(docSnap.data().spendingLimit);
+      // Real-time listener for spending limit
+      const unsubscribeLimits = onSnapshot(limitsRef, (doc) => {
+        if (doc.exists()) {
+          setSpendingLimit(doc.data().spendingLimit);
         }
-      } catch (error) {
+      }, (error) => {
         console.error('Error fetching spending limit:', error);
-      }
-    };
+      });
 
-    fetchAmountSpent();
-    fetchSpendingLimit();
+      // Cleanup function to unsubscribe from the listeners when the component unmounts
+      return () => {
+        unsubscribeSpent();
+        unsubscribeLimits();
+      };
+    }
   }, [user]);
 
-  // Calculate the color dynamically based on the ratio of amountSpent to spendingLimit
   const calculateColor = () => {
-    const ratio = amountSpent / spendingLimit;
-    const green = Math.round(255 * ratio); // Change the intensity of green based on the ratio
-    const red = Math.round(255 * (1 - ratio)); // Change the intensity of red based on the ratio
+    const ratio = Math.min(amountSpent / spendingLimit, 1); // Ensure the ratio does not exceed 1
+    const red = Math.round(255 * ratio);
+    const green = Math.round(255 * (1 - ratio));
     return `rgb(${red}, ${green}, 0)`;
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Amount Spent: </Text>
-      <Text style={[styles.value, { color: calculateColor() }]}>£{amountSpent} </Text>
+      <Text style={[styles.value, { color: calculateColor() }]}>£{amountSpent.toFixed(2)}</Text>
       <Text style={styles.separator}>|</Text>
-      <Text style={styles.limits}> £{spendingLimit}</Text>
+      <Text style={styles.limits}> £{spendingLimit.toFixed(2)}</Text>
     </View>
   );
 };
@@ -69,24 +70,23 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginRight: 5,
+    marginRight: 3,
     color: '#7048B6',
   },
   value: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginRight: 5,
+    marginRight: 2,
   },
   separator: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginRight: 5,
-    color: '#000000', // You can adjust the separator color here
+    color: '#000000',
   },
   limits: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#ff0000', // You can adjust the color of limits here
+    color: '#ff0000',
   },
 });
 
