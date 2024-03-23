@@ -21,6 +21,7 @@ import { addEntryToFavourites } from '../../../../../backend/app/utils/handles/a
 import { AnimatedButton } from '../../../buttons/AddEntryComponents/AnimatedButton';
 import Dialog from 'react-native-dialog';
 import { dialogStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
+import { saveDailyTotals } from '../../../../../backend/firebase/queries/saveDailyTotals';
 
 const ManualEntryScreen = ({ navigation }) => {
   const [drinks, setDrinks] = useState([]);
@@ -137,7 +138,7 @@ const ManualEntryScreen = ({ navigation }) => {
     if (isFutureTime(combinedDateTime)) {
       runShakeAnimation();
       runColourFlashAnimation();
-      alert("Future times are not allowed.");
+      Alert("Future times are not allowed.");
       return;
     }
     setSelectedStartTime(formattedTime);
@@ -197,80 +198,56 @@ const ManualEntryScreen = ({ navigation }) => {
 
   const handleSaveEntry = async () => {
     if (!validateAmount(amount) || !validateUnits(units) || !validatePrice(price)) {
-      setSaveEntryDialogMessage('Please enter valid values for Amount, Units, and Price.');
-      setIsSaveEntryDialogVisible(true);
-      return;
+        setSaveEntryDialogMessage('Please enter valid values for Amount, Units, and Price.');
+        setIsSaveEntryDialogVisible(true);
+        return;
     }
-  
-    if (!user) {
-      console.error("User data is not available");
-      return;
-    }
-  
-    // Convert the selected amount to a number
-    const selectedAmount = parseInt(amount);
-    const entryDetailsArray = []; // Declare an array to store entryDetails
-  
-    // Create multiple entries based on the selected amount
-    for (let i = 0; i < selectedAmount; i++) {
-      // Your entry details here
-      const entryDetails = {
-        alcohol, amount: 1, units, price, type, selectedStartTime, selectedEndTime, selectedDate, selectedCurrency
-      };
-  
-      entryDetailsArray.push(entryDetails); // Add entryDetails to the array
-  
-      await saveEntry(user, userProfile, entryDetails);
-  
-      const bacUpdateDetails = {
-        selectedStartTime, selectedEndTime, selectedDate
-      };
-  
-      await saveBACLevel(user, units, userProfile, bacUpdateDetails);
-  
-      const BACIncrease = calculateBACIncrease(units, userProfile);
-      entryDetails.BACIncrease = BACIncrease;
-    }
-  
-    // Update total amounts for the day
-    const selectedDateStr = moment(selectedDate).format('YYYY-MM-DD');
-    const amountSpentRef = doc(firestore, user.uid, "Daily Totals", "Amount Spent", `${selectedDateStr}`);
-    const unitsIntakeRef = doc(firestore, user.uid, "Daily Totals", "Unit Intake", `${selectedDateStr}`);
-    const bacLevelRef = doc(firestore, user.uid, "Daily Totals", "BAC Level", `${selectedDateStr}`);
-  
-    try {
-      // Fetch existing values
-      const amountSpentDoc = await getDoc(amountSpentRef);
-      const unitsIntakeDoc = await getDoc(unitsIntakeRef);
-      const bacLevelDoc = await getDoc(bacLevelRef);
-  
-      // Existing values or default to 0 if not present
-      const existingAmountSpent = amountSpentDoc.exists() ? amountSpentDoc.data().value : 0;
-      const existingUnitsIntake = unitsIntakeDoc.exists() ? unitsIntakeDoc.data().value : 0;
-      const existingBACLevel = bacLevelDoc.exists() ? bacLevelDoc.data().value : 0;
-  
-      // Calculate new totals
-      const newAmountSpent = existingAmountSpent + entryDetailsArray.reduce((total, entry) => total + (entry.amount * entry.price), 0);
-      const newUnitsIntake = existingUnitsIntake + entryDetailsArray.reduce((total, entry) => total + parseInt(entry.units), 0);
-      const newBACLevel = existingBACLevel + entryDetailsArray.reduce((total, entry) => total + parseFloat(entry.BACIncrease), 0);
-  
-      // Update and save new values
-      await setDoc(amountSpentRef, { value: newAmountSpent, lastUpdated: moment().format('YY-MM-DD HH:mm:ss')}, { merge: true });
-      await setDoc(unitsIntakeRef, { value: newUnitsIntake, lastUpdated: moment().format('YY-MM-DD HH:mm:ss')}, { merge: true });
-      await setDoc(bacLevelRef, { value: newBACLevel, lastUpdated: moment().format('YY-MM-DD HH:mm:ss')}, { merge: true });
-    } catch (error) {
-      console.error('Error updating daily totals:', error);
-      Alert.alert('Error', 'Could not update daily totals.');
-    }
-  
-    const selectedCurrencyAmountSpent = amount * price;
-    const updatedAmountSpent = { ...amountSpent, [selectedCurrency]: selectedCurrencyAmountSpent };
-    setAmountSpent(updatedAmountSpent);
 
-    setSaveEntryDialogMessage('Entry Added');
+    if (!user) {
+        console.error("User data is not available");
+        return;
+    }
+
+    const selectedAmount = parseInt(amount);
+    const entryDetailsArray = [];
+
+    for (let i = 0; i < selectedAmount; i++) {
+        const entryDetails = {
+            alcohol, 
+            amount: 1, 
+            units, 
+            price, 
+            type, 
+            selectedStartTime, 
+            selectedEndTime, 
+            selectedDate, 
+            selectedCurrency
+        };
+
+        entryDetailsArray.push(entryDetails);
+
+        await saveEntry(user, userProfile, entryDetails);
+
+        const bacUpdateDetails = {
+            selectedStartTime, 
+            selectedEndTime, 
+            selectedDate
+        };
+
+        await saveBACLevel(user, units, userProfile, bacUpdateDetails);
+
+        const BACIncrease = calculateBACIncrease(units, userProfile);
+        entryDetails.BACIncrease = BACIncrease;
+    }
+
+    // Assuming saveDailyTotals function accepts the user, firestore instance, selected date, and entry details array
+    await saveDailyTotals(firestore, user, selectedDate, entryDetailsArray);
+
+    setSaveEntryDialogMessage('Entry Added Successfully');
     setIsSaveEntryDialogVisible(true);
     navigation.navigate('Home');
-  };
+};
+
 
   const handleCheckLimits = async () => {
     console.log("handleCheckLimits called");
