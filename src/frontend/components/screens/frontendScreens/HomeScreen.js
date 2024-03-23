@@ -67,6 +67,10 @@ const HomeScreen = () => {
     navigation.navigate('Achievements');
   };
 
+  const NavigateToLifeTimeStats = () => {
+    navigation.navigate('LifeTimeStats');
+  };
+
   const NavigateToOnlineRankings = async () => {
     const userDocRef = doc(firestore, 'Users', user.uid);
   
@@ -139,6 +143,14 @@ const HomeScreen = () => {
               style={homeStyles.medalIcon}
             />
           </TouchableOpacity>
+
+          <TouchableOpacity onPress={NavigateToLifeTimeStats} style={homeStyles.settingsIcon}>
+          <Image
+            source={require('../../../assets/images/lifetime_stats.png')}
+            style={homeStyles.medalIcon}
+          />
+        </TouchableOpacity>
+      
           
           <TouchableOpacity style={homeStyles.settingsIcon} onPress={NavigateToSettings}>
             <SpinningCog />

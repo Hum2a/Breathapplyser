@@ -1,8 +1,3 @@
-export { default as TotalUnitsChart } from './linecharts/IndividualCharts/TotalUnitsChart';
-export { default as RealTimeBACChart } from './linecharts/BAC Charts/old charts/RealTimeBACChart';
-export { default as AmountSpentChart } from './linecharts/IndividualCharts/SpentChart';
-export { default as DrinkNamesChart } from './barcharts/DrinkNamesChart';
-export { default as DrinkTypesChart } from './barcharts/DrinkTypesChart';
 export { default as CombinedChart } from './linecharts/CombinedChart';
 
 // Blood Alcohol Content
@@ -16,3 +11,16 @@ export { default as BAC12Hours } from './linecharts/BAC Charts/BAC24Hours';
 export { default as DrunknessENTRIESChart } from './linecharts/DrunkCharts/DrunknessEntriesChart';
 export { default as DrunknessBLChart } from './linecharts/DrunkCharts/DrunknessBLChart';
 
+// Types
+export { default as DrinkTypesBarChart } from './barcharts/DrinkTypesChart';
+export { default as DrinkTypesPieChart } from './piecharts/DrinkTypesPieChart';
+
+// Names
+export { default as DrinkNamesChart } from './barcharts/DrinkNamesChart';
+export { default as DrinkNamesPieChart } from './piecharts/DrinkNamesPieChart';
+
+// Amount Spent
+export { default as AmountSpentChart } from './linecharts/IndividualCharts/SpentChart';
+
+// Units
+export { default as TotalUnitsChart } from './linecharts/IndividualCharts/TotalUnitsChart';
