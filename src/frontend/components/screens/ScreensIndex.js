@@ -53,6 +53,7 @@ export { default as TodaysStatsScreen } from './frontendScreens/StatsScreens/Tod
 export { default as AllStatsScreen } from './frontendScreens/StatsScreens/AllStats';
 export { default as CurrentNightOutScreen } from './frontendScreens/StatsScreens/CurrentNightOut';
 export { default as CompareNightsOutScreen } from './frontendScreens/StatsScreens/CompareNightsOut';
+export { default as LifeTimeStatsScreen } from './frontendScreens/StatsScreens/LifetimeStats';
 
 // Misc
 export { default as AchievementsScreen} from './frontendScreens/StatsScreens/Achievements';

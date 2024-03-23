@@ -46,6 +46,7 @@ import {
   EmojiCustomisationScreen,
   DrunkParametersScreen,
   BACRefreshRateScreen,
+  LifeTimeStatsScreen,
 } from '../screens/ScreensIndex';
 
 const Stack = createNativeStackNavigator();
@@ -90,6 +91,7 @@ const AppNavigation = () => {
         <Stack.Screen name="GetStarted" component={GetStartedScreen} />
         <Stack.Screen name="TodaysStats" component={TodaysStatsScreen} />
         <Stack.Screen name="AllStats" component={AllStatsScreen} />
+        <Stack.Screen name="LifeTimeStats" component={LifeTimeStatsScreen} />
         <Stack.Screen name="CurrentNight" component={CurrentNightOutScreen} />
         <Stack.Screen name="CompareNights" component={CompareNightsOutScreen} />
         <Stack.Screen name="Achievements" component={AchievementsScreen} />

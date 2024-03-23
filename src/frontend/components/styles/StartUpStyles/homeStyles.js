@@ -9,7 +9,7 @@ export const homeStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#9EAFB7',
+    backgroundColor: '#A5F5EF',
   },
   drinksWidgetContainer: {
     position: 'absolute',
@@ -84,7 +84,6 @@ export const homeStyles = StyleSheet.create({
     position: 'absolute',
     flexDirection: 'row',
     top: 50, // Adjust the top position as needed
-    right: 10, // Align the container to the top right corner
     zIndex: 999, // Adjust the z-index as needed
   },
   settingsIcon: {
@@ -128,7 +127,6 @@ export const homeStyles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     top: 150,
-    left: 60,
     textAlign: 'center',
   },
   medalIcon: {
