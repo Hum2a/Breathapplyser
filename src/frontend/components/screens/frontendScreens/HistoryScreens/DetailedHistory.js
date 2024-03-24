@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert, Image } from 'react-native';
 import { DetailedHistoryStyles as styles } from '../../../styles/HistoryStyles/detailedHistoryStyles';
 import { collection, query, where, getDocs, getFirestore, Timestamp, doc, deleteDoc, getDoc, setDoc } from 'firebase/firestore';
 import moment from 'moment';
@@ -13,6 +13,13 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
   const [entries, setEntries] = useState([]);
   const [selectedEntry, setSelectedEntry] = useState(null); // Track the selected entry for deletion
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+  const [summary, setSummary] = useState({
+    totalDrinks: 0,
+    amountSpent: 0,
+    unitsIntook: 0,
+    drinkTypes: {}
+  });
+  
   const firestore = getFirestore();
   const { user } = useContext(UserContext);
 
@@ -53,34 +60,23 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
     fetchEntries();
   }, [date, firestore, user]);
 
+  useEffect(() => {
+    const newSummary = entries.reduce((acc, entry) => {
+      acc.totalDrinks += 1;
+      acc.amountSpent += entry.price;
+      acc.unitsIntook += entry.units;
+      acc.drinkTypes[entry.type] = (acc.drinkTypes[entry.type] || 0) + 1;
+      return acc;
+    }, { totalDrinks: 0, amountSpent: 0, unitsIntook: 0, drinkTypes: {} });
+  
+    setSummary(newSummary);
+  }, [entries]);
+
   const chartData = entries.map(entry => ({
     date: entry.date,
     units: entry.units,
   }));
   console.log('ChartData:', chartData); // Logging Chart Data
-
-  // const handleLongPressEntry = (entry) => {
-  //   console.log('DetailedHistoryScreen: Long Pressed Entry:', entry); // Logging which entry was long-pressed
-  //   Alert.alert(
-  //     'Entry Options',
-  //     'Choose an action for this entry:',
-  //     [
-  //       {
-  //         text: 'Edit',
-  //         onPress: () => handleEditEntry(entry),
-  //       },
-  //       {
-  //         text: 'Delete',
-  //         onPress: () => handleDeleteEntry(entry),
-  //         style: 'destructive',
-  //       },
-  //       {
-  //         text: 'Cancel',
-  //         style: 'cancel',
-  //       },
-  //     ],
-  //   );
-  // };
 
   const handleEditEntry = (entry) => {
     console.log('Editing Entry:', entry); // Logging the entry to be edited
@@ -148,9 +144,23 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
     setSelectedEntry(null); // Clear the selected entry
   };
 
+  const handleNavigateToVisualData = () =>{
+    navigation.navigate('VisualDetailedHistory', { date })
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Detailed History - {date}</Text>
+       <View style={styles.pieButtonContainer}>
+        <TouchableOpacity
+          style={styles.visualizeButton}
+          onPress={handleNavigateToVisualData}>
+          <Image
+            source={require('../../../../assets/images/pie.png')}
+            style={styles.visualizeButtonImage} 
+          />
+        </TouchableOpacity>
+    </View>
+      <Text style={styles.title}>{date}</Text>
       <FlatList
         data={entries}
         renderItem={({ item }) => (
@@ -160,7 +170,7 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
           >
             <View style={styles.entryRow}>
               <Text style={[styles.entryText, styles.entryLabel]}>Date:</Text>
-              <Text style={[styles.entryText, styles.entryValue]}> {item.date}</Text>
+              <Text style={[styles.entryText, styles.entryValue]}> {moment(item.date).format('YYYY-MM-DD')}</Text>
             </View>
             <View style={styles.entryRow}>
               <Text style={[styles.entryText, styles.entryLabel]}>Start Time:</Text>
@@ -194,6 +204,16 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
         )}
         keyExtractor={(item, index) => index.toString()}
       />
+
+      <View style={styles.summaryContainer}>
+        <Text style={styles.summaryTitle}>Day Summary</Text>
+        <Text style={styles.summaryText}>Total Drinks: {summary.totalDrinks}</Text>
+        <Text style={styles.summaryText}>Amount Spent: £{summary.amountSpent.toFixed(2)}</Text>
+        <Text style={styles.summaryText}>Units Intook: {summary.unitsIntook.toFixed(2)}</Text>
+        {Object.entries(summary.drinkTypes).map(([type, count]) => (
+          <Text key={type} style={styles.summaryText}>{type}: {count}</Text>
+        ))}
+      </View>
       {/* Delete dialog */}
       <Dialog.Container 
         visible={deleteDialogVisible}

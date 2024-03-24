@@ -70,7 +70,7 @@ const AutoEntryScreen = () => {
                 type: selectedDrinkType, // Use the selectedDrinkType for the drink type
                 selectedStartTime: moment(selectedStartTime, 'HH:mm').toISOString(),
                 selectedEndTime: moment(selectedEndTime, 'HH:mm').toISOString(),
-                selectedDate: moment(selectedDate).toISOString(),
+                selectedDate: selectedDate,
                 selectedCurrency: "GBP",
             };
         

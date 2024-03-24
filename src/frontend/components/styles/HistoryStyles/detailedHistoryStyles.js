@@ -6,27 +6,13 @@ export const DetailedHistoryStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#BAEAFF', // Light blue background to keep consistency with the app theme
-    paddingVertical: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginVertical: 20,
+    marginVertical: 2,
     color: '#003366', // Deep blue for a striking contrast
     textAlign: 'center',
-  },
-  chartContainer: {
-    backgroundColor: 'white',
-    padding: 16,
-    borderRadius: 8,
-    elevation: 2, // Add shadow for depth
-    marginBottom: 20,
-  },
-  chartTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#005f73', // A darker blue for the chart title
-    marginBottom: 10,
   },
   entryItem: {
     backgroundColor: '#E1F5FE', // Adjust as needed
@@ -57,4 +43,68 @@ export const DetailedHistoryStyles = StyleSheet.create({
   entryValue: {
     fontStyle: 'italic',
   },
+  summaryContainer: {
+    marginVertical: 20,
+    padding: 15,
+    backgroundColor: '#E1F5FE', // A light blue background to fit the theme
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+    // Add some spacing around the container
+    marginHorizontal: 10,
+  },
+  
+  summaryTitle: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginBottom: 10,
+    color: '#0277BD', // A darker blue for the title text to stand out
+  },
+  
+  summaryText: {
+    fontSize: 16,
+    color: '#01579B', // Slightly darker blue for the summary text for better readability
+    // Add some margin for a better layout
+    marginBottom: 5,
+  },
+  // In your DetailedHistoryStyles.js or wherever you define your styles
+  pieButtonContainer: {
+    position: 'relative', // Ensures the button can be absolutely positioned within
+    height: 30, // Ensure this is enough space for the button
+    width: '100%', // Or adjust to fit your layout
+    alignItems: 'flex-end', // Aligns children to the right
+    justifyContent: 'flex-start', // Aligns children to the top
+},
+  visualizeButton: {
+    position: 'absolute',
+    right: 10, // Adjust according to your layout
+    top: 10, // Adjust according to your layout
+    width: 34, // Define a proper size for the button
+    height: 34, // Define a proper size for the button
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 25, // Half of width/height to make it round
+    backgroundColor: '#81D4FA',
+    elevation: 4, // Add shadow for Android
+    shadowColor: "#000", // Shadow for iOS
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+  },
+  visualizeButtonImage: {
+    width: 24, // Set the width of the image
+    height: 24, // Set the height of the image
+    resizeMode: 'contain', // Make sure the image fits within the button
+  },
+
 });

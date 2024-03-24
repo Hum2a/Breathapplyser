@@ -22,32 +22,6 @@ const HistoryScreen = ({ navigation }) => {
     }
   }, [user]);
 
-  // // Fetch entries for the selected date when it changes
-  // useEffect(() => {
-  //   if (user && selectedDate) {
-  //     fetchEntriesForDate(selectedDate);
-  //   }
-  // }, [user, selectedDate]);
-  
-  // const fetchDates = async () => {
-  //   try {
-  //     const querySnapshot = await getDocs(collection(firestore, user.uid, "Alcohol Stuff", "Entries"));
-  //     const datesWithCountsPromises = querySnapshot.docs.map(async (doc) => {
-  //       const dateStr = doc.id;
-  //       const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
-  //       const entriesSnapshot = await getDocs(entriesRef);
-  //       return { id: doc.id, name: doc.id, count: entriesSnapshot.size }; // Include the count of entries
-  //     });
-  //     let datesWithCounts = await Promise.all(datesWithCountsPromises);
-  
-  //     // Sort the dates by most recent
-  //     datesWithCounts = datesWithCounts.sort((a, b) => moment(b.name, 'YYYY-MM-DD').diff(moment(a.name, 'YYYY-MM-DD')));
-  
-  //     setDates(datesWithCounts); // Set the sorted dates along with their entry counts
-  //   } catch (error) {
-  //     console.error('Error fetching dates and their entry counts:', error);
-  //   }
-  // };
 
   const fetchData = async () => {
     try {

@@ -47,6 +47,7 @@ import {
   DrunkParametersScreen,
   BACRefreshRateScreen,
   LifeTimeStatsScreen,
+  VisualDetailedHistoryScreen
 } from '../screens/ScreensIndex';
 
 const Stack = createNativeStackNavigator();
@@ -67,6 +68,7 @@ const AppNavigation = () => {
         <Stack.Screen name="History" component={HistoryScreen} />
         <Stack.Screen name="DetailedHistory" component={DetailedHistoryScreen} />
         <Stack.Screen name="HistoryCalender" component={HistoryCalendarScreen} />
+        <Stack.Screen name="VisualDetailedHistory" component={VisualDetailedHistoryScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Limits" component={LimitsScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />

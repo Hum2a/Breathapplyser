@@ -19,6 +19,7 @@ export { default as EntriesScreen } from './frontendScreens/EntriesScreens/Entri
 export { default as HistoryScreen } from './frontendScreens/HistoryScreens/History';
 export { default as DetailedHistoryScreen } from './frontendScreens/HistoryScreens/DetailedHistory';
 export { default as HistoryCalendarScreen } from './frontendScreens/HistoryScreens/HistoryCalender';
+export { default as VisualDetailedHistoryScreen } from './frontendScreens/HistoryScreens/VisualDetailedHistory';
 
 // Favourites
 export { default as FavouritesScreen } from './frontendScreens/FavouritesScreens/ViewFavourites';
