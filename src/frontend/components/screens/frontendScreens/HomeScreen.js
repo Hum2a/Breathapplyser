@@ -129,8 +129,13 @@ const HomeScreen = () => {
           <SpendingTrack />
         </View>
 
-        <View style={homeStyles.settingsContainer}>
+                {/* Drunkenness Level Display */}
+        <View style={homeStyles.drunkennessContainer}>
+          <DrunkennessLevelFb />
+        </View>
 
+        <View style={homeStyles.topLeftContainer}>
+          
         <TouchableOpacity onPress={NavigateToOnlineRankings} style={homeStyles.settingsIcon}>
           <Image
             source={require('../../../assets/images/world.png')}
@@ -145,6 +150,10 @@ const HomeScreen = () => {
             />
           </TouchableOpacity>
 
+        </View>
+
+        <View style={homeStyles.topRightContainer}>
+
           <TouchableOpacity onPress={NavigateToLifeTimeStats} style={homeStyles.settingsIcon}>
           <Image
             source={require('../../../assets/images/lifetime_stats.png')}
@@ -157,11 +166,6 @@ const HomeScreen = () => {
             <SpinningCog />
           </TouchableOpacity>
 
-        </View>
-
-        <View style={homeStyles.drunknessContainer}>
-          <DrunkennessLevel />
-          <DrunkennessLevelFb />
         </View>
 
       <View style={homeStyles.middleContainer}>

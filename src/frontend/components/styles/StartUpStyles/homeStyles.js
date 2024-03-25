@@ -80,15 +80,23 @@ export const homeStyles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  settingsContainer: {
+  topRightContainer: {
     position: 'absolute',
     flexDirection: 'row',
     top: 50, // Adjust the top position as needed
     zIndex: 999, // Adjust the z-index as needed
+    right: 1,
   },
   settingsIcon: {
     fontSize: 24, // Adjust the size of the icon as needed
     color: '#000', // Adjust the color of the icon as needed
+  },
+  topLeftContainer: {
+    position: 'absolute',
+    flexDirection: 'row',
+    top: 50, // Adjust the top position as needed
+    zIndex: 999, // Adjust the z-index as needed
+    left: 1,
   },
   middleContainer: {
     position: 'absolute',
@@ -133,5 +141,22 @@ export const homeStyles = StyleSheet.create({
     width: 35,
     height: 35,
     marginRight: 2,
-  }
+  },
+  drunkennessContainer: {
+    backgroundColor: '#ffffff', // Light gray, adjust as necessary
+    padding: 15,
+    borderRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 35, // Adjust the top position to center it at the top of the screen
+  },
 });
