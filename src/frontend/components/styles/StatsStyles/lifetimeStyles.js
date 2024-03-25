@@ -107,4 +107,13 @@ export const lifetimeStyles = StyleSheet.create({
         fontSize: 16,
         color: '#0277BD', // Light Blue 800
     },
+    dayRangeInput: {
+        width: 60, // Adjust the width as needed
+        textAlign: 'center',
+        padding: 8,
+        marginHorizontal: 10, // Adjust for spacing
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+    },    
 });

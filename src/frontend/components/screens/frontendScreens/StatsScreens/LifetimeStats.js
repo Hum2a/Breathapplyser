@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import { View, Text, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { getFirestore, collection, getDocs, query, orderBy, doc } from 'firebase/firestore';
 import { auth } from '../../../../../backend/firebase/database/firebase';
 import moment from 'moment';
@@ -178,17 +178,21 @@ const LifetimeStats = () => {
                 </TouchableOpacity>
 
                 <View style={styles.dayRangeContainer}>
-
                     <TouchableOpacity style={styles.dayRangeButton} onPress={decreaseDayRange}>
                         <Text style={styles.dayRangeButtonText}>Decrease Day Range</Text>
                     </TouchableOpacity>
 
-                    <Text style={styles.dayRangeText}>Day Range: {dayRange}</Text>
-                    
+                    <TextInput
+                        style={styles.dayRangeInput} // Define this style in your StyleSheet
+                        value={String(dayRange)}
+                        onChangeText={(text) => setDayRange(Number(text))}
+                        keyboardType="numeric"
+                        returnKeyType="done"
+                    />
+
                     <TouchableOpacity style={styles.dayRangeButton} onPress={increaseDayRange}>
                         <Text style={styles.dayRangeButtonText}>Increase Day Range</Text>
                     </TouchableOpacity>
-
                 </View>
 
                 <View style={styles.tableContainer}>
