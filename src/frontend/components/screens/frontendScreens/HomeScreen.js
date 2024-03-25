@@ -7,6 +7,7 @@ import { appStyles } from '../../styles/AppStyles/appStyles';
 import StatsScreen from './StatsScreens/TodaysStats';
 import BACDecrease from '../../../../backend/app/background/BAC/bacDecreaser';
 import DrunkennessLevel from '../../../../backend/app/background/Drunkness/drunknessCalculator';
+import DrunkennessLevelFb from '../../../../backend/app/background/Drunkness/drunknessCalculatorFb';
 import BacWiper from '../../../../backend/app/background/BAC/bacWiper';
 import { getFirestore, deleteDoc, doc, collection, query, getDocs, getDoc } from 'firebase/firestore';
 import { UserContext } from '../../../context/UserContext';
@@ -160,6 +161,7 @@ const HomeScreen = () => {
 
         <View style={homeStyles.drunknessContainer}>
           <DrunkennessLevel />
+          <DrunkennessLevelFb />
         </View>
 
       <View style={homeStyles.middleContainer}>

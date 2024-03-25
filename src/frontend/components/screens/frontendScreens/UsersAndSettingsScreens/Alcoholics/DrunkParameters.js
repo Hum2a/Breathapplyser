@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, StyleSheet } from 'react-native';
 import { UserContext } from '../../../../../context/UserContext';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 
 const DrunkParametersScreen = () => {
     const { user } = useContext(UserContext);
@@ -21,6 +21,7 @@ const DrunkParametersScreen = () => {
         { range: '0.50+', simple: 'Death is coming', detailed: 'Onset of coma, and likelihood of death due to respiratory arrest.' }
     ]);
     
+    
 
     useEffect(() => {
         if (user) {
@@ -39,44 +40,69 @@ const DrunkParametersScreen = () => {
         }
       }, [user]);
     
-      useEffect(() => {
-        const saveLevelsToFirebase = async () => {
-          try {
-            if (user) {
-              const levelsRef = doc(firestore, user.uid, 'Drunk Parameters');
-              await setDoc(levelsRef, { levels });
-              Alert.alert('Success', 'Drunkenness levels saved successfully.');
-            }
-          } catch (error) {
-            console.error('Error saving levels:', error);
-            Alert.alert('Error', 'Failed to save drunkenness levels.');
-          }
-        };
-    
-        saveLevelsToFirebase();
-      }, [levels, user]);
-    
       const addLevel = () => {
-        if (!newLevel.range || !newLevel.simple || !newLevel.detailed) {
+        if (!newLevel.lowerBound || !newLevel.upperBound || !newLevel.simple || !newLevel.detailed) {
           Alert.alert('Error', 'Please fill out all fields.');
           return;
         }
-        setLevels([...levels, newLevel]);
-        setNewLevel({ range: '', simple: '', detailed: '' });
+        const newRange = `${newLevel.lowerBound} - ${newLevel.upperBound}`;
+        const levelToAdd = {
+          range: newRange,
+          simple: newLevel.simple,
+          detailed: newLevel.detailed
+        };
+        setLevels([...levels, levelToAdd]);
+        setNewLevel({ lowerBound: '', upperBound: '', simple: '', detailed: '' });
+        saveLevelsToFirebase([...levels, levelToAdd]); // Pass the updated levels array to be saved
       };
+      
     
-      const deleteLevel = (index) => {
+      const deleteLevel = async (index) => {
         Alert.alert(
           'Confirmation',
           'Are you sure you want to delete this drunkenness level?',
           [
             { text: 'Cancel', style: 'cancel' },
-            { text: 'Delete', onPress: () => setLevels(levels.filter((_, i) => i !== index)) }
+            { text: 'Delete', onPress: async () => {
+              const newLevels = levels.filter((_, i) => i !== index);
+              setLevels(newLevels); // Update state
+              
+              // Now, update Firebase
+              try {
+                const levelsRef = doc(firestore, user.uid, 'Drunk Parameters');
+                await setDoc(levelsRef, { levels: newLevels });
+                Alert.alert('Success', 'Drunkenness level deleted successfully.');
+              } catch (error) {
+                console.error('Error deleting level:', error);
+                Alert.alert('Error', 'Failed to delete drunkenness level.');
+              }
+            } }
           ]
         );
       };
+      
+
+      const saveLevelsToFirebase = async (updatedLevels) => {
+        try {
+          if (user) {
+            const levelsRef = doc(firestore, user.uid, 'Drunk Parameters');
+            await setDoc(levelsRef, { levels: updatedLevels || levels });
+            Alert.alert('Success', 'Drunkenness levels saved successfully.');
+          }
+        } catch (error) {
+          console.error('Error saving levels:', error);
+          Alert.alert('Error', 'Failed to save drunkenness levels.');
+        }
+      };
+      
     
-      const [newLevel, setNewLevel] = useState({ range: '', simple: '', detailed: '' });
+      const [newLevel, setNewLevel] = useState({
+        lowerBound: '',
+        upperBound: '',
+        simple: '',
+        detailed: ''
+      });
+      ;
     
       return (
         <View style={styles.container}>
@@ -93,12 +119,20 @@ const DrunkParametersScreen = () => {
             ))}
           </ScrollView>
           <View style={styles.formContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="BAC Range"
-              value={newLevel.range}
-              onChangeText={(text) => setNewLevel({ ...newLevel, range: text })}
-            />
+          <TextInput
+            style={styles.input}
+            placeholder="Lower Bound"
+            value={newLevel.lowerBound}
+            keyboardType="numeric" // Ensure only numbers can be entered
+            onChangeText={(text) => setNewLevel({ ...newLevel, lowerBound: text })}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Upper Bound"
+            value={newLevel.upperBound}
+            keyboardType="numeric" // Ensure only numbers can be entered
+            onChangeText={(text) => setNewLevel({ ...newLevel, upperBound: text })}
+          />
             <TextInput
               style={styles.input}
               placeholder="Simple Description"

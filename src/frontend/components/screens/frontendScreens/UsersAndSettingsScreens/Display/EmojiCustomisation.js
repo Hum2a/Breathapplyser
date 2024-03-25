@@ -3,185 +3,57 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../../context/UserContext';
 
-const emojiRepresentations = {
-  Sober: '😐',
-  Buzzed: '😉',
-  Relaxed: '😊',
-  'A Bit of a liability': '🫠',
-  'Visibly Drunk': '🙃',
-  Embarassing: '🫣',
-  Sickly: '🥲',
-  'Either pull or go home': '🫡',
-  'Find a friend': '🤐',
-  'Gonna Pass out': '🫨',
-  'Call and Ambulance': '😷',
-  'Death is coming': '🫥',
-};
-
 const EmojiSettingsScreen = () => {
   const { user } = useContext(UserContext);
   const [emojis, setEmojis] = useState({}); // Initially set to an empty object
+  const [drunkParameters, setDrunkParameters] = useState([]);
   const firestore = getFirestore();
 
   useEffect(() => {
-    const fetchUserEmojis = async () => {
-      try {
-        if (!user) return;
+    if (user) {
+      // Fetch drunk parameters
+      const parametersRef = doc(firestore, user.uid, 'Drunk Parameters');
+      getDoc(parametersRef).then((docSnap) => {
+        if (docSnap.exists()) {
+          setDrunkParameters(docSnap.data().levels);
+        }
+      });
 
-        const userDocRef = doc(firestore, user.uid, 'Emojis');
-        const docSnap = await getDoc(userDocRef);
-
+      // Fetch emojis
+      const userDocRef = doc(firestore, user.uid, 'Emojis');
+      getDoc(userDocRef).then((docSnap) => {
         if (docSnap.exists()) {
           setEmojis(docSnap.data()); // Set emojis if exist in Firebase
-        } else {
-          // Set default emojis if user emojis not found in Firebase
-          setEmojis({
-            sober: emojiRepresentations.Sober,
-            buzzed: emojiRepresentations.Buzzed,
-            relaxed: emojiRepresentations.Relaxed,
-            liability: emojiRepresentations['A Bit of a liability'],
-            drunk: emojiRepresentations['Visibly Drunk'],
-            Embarassing: emojiRepresentations.Embarassing,
-            sickly: emojiRepresentations.Sickly,
-            goHome: emojiRepresentations['Either pull or go home'],
-            friend: emojiRepresentations['Find a friend'],
-            passout: emojiRepresentations['Gonna Pass out'],
-            ambulance: emojiRepresentations['Call and Ambulance'],
-            death: emojiRepresentations['Death is coming'],
-          });
         }
-      } catch (error) {
-        console.error('Error fetching user emojis:', error);
-      }
-    };
-
-    fetchUserEmojis(); // Fetch user emojis when component mounts
-  }, [firestore, user]);
+      });
+    }
+  }, [user]);
 
   const handleSave = async () => {
-    try {
-      if (user) {
-        const userDocRef = doc(firestore, user.uid, 'Emojis');
+    if (user) {
+      const userDocRef = doc(firestore, user.uid, 'Emojis');
+      try {
         await setDoc(userDocRef, emojis, { merge: true });
-        console.log('User emojis updated:', emojis);
+        alert('User emojis updated successfully.');
+      } catch (error) {
+        console.error('Error updating user emojis:', error);
       }
-    } catch (error) {
-      console.error('Error updating user emojis:', error);
     }
   };
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Emoji Settings</Text>
-
-      <View style={styles.option}>
-        <Text style={styles.label}>Sober Emoji:</Text>
-        <TextInput
-          style={styles.input}
-          value={emojis.sober || ''}
-          onChangeText={(text) => setEmojis({ ...emojis, sober: text })}
-        />
-      </View>
-
-      <View style={styles.option}>
-        <Text style={styles.label}>Buzzed Emoji:</Text>
-        <TextInput
-          style={styles.input}
-          value={emojis.buzzed || ''}
-          onChangeText={(text) => setEmojis({ ...emojis, buzzed: text })}
-        />
-      </View>
-
-      <View style={styles.option}>
-        <Text style={styles.label}>Relaxed Emoji:</Text>
-        <TextInput
-          style={styles.input}
-          value={emojis.relaxed || ''}
-          onChangeText={(text) => setEmojis({ ...emojis, relaxed: text })}
-        />
-      </View>
-
-      <View style={styles.option}>
-        <Text style={styles.label}>A Bit of a liability Emoji:</Text>
-        <TextInput
-          style={styles.input}
-          value={emojis.liability || ''}
-          onChangeText={(text) => setEmojis({ ...emojis, liability: text })}
-        />
-      </View>
-
-      <View style={styles.option}>
-        <Text style={styles.label}>Visibily Drunk Emoji:</Text>
-        <TextInput
-          style={styles.input}
-          value={emojis.drunk || ''}
-          onChangeText={(text) => setEmojis({ ...emojis, drunk: text })}
-        />
-      </View>
-
-      <View style={styles.option}>
-        <Text style={styles.label}>Embarassing Emoji:</Text>
-        <TextInput
-          style={styles.input}
-          value={emojis.Embarassing || ''}
-          onChangeText={(text) => setEmojis({ ...emojis, Embarassing: text })}
-        />
-      </View>
-
-      <View style={styles.option}>
-        <Text style={styles.label}>Sickly Emoji:</Text>
-        <TextInput
-          style={styles.input}
-          value={emojis.sickly || ''}
-          onChangeText={(text) => setEmojis({ ...emojis, sickly: text })}
-        />
-      </View>
-
-      <View style={styles.option}>
-        <Text style={styles.label}>Pull or go home Emoji:</Text>
-        <TextInput
-          style={styles.input}
-          value={emojis.goHome || ''}
-          onChangeText={(text) => setEmojis({ ...emojis, goHome: text })}
-        />
-      </View>
-
-      <View style={styles.option}>
-        <Text style={styles.label}>Find a Friend Emoji:</Text>
-        <TextInput
-          style={styles.input}
-          value={emojis.friend || ''}
-          onChangeText={(text) => setEmojis({ ...emojis, friend: text })}
-        />
-      </View>
-
-      <View style={styles.option}>
-        <Text style={styles.label}>Pass Out Emoji:</Text>
-        <TextInput
-          style={styles.input}
-          value={emojis.passout || ''}
-          onChangeText={(text) => setEmojis({ ...emojis, passout: text })}
-        />
-      </View>
-
-      <View style={styles.option}>
-        <Text style={styles.label}>Call an Ambulance Emoji:</Text>
-        <TextInput
-          style={styles.input}
-          value={emojis.ambulance || ''}
-          onChangeText={(text) => setEmojis({ ...emojis, ambulance: text })}
-        />
-      </View>
-
-      <View style={styles.option}>
-        <Text style={styles.label}>Death Emoji:</Text>
-        <TextInput
-          style={styles.input}
-          value={emojis.death || ''}
-          onChangeText={(text) => setEmojis({ ...emojis, death: text })}
-        />
-      </View>
-
+      {drunkParameters.map((param, index) => (
+        <View key={index} style={styles.option}>
+          <Text style={styles.label}>{param.simple} Emoji:</Text>
+          <TextInput
+            style={styles.input}
+            value={emojis[param.simple] || ''}
+            onChangeText={(text) => setEmojis({ ...emojis, [param.simple]: text })}
+          />
+        </View>
+      ))}
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveButtonText}>Save</Text>
       </TouchableOpacity>
