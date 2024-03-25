@@ -13,6 +13,8 @@ const LimitsScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [currentLimitType, setCurrentLimitType] = useState('spending');
   const [inputValue, setInputValue] = useState('');
+  const [spendingLimitStrictness, setSpendingLimitStrictness] = useState('soft');
+  const [drinkingLimitStrictness, setDrinkingLimitStrictness] = useState('soft');
   const firestore = getFirestore();
 
   useEffect(() => {
@@ -39,7 +41,12 @@ const LimitsScreen = () => {
     if (user) {
       const docRef = doc(firestore, user.uid, "Limits");
       try {
-        await setDoc(docRef, { spendingLimit, drinkingLimit });
+        await setDoc(docRef, {
+          spendingLimit,
+          drinkingLimit,
+          spendingLimitStrictness, // Save the selected strictness
+          drinkingLimitStrictness, // Save the selected strictness
+        });
         console.log('Limits saved successfully');
       } catch (error) {
         console.error('Error saving Limits:', error);
@@ -108,6 +115,18 @@ const LimitsScreen = () => {
             </View>
           </TouchableOpacity>
         </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+          <TouchableOpacity
+            style={[styles.strictnessButton, { backgroundColor: spendingLimitStrictness === 'soft' ? '#0288d1' : '#BDBDBD' }]}
+            onPress={() => setSpendingLimitStrictness('soft')}>
+            <Text style={styles.strictnessButtonText}>Soft</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.strictnessButton, { backgroundColor: spendingLimitStrictness === 'hard' ? '#0288d1' : '#BDBDBD' }]}
+            onPress={() => setSpendingLimitStrictness('hard')}>
+            <Text style={styles.strictnessButtonText}>Hard</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.limitContainer}>
           <TouchableOpacity onPress={() => handleOpenModal('drinking')}>
             <View style={styles.limitInnerContainer}>
@@ -124,6 +143,18 @@ const LimitsScreen = () => {
               />
             </View>
           </TouchableOpacity>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+            <TouchableOpacity
+              style={[styles.strictnessButton, { backgroundColor: drinkingLimitStrictness === 'soft' ? '#0288d1' : '#BDBDBD' }]}
+              onPress={() => setDrinkingLimitStrictness('soft')}>
+              <Text style={styles.strictnessButtonText}>Soft</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.strictnessButton, { backgroundColor: drinkingLimitStrictness === 'hard' ? '#0288d1' : '#BDBDBD' }]}
+              onPress={() => setDrinkingLimitStrictness('hard')}>
+              <Text style={styles.strictnessButtonText}>Hard</Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <TouchableOpacity style={styles.button} onPress={saveLimits}>
           <Text style={styles.buttonText}>Save Limits</Text>

@@ -93,4 +93,12 @@ export const limitStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  strictnessButton: {
+    padding: 10,
+    margin: 5,
+    borderRadius: 5,
+  },
+  strictnessButtonText: {
+    color: '#FFF',
+  },  
 });

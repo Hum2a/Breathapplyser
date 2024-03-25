@@ -6,7 +6,7 @@ import calculateBACIncrease from '../../../../utils/calculations/calculateBAC';
 import { saveEntry } from '../../../../../backend/firebase/queries/saveEntry';
 import { saveBACLevel } from '../../../../../backend/firebase/queries/saveBACLevel';
 import { UserContext } from '../../../../context/UserContext';
-import { autoStyles as styles } from '../../../styles/DrinkingStyles/addStyles';
+import { autoStyles as styles, manualStyles as addStyles } from '../../../styles/DrinkingStyles/addStyles';
 import CommonDrinksList from '../../../../../backend/app/data/commonDrinksList';
 import { saveDailyTotals } from '../../../../../backend/firebase/queries/saveDailyTotals';
 
@@ -23,6 +23,12 @@ const AutoEntryScreen = ({ navigation }) => {
     const [selectedStartTime, setSelectedStartTime] = useState(moment().format('HH:mm'));
     const [selectedEndTime, setSelectedEndTime] = useState(moment().format('HH:mm'));
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [limits, setLimits] = useState({
+      spendingLimit: 0,
+      drinkingLimit: 0,
+      spendingLimitStrictness: 'soft',
+      drinkingLimitStrictness: 'soft'
+  });
     
     const { user } = useContext(UserContext);
     const firestore = getFirestore();;
@@ -35,11 +41,31 @@ const AutoEntryScreen = ({ navigation }) => {
         }
       }, [selectedDrinkType]);
 
+    useEffect(() => {
+      fetchLimits(); // Fetch the limits when the component mounts
+    }, [user]);
+
     const fetchCommonDrinks = async (type) => {
     // You can fetch common drinks for each type from your database
     // For now, we'll just use a static array
     const drinks = CommonDrinksList[type];
     setCommonDrinks(drinks);
+    };
+
+    const fetchLimits = async () => {
+      if (user) {
+        const docRef = doc(getFirestore(), user.uid, "Limits");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setLimits({
+            spendingLimit: data.spendingLimit || 0,
+            drinkingLimit: data.drinkingLimit || 0,
+            spendingLimitStrictness: data.spendingLimitStrictness || 'soft',
+            drinkingLimitStrictness: data.drinkingLimitStrictness || 'soft',
+          });
+        }
+      }
     };
 
     const handleDrinkTypeSelection = (type) => {
@@ -48,6 +74,13 @@ const AutoEntryScreen = ({ navigation }) => {
       };
 
       const handleDrinkSelection = async (drink) => {
+
+        const unitsToAdd = drink.units; // Your logic for units
+        const priceToAdd = parseFloat(prices[drink.name]); // Your logic for price
+
+        const canAddDrink = await handleCheckLimits(unitsToAdd, priceToAdd);
+        if (!canAddDrink) return; // Stop if limits are exceeded
+
         const price = prices[drink.name];
         
         if (!price) {
@@ -105,50 +138,64 @@ const AutoEntryScreen = ({ navigation }) => {
         }));
       };
 
-  const handleCheckLimits = async () => {
-    console.log("handleCheckLimits called");
+      const handleCheckLimits = async (unitsToAdd, priceToAdd) => {
+        // Fetch the current totals for units and spending
+        const currentTotals = await getCurrentTotals(selectedDate);
 
-    if (!user) {
-      console.error("User data is not available");
-      return;
-    }
+        const newTotalUnits = currentTotals.totalUnits + unitsToAdd;
+        const newTotalSpending = currentTotals.totalSpending + priceToAdd;
 
-    const selectedDateStr = moment(selectedDate).format('YYYY-MM-DD'); // Format the date as 'YYYY-MM-DD'
+        // Check hard limits first
+        if (limits.drinkingLimitStrictness === "hard" && newTotalUnits > limits.drinkingLimit) {
+            Alert.alert('Limit Exceeded', 'You have exceeded your hard drinking limit.');
+            return false;
+        }
+        if (limits.spendingLimitStrictness === "hard" && newTotalSpending > limits.spendingLimit) {
+            Alert.alert('Limit Exceeded', 'You have exceeded your hard spending limit.');
+            return false;
+        }
 
-    // Fetch entries from Firestore for the specific date
-    const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", selectedDateStr, "EntryDocs");
-    try {
-      const entriesSnapshot = await getDocs(entriesRef);
-      const entriesData = entriesSnapshot.docs.map(doc => doc.data());
+        // Check soft limits
+        let proceedWithAddition = true;
+        if (limits.drinkingLimitStrictness=== "soft" && newTotalUnits > limits.drinkingLimit) {
+            proceedWithAddition = await new Promise(resolve => Alert.alert(
+                'Soft Limit Warning', 
+                'You are about to exceed your soft drinking limit. Proceed anyway?', 
+                [
+                    { text: 'Cancel', onPress: () => resolve(false) },
+                    { text: 'Proceed', onPress: () => resolve(true) }
+                ]
+            ));
+        }
 
-      // Fetch user Limits from Firestore
-      const LimitsRef = doc(firestore, user.uid, "Limits");
-      const LimitsSnapshot = await getDoc(LimitsRef);
-      if (!LimitsSnapshot.exists()) {
-        console.error("No Limits document found!");
-        return;
-      }
-      const { spendingLimit, drinkingLimit } = LimitsSnapshot.data();
+        if (!proceedWithAddition) return false;
 
-      // Calculate total drinks, units, and spending for the specific date
-      const totalDrinks = entriesData.reduce((total, entry) => total + parseFloat(entry.amount), 0);
-      const totalUnits = entriesData.reduce((total, entry) => total + parseInt(entry.units), 0);
-      const totalSpending = entriesData.reduce((total, entry) => total + (parseFloat(entry.price) * parseFloat(entry.amount)), 0);
+        if (limits.spendingLimitStrictness === "soft" && newTotalSpending > limits.spendingLimit) {
+            proceedWithAddition = await new Promise(resolve => Alert.alert(
+                'Soft Limit Warning', 
+                'You are about to exceed your soft spending limit. Proceed anyway?', 
+                [
+                    { text: 'Cancel', onPress: () => resolve(false) },
+                    { text: 'Proceed', onPress: () => resolve(true) }
+                ]
+            ));
+        }
 
-      setTotalDrinks(totalDrinks);
-      setTotalUnits(totalUnits);
-      setTotalSpending(totalSpending);
+        return proceedWithAddition;
+    };
+    const getCurrentTotals = async (selectedDate) => {
 
-      // Check against limits from Firestore
-      if (totalSpending > spendingLimit) {
-        sendNotification('Spending Limit Reached', 'You have exceeded your spending limit.');
-      }
-      if (totalDrinks > drinkingLimit) {
-        sendNotification('Drinking Limit Reached', 'You have reached your drinking limit.');
-      }
-    } catch (error) {
-      console.error("Error fetching entries or limits:", error);
-    }
+      const dateStr = moment(selectedDate).format('YYYY-MM-DD');
+      const unitsRef = doc(firestore, user.uid, "Daily Totals", "Unit Intake", dateStr);
+      const spendingRef = doc(firestore, user.uid, "Daily Totals", "Amount Spent", dateStr);
+
+      const unitsSnap = await getDoc(unitsRef);
+      const spendingSnap = await getDoc(spendingRef);
+
+      return {
+          totalUnits: unitsSnap.exists() ? unitsSnap.data().value : 0,
+          totalSpending: spendingSnap.exists() ? spendingSnap.data().value : 0,
+      };
   };
 
   useEffect(() => {
@@ -186,6 +233,45 @@ const AutoEntryScreen = ({ navigation }) => {
     handleCheckLimits();
   }, []);
 
+  useEffect(() => {
+    const fetchTotals = async () => {
+      const selectedDateStr = moment().format('YYYY-MM-DD');
+      
+      // Define references to the Firestore documents
+      const drinksRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", selectedDateStr, "EntryDocs");
+      const amountSpentRef = doc(firestore, user.uid, "Daily Totals", "Amount Spent", selectedDateStr);
+      const unitsIntakeRef = doc(firestore, user.uid, "Daily Totals", "Unit Intake", selectedDateStr);
+
+      try {
+        // Fetch total drinks
+        const drinksSnapshot = await getDocs(drinksRef);
+        setTotalDrinks(drinksSnapshot.docs.length); // Assuming each document in EntryDocs represents a drink
+
+        // Fetch total spending
+        const amountSpentSnapshot = await getDoc(amountSpentRef);
+        if (amountSpentSnapshot.exists()) {
+          setTotalSpending(amountSpentSnapshot.data().value);
+        } else {
+          setTotalSpending(0);
+        }
+
+        // Fetch total units
+        const unitsIntakeSnapshot = await getDoc(unitsIntakeRef);
+        if (unitsIntakeSnapshot.exists()) {
+          setTotalUnits(unitsIntakeSnapshot.data().value);
+        } else {
+          setTotalUnits(0);
+        }
+      } catch (error) {
+        console.error("Error fetching totals:", error);
+      }
+    };
+
+    if (user) {
+      fetchTotals();
+    }
+  }, [selectedDate, user]);
+
   const handleToggleDouble = (drink) => {
     const updatedDrinks = commonDrinks.map((item) =>
       item.name === drink.name ? { ...item, double: !item.double } : item
@@ -196,7 +282,12 @@ const AutoEntryScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Common Drinks</Text>
+      {/* <Text style={styles.title}>Common Drinks</Text> */}
+      <View style={addStyles.statsContainer}>
+          <Text style={addStyles.statText}>Total Drinks: {totalDrinks}</Text>
+          <Text style={addStyles.statText}>Units: {totalUnits}</Text>
+          <Text style={addStyles.statText}>Spending: £{totalSpending}</Text>
+        </View>
       <View style={styles.buttonContainer}>
         {drinkTypes.map((type, index) => (
           <TouchableOpacity

@@ -48,6 +48,12 @@ const ManualEntryScreen = ({ navigation }) => {
   const [isFavouriteDialogVisible, setIsFavouriteDialogVisible] = useState(false)
   const [isSaveEntryDialogVisible, setIsSaveEntryDialogVisible] = useState(false);
   const [saveEntryDialogMessage, setSaveEntryDialogMessage] = useState("");
+  const [limits, setLimits] = useState({
+    spendingLimit: 0,
+    drinkingLimit: 0,
+    spendingLimitStrictness: 'soft',
+    drinkingLimitStrictness: 'soft'
+  });
 
   const firestore = getFirestore();
 
@@ -131,6 +137,27 @@ const ManualEntryScreen = ({ navigation }) => {
       updateFieldsFilledStatus();
     }, [alcohol, amount, units, price, selectedStartTime, selectedEndTime]);
 
+    
+  useEffect(() => {
+    const fetchLimits = async () => {
+      if (user) {
+        const docRef = doc(getFirestore(), user.uid, "Limits");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setLimits({
+            spendingLimit: data.spendingLimit || 0,
+            drinkingLimit: data.drinkingLimit || 0,
+            spendingLimitStrictness: data.spendingLimitStrictness || 'soft',
+            drinkingLimitStrictness: data.drinkingLimitStrictness || 'soft'
+          });
+        }
+      }
+    };
+
+    fetchLimits();
+  }, [user]);
+
 
   const handleStartTimeConfirm = (time) => {
     const formattedTime = moment(time).format('HH:mm');
@@ -206,6 +233,27 @@ const ManualEntryScreen = ({ navigation }) => {
     if (!user) {
         console.error("User data is not available");
         return;
+    }
+
+    const currentTotals = await getCurrentTotals();
+    const newTotalUnits = currentTotals.totalUnits + parseFloat(units);
+    const newTotalSpending = currentTotals.totalSpending + parseFloat(price);
+
+    // Handle hard and soft limits
+    if ((limits.drinkingLimitStrictness === 'hard' && newTotalUnits > limits.drinkingLimit) ||
+        (limits.spendingLimitStrictness === 'hard' && newTotalSpending > limits.spendingLimit)) {
+      Alert.alert('Limit Exceeded', 'You have exceeded a hard limit. Entry cannot be saved.');
+      return;
+    }
+
+    if (limits.drinkingLimitStrictness === 'soft' && newTotalUnits > limits.drinkingLimit) {
+      const proceed = await confirmProceed('You are about to exceed your soft drinking limit. Proceed anyway?');
+      if (!proceed) return;
+    }
+
+    if (limits.spendingLimitStrictness === 'soft' && newTotalSpending > limits.spendingLimit) {
+      const proceed = await confirmProceed('You are about to exceed your soft spending limit. Proceed anyway?');
+      if (!proceed) return;
     }
 
     const selectedAmount = parseInt(amount);
@@ -323,6 +371,49 @@ const ManualEntryScreen = ({ navigation }) => {
     } else {
       setAllFieldsFilled(false);
     }
+  };
+
+  const getCurrentTotals = async () => {
+    if (!user) {
+      console.error("User data is not available");
+      return { totalUnits: 0, totalSpending: 0 };
+    }
+  
+    const selectedDateStr = moment(selectedDate).format('YYYY-MM-DD');
+    const unitsIntakeRef = doc(firestore, user.uid, "Daily Totals", "Unit Intake", selectedDateStr);
+    const amountSpentRef = doc(firestore, user.uid, "Daily Totals", "Amount Spent", selectedDateStr);
+  
+    let totalUnits = 0;
+    let totalSpending = 0;
+  
+    try {
+      // Fetch total units for the selected date
+      const unitsSnapshot = await getDoc(unitsIntakeRef);
+      if (unitsSnapshot.exists()) {
+        totalUnits = unitsSnapshot.data().value || 0;
+      }
+  
+      // Fetch total spending for the selected date
+      const spendingSnapshot = await getDoc(amountSpentRef);
+      if (spendingSnapshot.exists()) {
+        totalSpending = spendingSnapshot.data().value || 0;
+      }
+    } catch (error) {
+      console.error("Error fetching current totals:", error);
+    }
+  
+    return { totalUnits, totalSpending };
+  };
+  
+
+  // Function to show an alert and confirm proceeding
+  const confirmProceed = (message) => {
+    return new Promise((resolve) => {
+      Alert.alert('Warning', message, [
+        { text: 'Cancel', onPress: () => resolve(false) },
+        { text: 'Proceed', onPress: () => resolve(true) }
+      ]);
+    });
   };
 
   const containerStyle = {

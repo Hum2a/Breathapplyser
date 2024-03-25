@@ -15,6 +15,12 @@ const FavouriteList = ({ user, navigation }) => {
   const [userProfile, setUserProfile] = useState(null);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [selectedFavouriteId, setSelectedFavouriteId] = useState(null);
+  const [limits, setLimits] = useState({
+    spendingLimit: 0,
+    drinkingLimit: 0,
+    spendingLimitStrictness: 'soft',
+    drinkingLimitStrictness: 'soft'
+  });
   const firestore = getFirestore();
 
   useEffect(() => {
@@ -62,6 +68,26 @@ const FavouriteList = ({ user, navigation }) => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (user) {
+      fetchLimits(); // Call fetchLimits when the component mounts
+    }
+  }, [user]);
+
+  const fetchLimits = async () => {
+    const docRef = doc(getFirestore(), user.uid, "Limits");
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      setLimits({
+        spendingLimit: data.spendingLimit || 0,
+        drinkingLimit: data.drinkingLimit || 0,
+        spendingLimitStrictness: data.spendingLimitStrictness || 'soft',
+        drinkingLimitStrictness: data.drinkingLimitStrictness || 'soft',
+      });
+    }
+  };
+
   // const handleDeleteFavourite = async (FavouriteId) => {
   //   try {
   //     await deleteDoc(doc(firestore, user.uid, "Alcohol Stuff", "Favourites", FavouriteId));
@@ -93,27 +119,11 @@ const FavouriteList = ({ user, navigation }) => {
   };
 
   const handleAddFavoriteAsEntry = async (favourite) => {
+    // Before adding the entry, check if it would exceed the user's limits
+    const canAdd = await checkLimits(favourite.Units, favourite.Price);
+    if (!canAdd) return; // Stop the function if the limits would be exceeded
+  
     try {
-      const BACIncrease = userProfile ? calculateBACIncrease(favourite.Units, userProfile) : 0;
-
-        // Convert price and units to numbers
-      const priceAsNumber = parseFloat(favourite.Price) || 0; // using parseFloat to handle decimals
-      const unitsAsNumber = parseFloat(favourite.Units) || 0; // using parseFloat to handle decimals
-
-      // Create a new entry using the favorite data
-      // const entryData = {
-      //   date: Timestamp.fromDate(new Date()), // Using Timestamp for Firestore
-      //   alcohol: favourite.Alcohol || "Default Alcohol",
-      //   amount: 1,
-      //   BACIncrease: BACIncrease,
-      //   endTime: favourite.EndTime || moment().format('YYYY-MM-DD HH:mm:ss'), // If endTime is a property of favourite
-      //   price: priceAsNumber || 0,
-      //   startTime: favourite.StartTime || moment().format('YYYY-MM-DD HH:mm:ss'), // Use favourite startTime or current time
-      //   type: favourite.Type || "Default Type",
-      //   units: unitsAsNumber || 0,
-      //   userId: user.uid,
-      // };
-
       const entryDetails = {
         alcohol: favourite.Alcohol,
         amount: favourite.Amount,
@@ -122,28 +132,77 @@ const FavouriteList = ({ user, navigation }) => {
         type: favourite.Type,
         selectedStartTime: favourite.StartTime || moment().format('HH:mm'),
         selectedEndTime: favourite.EndTime || moment().format('HH:mm'),
-        selectedDate: moment().format('YYYY-MM-DD'), // Today's date or another logic if necessary
-        selectedCurrency: favourite.Currency || 'Default Currency', // Assuming currency is a field in favourite
+        selectedDate: moment().format('YYYY-MM-DD'), // Use today's date or modify as needed
+        selectedCurrency: favourite.Currency || 'GBP', // Use a default currency if not specified
       };
-        // Call saveEntry to add the entry
-        await saveEntry(user, userProfile, entryDetails);
-    
-        // Prepare details array for saveDailyTotals, assuming the structure matches the requirements
-        const detailsArray = [entryDetails];
-    
-        // Call saveDailyTotals to update daily totals
-        await saveDailyTotals(firestore, user, entryDetails.selectedDate, detailsArray);
-    
-        // Assuming BACLevel is to be calculated with units from entryDetails and details object is structured correctly
-        await saveBACLevel(user, favourite.Units, userProfile, { selectedEndTime: entryDetails.selectedEndTime, selectedStartTime: entryDetails.selectedStartTime, selectedDate: entryDetails.selectedDate });
-    
-        // Navigate back to the home screen upon success
-        navigation.navigate('Home'); // Modify the screen name as necessary
-      } catch (error) {
-        console.error('Error handling favorite as entry:', error);
-        Alert.alert('Error', 'Could not handle favourite as entry.');
+  
+      await saveEntry(user, userProfile, entryDetails);
+      await saveDailyTotals(firestore, user, entryDetails.selectedDate, [entryDetails]);
+      await saveBACLevel(user, favourite.Units, userProfile, entryDetails);
+  
+      Alert.alert('Success', 'Favourite entry added successfully.');
+      navigation.goBack(); // Adjust as needed for navigation
+    } catch (error) {
+      console.error('Error adding favourite as entry:', error);
+      Alert.alert('Error', 'Could not add the favourite as an entry.');
+    }
+  };
+  const checkLimits = async (unitsToAdd, priceToAdd) => {
+    // Assume getCurrentTotals() is implemented to fetch the current total units and spending
+    const currentTotals = await getCurrentTotals(); 
+    const newTotalUnits = currentTotals.totalUnits + unitsToAdd;
+    const newTotalSpending = currentTotals.totalSpending + priceToAdd;
+  
+    if (limits.drinkingLimitStrictness === 'hard' && newTotalUnits > limits.drinkingLimit) {
+      Alert.alert('Limit Reached', 'You have exceeded your hard drinking limit.');
+      return false;
+    }
+  
+    if (limits.spendingLimitStrictness === 'hard' && newTotalSpending > limits.spendingLimit) {
+      Alert.alert('Limit Reached', 'You have exceeded your hard spending limit.');
+      return false;
+    }
+  
+    if (limits.drinkingLimitStrictness === 'soft' && newTotalUnits > limits.drinkingLimit) {
+      Alert.alert('Warning', 'You are approaching your soft drinking limit.');
+    }
+  
+    if (limits.spendingLimitStrictness === 'soft' && newTotalSpending > limits.spendingLimit) {
+      Alert.alert('Warning', 'You are approaching your soft spending limit.');
+    }
+  
+    return true; // Allow adding the drink if no hard limits are exceeded
+  };
+
+  const getCurrentTotals = async () => {
+    const selectedDateStr = moment().format('YYYY-MM-DD'); // Use current date
+  
+    let totalUnits = 0;
+    let totalSpending = 0;
+  
+    // Reference to the document storing today's total units and spending
+    const unitsIntakeRef = doc(firestore, user.uid, "Daily Totals", "Unit Intake", selectedDateStr);
+    const spendingRef = doc(firestore, user.uid, "Daily Totals", "Amount Spent", selectedDateStr);
+  
+    try {
+      // Fetch total units
+      const unitsSnapshot = await getDoc(unitsIntakeRef);
+      if (unitsSnapshot.exists()) {
+        totalUnits = unitsSnapshot.data().value; // Assuming the field storing units is named 'value'
       }
-    };
+  
+      // Fetch total spending
+      const spendingSnapshot = await getDoc(spendingRef);
+      if (spendingSnapshot.exists()) {
+        totalSpending = spendingSnapshot.data().value; // Assuming the field storing spending is named 'value'
+      }
+    } catch (error) {
+      console.error("Error fetching current totals:", error);
+    }
+  
+    return { totalUnits, totalSpending };
+  };
+  
     
 
   const renderItem = ({ item }) => (
@@ -180,44 +239,6 @@ const FavouriteList = ({ user, navigation }) => {
     </TouchableOpacity>
   );
 
-  // const renderItem = ({ item }) => (
-  //   <TouchableOpacity
-  //     style={favouriteStyles.container}
-  //     onPress={() => handleAddFavoriteAsEntry(item)}
-  //   >
-  //     <Text>
-  //       <Text style={favouriteStyles.categoryText}>Alcohol: </Text>
-  //       <Text style={favouriteStyles.detailsText}>{item.Alcohol}</Text>
-  //     </Text>
-
-  //     <Text>
-  //       <Text style={favouriteStyles.categoryText}>Amount: </Text>
-  //       <Text style={favouriteStyles.detailsText}>{item.Amount}</Text>
-  //     </Text>
-
-  //     <Text>
-  //       <Text style={favouriteStyles.categoryText}>Price: </Text>
-  //       <Text style={favouriteStyles.detailsText}>{item.Price}</Text>
-  //     </Text>
-
-  //     <Text>
-  //       <Text style={favouriteStyles.categoryText}>Type: </Text>
-  //       <Text style={favouriteStyles.detailsText}>{item.Type}</Text>
-  //     </Text>
-
-  //     <Text>
-  //       <Text style={favouriteStyles.categoryText}>Units: </Text>
-  //       <Text style={favouriteStyles.detailsText}>{item.Units}</Text>
-  //     </Text>
-
-  //     <TouchableOpacity
-  //       style={favouriteStyles.deleteButton}
-  //       onPress={() => handleDeleteFavourite(item.id)}
-  //     >
-  //       <Text style={favouriteStyles.deleteButtonText}>Delete</Text>
-  //     </TouchableOpacity>
-  //   </TouchableOpacity>
-  // );
 
   return (
     <View style={favouriteStyles.fullscreen}>

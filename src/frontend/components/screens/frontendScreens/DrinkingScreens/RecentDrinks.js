@@ -11,6 +11,13 @@ import { saveBACLevel } from '../../../../../backend/firebase/queries/saveBACLev
 const RecentDrinks = ({ navigation }) => {
   const [recentDrinks, setRecentDrinks] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
+  const [limits, setLimits] = useState({
+    spendingLimit: 0,
+    drinkingLimit: 0,
+    spendingLimitStrictness: 'soft',
+    drinkingLimitStrictness: 'soft',
+  });
+  
   const { user } = useContext(UserContext);
   const firestore = getFirestore();
 
@@ -51,37 +58,72 @@ const RecentDrinks = ({ navigation }) => {
       
     fetchUserProfile();
     fetchRecentDrinks();
+    fetchLimits();
   }, [user]);
 
   const fetchUserProfile = async () => {
-    console.log("fetchUserProfile called");
-    if (user) {
-      console.log('User found');
-      const docRef = doc(firestore, user.uid, "Profile");
-      console.log('docRef initialised');
+    if (!user) return;
   
-      try {
-        const promise = getDoc(docRef);
-        const timeout = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Request timed out')), 5000) // 5 seconds timeout
-        );
-        const docSnap = await Promise.race([promise, timeout]);
-        console.log('docSnap initialised');
-  
-        if (docSnap.exists()) {
-          setUserProfile(docSnap.data());
-          console.log('userProfile retrieved');
-          // Use userProfile for BAC calculations and other operations
-        } else {
-          console.log("No such profile document!");
-        }
-      } catch (error) {
-        console.error('Error fetching user profile:', error.message);
+    const docRef = doc(firestore, user.uid, "Profile");
+    try {
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setUserProfile(docSnap.data());
+        fetchLimits(); // Ensure limits are fetched after fetching user profile
+      } else {
+        console.log("No such profile document!");
       }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
     }
-  };    
+  };
+  
+  const fetchLimits = async () => {
+    if (!user) {
+      console.error("User data is not available");
+      return;
+    }
+  
+    const limitsDocRef = doc(firestore, user.uid, "Limits");
+    try {
+      const docSnap = await getDoc(limitsDocRef);
+      if (docSnap.exists()) {
+        const limitsData = docSnap.data();
+        setLimits({
+          spendingLimit: limitsData.spendingLimit || 0,
+          drinkingLimit: limitsData.drinkingLimit || 0,
+          spendingLimitStrictness: limitsData.spendingLimitStrictness || 'soft',
+          drinkingLimitStrictness: limitsData.drinkingLimitStrictness || 'soft',
+        });
+      } else {
+        console.log("No limits document found");
+      }
+    } catch (error) {
+      console.error("Error fetching limits:", error);
+    }
+  };
+  
 
   const handleReenterDrink = async (drink) => {
+    const currentTotals = await getCurrentTotals();
+    const newTotalUnits = currentTotals.totalUnits + drink.units;
+    const newTotalSpending = currentTotals.totalSpending + drink.price;
+
+    // Check against limits
+    if (limits.spendingLimitStrictness === "hard" && newTotalSpending > limits.spendingLimit) {
+      Alert.alert('Limit Reached', 'You have reached your hard spending limit.');
+      return;
+    } else if (limits.drinkingLimitStrictness === "hard" && newTotalUnits > limits.drinkingLimit) {
+      Alert.alert('Limit Reached', 'You have reached your hard drinking limit.');
+      return;
+    }
+
+    if (limits.spendingLimitStrictness === "soft" && newTotalSpending > limits.spendingLimit) {
+      Alert.alert('Warning', 'You are approaching your soft spending limit.');
+    }
+    if (limits.drinkingLimitStrictness === "soft" && newTotalUnits > limits.drinkingLimit) {
+      Alert.alert('Warning', 'You are approaching your soft drinking limit.');
+    }
     try {
       const { id, ...drinkDetails } = drink; // Destructure to exclude the 'id'
       // Spread the original drink details except for date and times, which are set to the current time
@@ -141,6 +183,35 @@ const RecentDrinks = ({ navigation }) => {
       Alert.alert('Error', 'Could not re-enter the drink and update DailyTotals.');
     }
   };
+
+  const getCurrentTotals = async () => {
+    if (!user) {
+      console.error("User data is not available");
+      return { totalUnits: 0, totalSpending: 0 };
+    }
+  
+    const selectedDateStr = moment().format('YYYY-MM-DD');
+    let totalUnits = 0;
+    let totalSpending = 0;
+  
+    // Define references and attempt to fetch existing daily totals
+    const amountSpentRef = doc(firestore, user.uid, "Daily Totals", "Amount Spent", selectedDateStr);
+    const unitsIntakeRef = doc(firestore, user.uid, "Daily Totals", "Unit Intake", selectedDateStr);
+  
+    try {
+      const amountSpentDoc = await getDoc(amountSpentRef);
+      const unitsIntakeDoc = await getDoc(unitsIntakeRef);
+  
+      totalUnits = unitsIntakeDoc.exists() ? unitsIntakeDoc.data().value : 0;
+      totalSpending = amountSpentDoc.exists() ? amountSpentDoc.data().value : 0;
+  
+    } catch (error) {
+      console.error("Error fetching daily totals:", error);
+    }
+  
+    return { totalUnits, totalSpending };
+  };
+  
   
 
   const renderItem = ({ item }) => (
@@ -152,7 +223,6 @@ const RecentDrinks = ({ navigation }) => {
       <Text style={styles.text}>Units: {item.units}</Text>
       <Text style={styles.text}>Type: {item.type}</Text>
       <Text style={styles.text}>Price: {item.price}</Text>
-      {/* Display other details as needed */}
     </TouchableOpacity>
   );
 

@@ -9,12 +9,22 @@ import { saveBACLevel } from '../../../../../backend/firebase/queries/saveBACLev
 const CommonDrinks = () => {
   const [commonDrinks, setCommonDrinks] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
+  const [limits, setLimits] = useState({
+    spendingLimit: 0,
+    drinkingLimit: 0,
+    spendingLimitStrictness: 'soft',
+    drinkingLimitStrictness: 'soft',
+  });
+  
   const { user } = useContext(UserContext);
   const firestore = getFirestore();
 
   useEffect(() => {
     fetchUserProfile()
-    if (user) fetchCommonDrinks();
+    if (user) {
+      fetchCommonDrinks();
+      fetchLimits();
+    }
   }, [user]);
 
   const fetchUserProfile = async () => {
@@ -78,6 +88,7 @@ const CommonDrinks = () => {
       currentDate = currentDate.subtract(1, 'days');
       daysChecked++;
     }
+    
   
     const sortedCommonDrinks = Object.values(drinkOccurrences)
       .sort((a, b) => b.count - a.count)
@@ -86,8 +97,35 @@ const CommonDrinks = () => {
     setCommonDrinks(sortedCommonDrinks);
   };
 
+  const fetchLimits = async () => {
+    if (!user) {
+      console.error("User data is not available");
+      return;
+    }
+  
+    const limitsDocRef = doc(firestore, user.uid, "Limits");
+    try {
+      const docSnap = await getDoc(limitsDocRef);
+      if (docSnap.exists()) {
+        const limitsData = docSnap.data();
+        setLimits({
+          spendingLimit: limitsData.spendingLimit || 0,
+          drinkingLimit: limitsData.drinkingLimit || 0,
+          spendingLimitStrictness: limitsData.spendingLimitStrictness || 'soft',
+          drinkingLimitStrictness: limitsData.drinkingLimitStrictness || 'soft',
+        });
+      } else {
+        console.log("No limits document found");
+      }
+    } catch (error) {
+      console.error("Error fetching limits:", error);
+    }
+  };
+  
+
   const handleReenterDrink = async (drink) => {
-    // Remove 'id' from the drink object to prevent storing it as a separate field
+    const canProceed = await checkLimits(drink);
+    if (!canProceed) return; 
     const { id, ...drinkDetails } = drink;
 
     const newEntry = {
@@ -143,6 +181,63 @@ const CommonDrinks = () => {
       Alert.alert('Error', 'Could not re-enter the drink.');
     }
   };
+
+  const checkLimits = async (drink) => {
+    const currentTotals = await getCurrentTotals();
+    const newTotalUnits = currentTotals.totalUnits + drink.units;
+    const newTotalSpending = currentTotals.totalSpending + drink.price;
+  
+    // Spending limit checks
+    if (limits.spendingLimitStrictness === "hard" && newTotalSpending > limits.spendingLimit) {
+      Alert.alert('Limit Reached', 'You have reached your hard spending limit.');
+      return false;
+    } else if (limits.spendingLimitStrictness === "soft" && newTotalSpending > limits.spendingLimit) {
+      Alert.alert('Warning', 'Approaching soft spending limit.');
+    }
+  
+    // Drinking limit checks
+    if (limits.drinkingLimitStrictness === "hard" && newTotalUnits > limits.drinkingLimit) {
+      Alert.alert('Limit Reached', 'You have reached your hard drinking limit.');
+      return false;
+    } else if (limits.drinkingLimitStrictness === "soft" && newTotalUnits > limits.drinkingLimit) {
+      Alert.alert('Warning', 'Approaching soft drinking limit.');
+    }
+  
+    return true;
+  };
+
+  const getCurrentTotals = async () => {
+    if (!user) {
+      console.error("User data is not available");
+      return { totalUnits: 0, totalSpending: 0 };
+    }
+  
+    const selectedDateStr = moment().format('YYYY-MM-DD');
+    let totalUnits = 0;
+    let totalSpending = 0;
+  
+    // Reference to the user's entries for the current day
+    const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", selectedDateStr, "EntryDocs");
+  
+    // Attempt to fetch the day's entries
+    try {
+      const querySnapshot = await getDocs(entriesRef);
+  
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        totalUnits += data.units || 0; // Assuming 'units' field holds the number of units per drink
+        totalSpending += data.price || 0; // Assuming 'price' field holds the price per drink
+      });
+  
+    } catch (error) {
+      console.error("Error fetching daily totals:", error);
+    }
+  
+    // Optionally, consider including additional checks for spending limits if they are stored/managed differently
+  
+    return { totalUnits, totalSpending };
+  };
+  
   
 
   const renderItem = ({ item }) => (
