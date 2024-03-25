@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { addStyles } from '../../../styles/DrinkingStyles/addStyles';
+import { manualStyles as addStyles } from '../../../styles/DrinkingStyles/addStyles';
 import { favouriteStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
 import { addNewFavourite } from '../../../../../backend/app/utils/handles/addToFavourites';
 import { UserContext } from '../../../../context/UserContext';

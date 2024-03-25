@@ -6,6 +6,9 @@ import moment from 'moment';
 import calculateBACIncrease from '../../../../utils/calculations/calculateBAC'; // Import the calculateBACIncrease function
 import Svg, { Polygon } from 'react-native-svg';
 import Dialog from 'react-native-dialog';
+import { saveEntry } from '../../../../../backend/firebase/queries/saveEntry';
+import { saveBACLevel } from '../../../../../backend/firebase/queries/saveBACLevel';
+import { saveDailyTotals } from '../../../../../backend/firebase/queries/saveDailyTotals';
 
 const FavouriteList = ({ user, navigation }) => {
   const [Favourites, setFavourites] = useState([]);
@@ -98,55 +101,50 @@ const FavouriteList = ({ user, navigation }) => {
       const unitsAsNumber = parseFloat(favourite.Units) || 0; // using parseFloat to handle decimals
 
       // Create a new entry using the favorite data
-      const entryData = {
-        date: Timestamp.fromDate(new Date()), // Using Timestamp for Firestore
-        alcohol: favourite.Alcohol || "Default Alcohol",
-        amount: 1,
-        BACIncrease: BACIncrease,
-        endTime: favourite.EndTime || moment().format('YYYY-MM-DD HH:mm:ss'), // If endTime is a property of favourite
-        price: priceAsNumber || 0,
-        startTime: favourite.StartTime || moment().format('YYYY-MM-DD HH:mm:ss'), // Use favourite startTime or current time
-        type: favourite.Type || "Default Type",
-        units: unitsAsNumber || 0,
-        userId: user.uid,
+      // const entryData = {
+      //   date: Timestamp.fromDate(new Date()), // Using Timestamp for Firestore
+      //   alcohol: favourite.Alcohol || "Default Alcohol",
+      //   amount: 1,
+      //   BACIncrease: BACIncrease,
+      //   endTime: favourite.EndTime || moment().format('YYYY-MM-DD HH:mm:ss'), // If endTime is a property of favourite
+      //   price: priceAsNumber || 0,
+      //   startTime: favourite.StartTime || moment().format('YYYY-MM-DD HH:mm:ss'), // Use favourite startTime or current time
+      //   type: favourite.Type || "Default Type",
+      //   units: unitsAsNumber || 0,
+      //   userId: user.uid,
+      // };
+
+      const entryDetails = {
+        alcohol: favourite.Alcohol,
+        amount: favourite.Amount,
+        units: favourite.Units,
+        price: favourite.Price,
+        type: favourite.Type,
+        selectedStartTime: favourite.StartTime || moment().format('HH:mm'),
+        selectedEndTime: favourite.EndTime || moment().format('HH:mm'),
+        selectedDate: moment().format('YYYY-MM-DD'), // Today's date or another logic if necessary
+        selectedCurrency: favourite.Currency || 'Default Currency', // Assuming currency is a field in favourite
       };
-  
-      // Add the new entry to the Firestore collection
-      const dateTimeString = moment().format('YYYYMMDD_HHmmss');
-      const dateStr = moment().format('YYYY-MM-DD');
-      const entryDocId = `${dateTimeString}`;
-      await setDoc(doc(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs", entryDocId), entryData);
-
-      // Define references for daily totals
-      const selectedDateStr = moment().format('YYYY-MM-DD');
-      const amountSpentRef = doc(firestore, user.uid, "Daily Totals", "Amount Spent", selectedDateStr);
-      const unitsIntakeRef = doc(firestore, user.uid, "Daily Totals", "Unit Intake", selectedDateStr);
-      const bacLevelRef = doc(firestore, user.uid, "Daily Totals", "BAC Level", selectedDateStr);
-
-      // Fetch existing daily totals
-      const amountSpentDoc = await getDoc(amountSpentRef);
-      const unitsIntakeDoc = await getDoc(unitsIntakeRef);
-      const bacLevelDoc = await getDoc(bacLevelRef);
-
-      // Calculate new totals
-      const newAmountSpent = (amountSpentDoc.exists() ? amountSpentDoc.data().value : 0) + priceAsNumber;
-      const newUnitsIntake = (unitsIntakeDoc.exists() ? unitsIntakeDoc.data().value : 0) + unitsAsNumber;
-      const newBACLevel = (bacLevelDoc.exists() ? bacLevelDoc.data().value : 0) + BACIncrease;
-
-       // Update and save new values
-      await setDoc(amountSpentRef, { value: newAmountSpent, lastUpdated: moment().format('YY-MM-DD HH:mm:ss') }, { merge: true });
-      await setDoc(unitsIntakeRef, { value: newUnitsIntake, lastUpdated: moment().format('YY-MM-DD HH:mm:ss') }, { merge: true });
-      await setDoc(bacLevelRef, { value: newBACLevel, lastUpdated: moment().format('YY-MM-DD HH:mm:ss') }, { merge: true });
-
-
-  
-      // Navigate back to the home screen
-      navigation.navigate('Home'); // Modify the screen name as needed
-    } catch (error) {
-      console.error('Error adding favorite as entry:', error);
-      Alert.alert('Error', 'Could not add favourite as entry.');
-    }
-  };
+        // Call saveEntry to add the entry
+        await saveEntry(user, userProfile, entryDetails);
+    
+        // Prepare details array for saveDailyTotals, assuming the structure matches the requirements
+        const detailsArray = [entryDetails];
+    
+        // Call saveDailyTotals to update daily totals
+        await saveDailyTotals(firestore, user, entryDetails.selectedDate, detailsArray);
+    
+        // Assuming BACLevel is to be calculated with units from entryDetails and details object is structured correctly
+        await saveBACLevel(user, favourite.Units, userProfile, { selectedEndTime: entryDetails.selectedEndTime, selectedStartTime: entryDetails.selectedStartTime, selectedDate: entryDetails.selectedDate });
+    
+        // Navigate back to the home screen upon success
+        navigation.navigate('Home'); // Modify the screen name as necessary
+      } catch (error) {
+        console.error('Error handling favorite as entry:', error);
+        Alert.alert('Error', 'Could not handle favourite as entry.');
+      }
+    };
+    
 
   const renderItem = ({ item }) => (
     <TouchableOpacity 
