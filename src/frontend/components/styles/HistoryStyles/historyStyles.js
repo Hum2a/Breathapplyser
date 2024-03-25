@@ -63,7 +63,23 @@ export const HistoryStyles = StyleSheet.create({
     width: 50,
     height: 50,
     alignSelf: 'center',
-  }
+  },
+  backgroundTextContainer: {
+    ...StyleSheet.absoluteFillObject, // Make the text overlay the entire item
+    justifyContent: 'center', // Center vertically
+    alignItems: 'center', // Center horizontally
+    transform: [{ rotate: '-40deg' }], // Rotate the container
+  },
+  backgroundText: {
+    fontSize: 73, // Large text size
+    color: 'rgba(0, 0, 255, 0.2)', // Semi-transparent white
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  itemContent: {
+    zIndex: 2, // Ensure the item content is above the background text
+  },
+  
 });
 
 export default HistoryStyles;

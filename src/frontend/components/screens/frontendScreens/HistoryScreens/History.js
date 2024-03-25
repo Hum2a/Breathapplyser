@@ -98,7 +98,12 @@ const HistoryScreen = ({ navigation }) => {
               style={styles.historyItem}
               onPress={() => handleDateClick(item.name)} // Handle date click
             >
-              <View>
+              <View style={styles.backgroundTextContainer}>
+                <Text style={styles.backgroundText}>
+                  {moment(item.name, 'YYYY-MM-DD').format('dddd')} {/* Display day of the week */}
+                </Text>
+              </View>
+              <View style={styles.itemContent}>
                 <Text style={styles.dateText}>{item.name}</Text>
                 <Text style={styles.entriesCountText}>{`Entries: ${item.count}`}</Text>
                 <Text style={styles.entriesCountText}>{`Total Spent: $${item.totalSpent}`}</Text>
