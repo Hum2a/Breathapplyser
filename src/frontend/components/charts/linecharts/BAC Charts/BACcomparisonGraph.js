@@ -16,7 +16,6 @@ const BACComparisonGraph = () => {
   const { user } = useContext(UserContext);
 
   useEffect(() => {
-    console.log('Fetching BAC data...');
     const fetchData = async () => {
       try {
         const q = query(collection(firestore, user.uid, "Alcohol Stuff", "BAC Level"), orderBy("lastUpdated"));
@@ -25,18 +24,23 @@ const BACComparisonGraph = () => {
         querySnapshot.forEach(doc => {
           const data = doc.data();
           const formattedDate = moment(data.lastUpdated, "YYYY-MM-DD HH:mm:ss").format('YYYY-MM-DD');
-          console.log(`Processing data for date: ${formattedDate}`);
           if (!entries[formattedDate]) {
             entries[formattedDate] = [];
           }
           entries[formattedDate].push(data);
         });
-        console.log('BAC data fetched and processed:', entries);
-        setBacData(entries);
   
-        // Set the unique dates from the fetched data
-        console.log('Unique dates set:', Object.keys(entries));
-        setUniqueDates(Object.keys(entries));
+        // Convert entries object keys (dates) to an array, sort it in descending order
+        const sortedUniqueDates = Object.keys(entries).sort((a, b) => moment(b).diff(moment(a)));
+        setUniqueDates(sortedUniqueDates);
+  
+        // Assuming there's at least one date, set the first date as selectedDate1
+        // If there's more than one, set the second most recent date as selectedDate2
+        if (sortedUniqueDates.length > 0) {
+          setSelectedDate1(sortedUniqueDates[0]);
+          setSelectedDate2(sortedUniqueDates.length > 1 ? sortedUniqueDates[1] : '');
+        }
+  
       } catch (error) {
         console.error('Error fetching BAC data:', error);
       }
@@ -44,6 +48,7 @@ const BACComparisonGraph = () => {
   
     fetchData();
   }, [user, firestore]);
+  
 
   const processDataForChart = (date) => {
     console.log(`Processing data for chart on date: ${date}`);

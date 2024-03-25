@@ -24,30 +24,35 @@ const BACIncreaseChart = () => {
             try {
                 const entriesSnapshot = await getDocs(query(collection(firestore, user.uid, "Alcohol Stuff", "Entries")));
                 const allEntriesData = [];
-
+    
                 for (const doc of entriesSnapshot.docs) {
                     const dateStr = doc.id;
                     const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
                     const entriesSnapshot = await getDocs(entriesRef);
-
+    
                     entriesSnapshot.forEach((entryDoc) => {
                         const entry = entryDoc.data();
                         entry.date = dateStr;
                         allEntriesData.push(entry);
                     });
                 }
-
-                allEntriesData.sort((a, b) => moment(a.date, 'YYYY-MM-DD').diff(moment(b.date, 'YYYY-MM-DD')));
+    
+                // Sort the entries by date in descending order
+                allEntriesData.sort((a, b) => moment(b.date, 'YYYY-MM-DD').diff(moment(a.date, 'YYYY-MM-DD')));
                 setAllEntries(allEntriesData);
-
-                filterDataByDate(allEntriesData, allEntriesData[0]?.date);
+    
+                // Set the selectedDate to the most recent date
+                if (allEntriesData.length > 0) {
+                    filterDataByDate(allEntriesData, allEntriesData[0].date);
+                }
             } catch (error) {
                 console.error('Error fetching all entries:', error);
             }
         };
-
+    
         fetchAllEntries();
     }, []);
+    
 
     const filterDataByDate = (entries, date, date2 = '') => {
         setSelectedDate(date);

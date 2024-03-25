@@ -35,9 +35,11 @@ const DrunkennessGraph = () => {
         console.log('BAC data fetched and processed:', entries);
         setBacData(entries);
   
-        // Set the unique dates from the fetched data
-        console.log('Unique dates set:', Object.keys(entries));
-        setUniqueDates(Object.keys(entries));
+        const sortedUniqueDates = Object.keys(entries).sort((a, b) => moment(b).diff(moment(a)));
+        console.log('Unique dates set:', sortedUniqueDates);
+        setUniqueDates(sortedUniqueDates);
+        setSelectedDate1(sortedUniqueDates[0]); // Default to the most recent date
+        setSelectedDate2(sortedUniqueDates[1] || sortedUniqueDates[0]);
       } catch (error) {
         console.error('Error fetching BAC data:', error);
       }

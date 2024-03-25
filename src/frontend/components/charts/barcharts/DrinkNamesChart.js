@@ -24,30 +24,32 @@ const DrinkNamesChart = () => {
             try {
                 const entriesSnapshot = await getDocs(query(collection(firestore, user.uid, "Alcohol Stuff", "Entries")));
                 const allEntriesData = [];
-
+    
                 for (const doc of entriesSnapshot.docs) {
                     const dateStr = doc.id; // dateStr is a string in 'YYYY-MM-DD' format
                     const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
                     const entriesSnapshot = await getDocs(entriesRef);
-
+    
                     entriesSnapshot.forEach((entryDoc) => {
                         const entry = entryDoc.data();
                         entry.date = dateStr; // Use the date string from the document ID
                         allEntriesData.push(entry);
                     });
                 }
-
-                // Sort all entries by date
-                allEntriesData.sort((a, b) => moment(a.date, 'YYYY-MM-DD').diff(moment(b.date, 'YYYY-MM-DD')));
+    
+                // Sort all entries by date in descending order
+                allEntriesData.sort((a, b) => moment(b.date, 'YYYY-MM-DD').diff(moment(a.date, 'YYYY-MM-DD')));
                 setAllEntries(allEntriesData);
-
-                // Set initial chart data based on the first date
-                filterDataByDate(allEntriesData, allEntriesData[0]?.date);
+    
+                // Set selectedDate to today if exists in allEntriesData, otherwise to the most recent date
+                const today = moment().format('YYYY-MM-DD');
+                const mostRecentDate = allEntriesData.find(entry => entry.date <= today)?.date || allEntriesData[0]?.date;
+                setSelectedDate(mostRecentDate);
             } catch (error) {
                 console.error('Error fetching all entries:', error);
             }
         };
-
+    
         fetchAllEntries();
     }, []);
 

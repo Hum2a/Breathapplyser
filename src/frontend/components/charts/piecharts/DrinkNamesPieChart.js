@@ -24,32 +24,35 @@ const DrinkNamesChart = () => {
             try {
                 const entriesSnapshot = await getDocs(query(collection(firestore, user.uid, "Alcohol Stuff", "Entries")));
                 const allEntriesData = [];
-
+    
                 for (const doc of entriesSnapshot.docs) {
                     const dateStr = doc.id; // dateStr is a string in 'YYYY-MM-DD' format
                     const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
                     const entriesSnapshot = await getDocs(entriesRef);
-
+    
                     entriesSnapshot.forEach((entryDoc) => {
                         const entry = entryDoc.data();
                         entry.date = dateStr; // Use the date string from the document ID
                         allEntriesData.push(entry);
                     });
                 }
-
-                // Sort all entries by date
-                allEntriesData.sort((a, b) => moment(a.date, 'YYYY-MM-DD').diff(moment(b.date, 'YYYY-MM-DD')));
+    
+                // Sort all entries by date in descending order
+                allEntriesData.sort((a, b) => moment(b.date, 'YYYY-MM-DD').diff(moment(a.date, 'YYYY-MM-DD')));
                 setAllEntries(allEntriesData);
-
-                // Set initial chart data based on the first date
-                filterDataByDate(allEntriesData, allEntriesData[0]?.date);
+    
+                // Set selectedDate to today if exists in allEntriesData, otherwise to the most recent date
+                const today = moment().format('YYYY-MM-DD');
+                const mostRecentDate = allEntriesData.find(entry => entry.date <= today)?.date || allEntriesData[0]?.date;
+                setSelectedDate(mostRecentDate);
             } catch (error) {
                 console.error('Error fetching all entries:', error);
             }
         };
-
+    
         fetchAllEntries();
     }, []);
+    
 
     const filterDataByDate = (entries, date, date2 = '') => {
         setSelectedDate(date);
@@ -91,58 +94,89 @@ const DrinkNamesChart = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.graphTitle}>Drink Names Chart</Text>
-            {/* Toggle for Comparison Mode */}
-            <Text style={styles.toggleLabel}>Comparison Mode:</Text>
-            <Switch
-                value={comparisonMode}
-                onValueChange={() => {
-                    setComparisonMode(!comparisonMode);
-                    setDrinkNamesData2([]);
-                    setSelectedDate2('');
-                }}
-            />
-             {/* Picker for the first date */}
+            <View style={styles.switchContainer}>
+                <Text style={styles.toggleLabel}>Comparison Mode:</Text>
+                <Switch
+                    value={comparisonMode}
+                    onValueChange={() => {
+                        setComparisonMode(!comparisonMode);
+                        // Reset the second pie chart data when toggling off comparison mode
+                        if (!comparisonMode) {
+                            setDrinkNamesData2([]);
+                            setSelectedDate2('');
+                        }
+                    }}
+                />
+            </View>
             <Picker
-                selectedValue={selectedDate}
-                onValueChange={(itemValue) => filterDataByDate(allEntries, itemValue)}
-                style={styles.pickerStyle} // You can define this style in your chartStyles
+                selectedValue={selectedDate || moment().format('YYYY-MM-DD')}
+                onValueChange={(itemValue) => filterDataByDate(allEntries, itemValue, selectedDate)}
+                style={styles.pickerStyle}
             >
                 {uniqueDates.map(date => (
                     <Picker.Item key={date} label={date} value={date} />
                 ))}
             </Picker>
-            {/* Picker for the second date (visible in comparison mode) */}
             {comparisonMode && (
                 <Picker
                     selectedValue={selectedDate2}
                     onValueChange={(itemValue) => {
                         setSelectedDate2(itemValue);
-                        filterDataByDate(allEntries, selectedDate, itemValue);
+                        filterDataByDate(allEntries, selectedDate2, itemValue);
                     }}
                     style={styles.pickerStyle}
                 >
-                    {uniqueDates.map(date => (
+                    {uniqueDates.filter(date => date !== selectedDate).map(date => (
                         <Picker.Item key={date} label={date} value={date} />
                     ))}
                 </Picker>
             )}
-           {drinkNamesData.length > 0 ? (
+            {drinkNamesData.length > 0 && (
                 <PieChart
-                    data={pieChartData}
-                    width={Dimensions.get('window').width} // Adjust according to your layout
+                    data={drinkNamesData.map(([name, count]) => ({
+                        name,
+                        count,
+                        color: '#' + Math.floor(Math.random()*16777215).toString(16),
+                        legendFontColor: "#7F7F7F",
+                        legendFontSize: 15
+                    }))}
+                    width={Dimensions.get('window').width - 16} // Adjust for padding
                     height={220}
                     chartConfig={chartConfig}
                     accessor={"count"}
                     backgroundColor={"transparent"}
                     paddingLeft={"15"}
-                    center={[10, 10]} // Adjust as needed
-                    absolute={false}
+                    center={[10, 10]}
+                    absolute
+                    style={styles.chart}
                 />
-            ) : (
+            )}
+            {comparisonMode && drinkNamesData2.length > 0 && (
+                <PieChart
+                    data={drinkNamesData2.map(([name, count]) => ({
+                        name,
+                        count,
+                        color: '#' + Math.floor(Math.random()*16777215).toString(16),
+                        legendFontColor: "#7F7F7F",
+                        legendFontSize: 15
+                    }))}
+                    width={Dimensions.get('window').width - 16} // Adjust for padding
+                    height={220}
+                    chartConfig={chartConfig}
+                    accessor={"count"}
+                    backgroundColor={"transparent"}
+                    paddingLeft={"15"}
+                    center={[10, 10]}
+                    absolute
+                    style={styles.chart}
+                />
+            )}
+            {drinkNamesData.length === 0 && (
                 <Text style={styles.noDataText}>No data available for this date.</Text>
             )}
         </View>
     );
+
 };
 
 export default DrinkNamesChart;

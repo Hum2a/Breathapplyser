@@ -18,32 +18,33 @@ const BACIncreaseChart = () => {
 
     useEffect(() => {
         const fetchAllEntries = async () => {
-            const allEntriesData = [];
-            const q = query(collection(firestore, user.uid, "Alcohol Stuff", "Entries"));
-            const entriesSnapshot = await getDocs(q);
-
-            entriesSnapshot.forEach(doc => {
+            const entriesSnapshot = await getDocs(query(collection(firestore, user.uid, "Alcohol Stuff", "Entries")));
+            const allEntriesPromises = entriesSnapshot.docs.map(async (doc) => {
                 const dateStr = doc.id;
                 const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
-                getDocs(entriesRef).then(entriesSnapshot => {
-                    entriesSnapshot.forEach(entryDoc => {
-                        const entry = entryDoc.data();
-                        entry.date = dateStr; // Add date to entry
-                        allEntriesData.push(entry);
-                    });
-
-                    // Sort and filter after all entries are pushed
-                    allEntriesData.sort((a, b) => moment(a.date, 'YYYY-MM-DD').diff(moment(b.date, 'YYYY-MM-DD')));
-                    setAllEntries(allEntriesData);
-                    if (allEntriesData.length > 0) {
-                        filterDataByDate(allEntriesData, allEntriesData[0].date);
-                    }
+                const entriesSnapshot = await getDocs(entriesRef);
+                const entries = entriesSnapshot.docs.map(entryDoc => {
+                    const entry = entryDoc.data();
+                    entry.date = dateStr; // Add date to entry
+                    return entry;
                 });
+                return entries;
+            });
+    
+            Promise.all(allEntriesPromises).then(entriesArrays => {
+                const allEntriesData = entriesArrays.flat();
+                // Sort all entries by date in descending order
+                allEntriesData.sort((a, b) => moment(b.date, 'YYYY-MM-DD').diff(moment(a.date, 'YYYY-MM-DD')));
+                setAllEntries(allEntriesData);
+                if (allEntriesData.length > 0) {
+                    filterDataByDate(allEntriesData, allEntriesData[0].date);
+                }
             });
         };
-
+    
         fetchAllEntries();
     }, [user.uid, firestore]);
+    
 
     const filterDataByDate = (entries, date) => {
         setSelectedDate(date);

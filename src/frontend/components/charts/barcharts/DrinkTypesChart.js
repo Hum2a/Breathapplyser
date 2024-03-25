@@ -23,33 +23,36 @@ const DrinkTypeChart = () => {
         const fetchAllEntries = async () => {
             try {
                 const entriesSnapshot = await getDocs(query(collection(firestore, user.uid, "Alcohol Stuff", "Entries")));
-                const allEntriesData = [];
-
+                let allEntriesData = [];
+    
                 for (const doc of entriesSnapshot.docs) {
-                    const dateStr = doc.id; // dateStr is a string in 'YYYY-MM-DD' format
+                    const dateStr = doc.id;
                     const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
                     const entriesSnapshot = await getDocs(entriesRef);
-
+    
                     entriesSnapshot.forEach((entryDoc) => {
                         const entry = entryDoc.data();
-                        entry.date = dateStr; // Use the date string from the document ID
+                        entry.date = dateStr;
                         allEntriesData.push(entry);
                     });
                 }
-
-                // Sort all entries by date
-                allEntriesData.sort((a, b) => moment(a.date, 'YYYY-MM-DD').diff(moment(b.date, 'YYYY-MM-DD')));
+    
+                // Sort all entries by date in descending order to have the most recent dates first
+                allEntriesData = allEntriesData.sort((a, b) => moment(b.date).diff(moment(a.date)));
+    
                 setAllEntries(allEntriesData);
-
-                // Set initial chart data based on the first date
-                filterDataByDate(allEntriesData, allEntriesData[0]?.date);
+    
+                // Attempt to set the picker to today's date, or to the most recent date available
+                const todayFormatted = moment().format('YYYY-MM-DD');
+                const mostRecentAvailableDate = allEntriesData.find(entry => entry.date <= todayFormatted)?.date || allEntriesData[0]?.date;
+                setSelectedDate(mostRecentAvailableDate);
             } catch (error) {
                 console.error('Error fetching all entries:', error);
             }
         };
-
+    
         fetchAllEntries();
-    }, []);
+    }, [firestore, user.uid]);
 
     const filterDataByDate = (entries, date, date2 = '') => {
         setSelectedDate(date);
