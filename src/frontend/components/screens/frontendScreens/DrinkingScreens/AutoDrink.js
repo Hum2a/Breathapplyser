@@ -10,7 +10,7 @@ import { autoStyles as styles } from '../../../styles/DrinkingStyles/addStyles';
 import CommonDrinksList from '../../../../../backend/app/data/commonDrinksList';
 import { saveDailyTotals } from '../../../../../backend/firebase/queries/saveDailyTotals';
 
-const AutoEntryScreen = () => {
+const AutoEntryScreen = ({ navigation }) => {
     const drinkTypes = ['Spirit', 'Beer', 'Lager', 'Wine', 'Liquers', 'Cocktails'];
   
     const [commonDrinks, setCommonDrinks] = useState([]);
@@ -90,6 +90,7 @@ const AutoEntryScreen = () => {
             await saveDailyTotals(firestore, user, selectedDate, entryDetailsArray);
             
             Alert.alert('Success', 'Drink entry added successfully!');
+            navigation.navigate('Home');
         } catch (error) {
             console.error('Error adding drink entry:', error);
             Alert.alert('Error', 'Failed to add drink entry. Please try again.');

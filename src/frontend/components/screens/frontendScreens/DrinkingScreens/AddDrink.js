@@ -19,7 +19,7 @@ const AddEntryScreen = ({ navigation }) => {
         />
         <Text>{isAuto ? 'Auto Entry' : 'Manual Entry'}</Text>
       </View>
-      {isAuto ? <AutoEntryScreen /> : <ManualEntryScreen />}
+      {isAuto ? <AutoEntryScreen navigation={navigation} /> : <ManualEntryScreen navigation={navigation} />}
     </View>
   );
 };
