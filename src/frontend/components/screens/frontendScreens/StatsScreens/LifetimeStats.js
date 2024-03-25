@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import { getFirestore, collection, getDocs, query, orderBy, doc } from 'firebase/firestore';
+import { auth } from '../../../../../backend/firebase/database/firebase';
 import moment from 'moment';
 import { UserContext } from '../../../../context/UserContext';
 import { lifetimeStyles as styles } from '../../../styles/StatsStyles/lifetimeStyles';
@@ -15,6 +16,7 @@ const LifetimeStats = () => {
     const [detailedUnitsData, setDetailedUnitsData] = useState([]);
     const [showDetailedSpent, setShowDetailedSpent] = useState(false);
     const [detailedSpentData, setDetailedSpentData] = useState([]);
+    const [accountCreationDate, setAccountCreationDate] = useState(null);
 
     const { user } = useContext(UserContext);
     const firestore = getFirestore();
@@ -26,6 +28,15 @@ const LifetimeStats = () => {
             fetchDetailedData(); // Make sure to call this function
         }
     }, [user, dayRange]);
+
+    useEffect(() => {
+        const user = auth.currentUser;
+        if (user) {
+            // Firebase returns the creation time as a string, so we use moment to parse it
+            const creationTime = moment(user.metadata.creationTime);
+            setAccountCreationDate(creationTime);
+        }
+    }, []);
     
 
     const fetchLifetimeStats = async () => {
@@ -136,6 +147,17 @@ const LifetimeStats = () => {
         setDetailedUnitsData(detailedUnitsData.slice(0, 10)); // Limiting to top 10 for brevity
         setDetailedSpentData(detailedSpentData.slice(0, 10)); // Limiting to top 10 for brevity
     };
+
+    const handleAllTime = () => {
+        const user = auth.currentUser;
+        if (user) {
+            const creationTime = moment(user.metadata.creationTime);
+            const today = moment();
+            const daysSinceCreation = today.diff(creationTime, 'days');
+            setDayRange(daysSinceCreation);
+        }
+    };
+    
     
     const toggleExpand = (type) => {
         setExpanded(prev => ({ ...prev, [type]: !prev[type] }));
@@ -150,15 +172,25 @@ const LifetimeStats = () => {
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView}>
                 <Text style={styles.title}>Lifetime Stats</Text>
+
+                <TouchableOpacity style={styles.dayRangeButton} onPress={handleAllTime}>
+                    <Text style={styles.dayRangeButtonText}>All Time</Text>
+                </TouchableOpacity>
+
                 <View style={styles.dayRangeContainer}>
+
                     <TouchableOpacity style={styles.dayRangeButton} onPress={decreaseDayRange}>
                         <Text style={styles.dayRangeButtonText}>Decrease Day Range</Text>
                     </TouchableOpacity>
+
                     <Text style={styles.dayRangeText}>Day Range: {dayRange}</Text>
+                    
                     <TouchableOpacity style={styles.dayRangeButton} onPress={increaseDayRange}>
                         <Text style={styles.dayRangeButtonText}>Increase Day Range</Text>
                     </TouchableOpacity>
+
                 </View>
+
                 <View style={styles.tableContainer}>
                     <View style={styles.tableHeader}>
                         <Text style={styles.headerText}>Drink Type</Text>
