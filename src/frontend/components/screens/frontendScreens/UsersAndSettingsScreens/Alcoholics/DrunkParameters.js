@@ -18,7 +18,7 @@ const DrunkParametersScreen = () => {
         { range: '0.35 - 0.40', simple: 'Find a friend', detailed: 'Severe intoxication, needs assistance in walking; total mental confusion. Dysphoria with nausea and some vomiting.' },
         { range: '0.40 - 0.45', simple: 'Gonna Pass out', detailed: 'Loss of consciousness. The risk of death due to respiratory arrest is possible.' },
         { range: '0.45 - 0.50', simple: 'Call an Ambulance', detailed: 'This BAC level is comparable to surgical anesthesia and is considered a very life-threatening level of alcohol intoxication.' },
-        { range: '0.50+', simple: 'Death is coming', detailed: 'Onset of coma, and likelihood of death due to respiratory arrest.' }
+        { range: '0.50 - 2.00', simple: 'Death is coming', detailed: 'Onset of coma, and likelihood of death due to respiratory arrest.' }
     ]);
     
     

@@ -135,7 +135,7 @@ const getTextColor = (bac) => {
         <View>
           <TouchableOpacity onPress={() => setModalVisible(true)}>
             <Text style={styles.textStyle}>
-              You are currently: <Text style={[{ color: getTextColor(currentBAC) }, styles.boldText]}>{displayValue}</Text>
+              <Text style={[{ color: getTextColor(currentBAC) }, styles.boldText]}>{displayValue}</Text>
             </Text>
             <Text style={styles.bacLevelText}>
               Current BAC: <Text style={styles.bacLevelNumber}>{currentBAC.toFixed(4)}</Text>
