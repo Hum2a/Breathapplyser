@@ -11,6 +11,11 @@ const LifetimeStats = () => {
     const [totalSpent, setTotalSpent] = useState(0);
     const [expanded, setExpanded ] = useState({});
     const [drinkTypeDetails, setDrinkTypeDetails] = useState({});
+    const [showDetailedUnits, setShowDetailedUnits] = useState(false);
+    const [detailedUnitsData, setDetailedUnitsData] = useState([]);
+    const [showDetailedSpent, setShowDetailedSpent] = useState(false);
+    const [detailedSpentData, setDetailedSpentData] = useState([]);
+
     const { user } = useContext(UserContext);
     const firestore = getFirestore();
 
@@ -18,8 +23,10 @@ const LifetimeStats = () => {
         if (user) {
             fetchLifetimeStats();
             fetchTotalUnitsAndAmountSpent();
+            fetchDetailedData(); // Make sure to call this function
         }
     }, [user, dayRange]);
+    
 
     const fetchLifetimeStats = async () => {
         if (!user) return;
@@ -85,8 +92,51 @@ const LifetimeStats = () => {
         setTotalUnits(unitsSum);
         setTotalSpent(spentSum);
     };
+    const fetchDetailedData = async () => {
+        if (!user) return;
     
-
+        let unitsByDate = {};
+        let spentByDate = {};
+        let currentDate = moment();
+        const endDate = moment().subtract(dayRange, 'days');
+    
+        while (currentDate.isAfter(endDate)) {
+            const dateStr = currentDate.format('YYYY-MM-DD');
+            const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
+            const querySnapshot = await getDocs(entriesRef);
+    
+            let dailyUnits = 0;
+            let dailySpent = 0;
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                dailyUnits += data.units || 0;
+                dailySpent += data.price || 0;
+            });
+    
+            if (dailyUnits > 0) { // Only record days with entries
+                unitsByDate[dateStr] = dailyUnits;
+            }
+    
+            if (dailySpent > 0) { // Only record days with entries
+                spentByDate[dateStr] = dailySpent;
+            }
+    
+            currentDate = currentDate.subtract(1, 'days');
+        }
+    
+        // Convert the objects into arrays and sort them
+        const detailedUnitsData = Object.entries(unitsByDate)
+            .map(([date, units]) => ({ date, units }))
+            .sort((a, b) => b.units - a.units);
+    
+        const detailedSpentData = Object.entries(spentByDate)
+            .map(([date, spent]) => ({ date, spent }))
+            .sort((a, b) => b.spent - a.spent);
+    
+        setDetailedUnitsData(detailedUnitsData.slice(0, 10)); // Limiting to top 10 for brevity
+        setDetailedSpentData(detailedSpentData.slice(0, 10)); // Limiting to top 10 for brevity
+    };
+    
     const toggleExpand = (type) => {
         setExpanded(prev => ({ ...prev, [type]: !prev[type] }));
     };
@@ -141,15 +191,32 @@ const LifetimeStats = () => {
                 </View>
                 {/* Summary of Total Units */}
                 <Text style={styles.subtitle}>Total Units Consumed</Text>
-                <View style={styles.summaryTable}>
+                <TouchableOpacity style={styles.summaryTable} onPress={() => setShowDetailedUnits(!showDetailedUnits)}>
                     <Text style={styles.summaryValue}>{totalUnits}</Text>
-                </View>
-
+                    {showDetailedUnits && detailedUnitsData.length > 0 && (
+                        <View style={styles.expandedSection}>
+                            {detailedUnitsData.map((item, index) => (
+                                <View key={index} style={styles.detailRow}>
+                                    <Text style={styles.detailText}>{item.date}: {item.units} units</Text>
+                                </View>
+                            ))}
+                        </View>
+                    )}
+                </TouchableOpacity>
                 {/* Summary of Total Amount Spent */}
                 <Text style={styles.subtitle}>Total Amount Spent</Text>
-                <View style={styles.summaryTable}>
+                <TouchableOpacity style={styles.summaryTable} onPress={() => setShowDetailedSpent(!showDetailedSpent)}>
                     <Text style={styles.summaryValue}>${totalSpent.toFixed(2)}</Text>
-                </View>
+                    {showDetailedSpent && detailedSpentData.length > 0 && (
+                        <View style={styles.expandedSection}>
+                            {detailedSpentData.map((item, index) => (
+                                <View key={index} style={styles.detailRow}>
+                                    <Text style={styles.detailText}>{item.date}: ${item.spent.toFixed(2)}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    )}
+                </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
     );
