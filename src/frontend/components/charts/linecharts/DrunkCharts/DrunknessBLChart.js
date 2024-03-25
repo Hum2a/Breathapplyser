@@ -2,19 +2,33 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { LineChart } from 'react-native-chart-kit';
-import { getFirestore, collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, query, orderBy, getDocs, doc, getDoc } from 'firebase/firestore';
 import moment from 'moment';
 import { UserContext } from '../../../../context/UserContext';
 import { DrunkStyles as styles } from '../../../styles/ChartStyles/DrunknessStyles';
-import { getDrunkennessLevel } from '../../../../../backend/app/background/Drunkness/drunknessCalculator';
 
 const DrunkennessGraph = () => {
   const [bacData, setBacData] = useState({});
   const [uniqueDates, setUniqueDates] = useState([]);
   const [selectedDate1, setSelectedDate1] = useState(moment().format("YYYY-MM-DD"));
   const [selectedDate2, setSelectedDate2] = useState('');
+  const [drunkParameters, setDrunkParameters] = useState([]);
   const firestore = getFirestore();
   const { user } = useContext(UserContext);
+
+  useEffect(() => {
+    const fetchDrunkParameters = async () => {
+      if (user) {
+        const parametersRef = doc(firestore, user.uid, 'Drunk Parameters');
+        const docSnap = await getDoc(parametersRef);
+        if (docSnap.exists()) {
+          setDrunkParameters(docSnap.data().levels);
+        }
+      }
+    };
+
+    fetchDrunkParameters();
+  }, [user]);
 
   useEffect(() => {
     console.log('Fetching BAC data...');
@@ -45,38 +59,44 @@ const DrunkennessGraph = () => {
       }
     };
   
-    fetchData();
-  }, [user, firestore]);
+    if (drunkParameters.length > 0) {
+      fetchData();
+    }
+  }, [user, firestore, drunkParameters]);
 
   const processDataForChart = (date) => {
     console.log(`Processing data for chart on date: ${date}`);
     const dayEntries = bacData[date] || [];
-    let hourlyBAC = new Array(24).fill(0);
-    let hourlyDrunkennessLevels = {}; // Object to store drunkenness levels and times
-  
-    for (let hour = 0; hour < 24; hour++) {
-      const hourEntries = dayEntries.filter(entry => moment(entry.date, "YYYY-MM-DD HH:mm:ss").hour() === hour);
-      const totalBAC = hourEntries.reduce((sum, entry) => sum + parseFloat(entry.value || 0), 0);
-      const averageBAC = hourEntries.length > 0 ? totalBAC / hourEntries.length : 0;
-      hourlyBAC[hour] = averageBAC;
-  
-      // Determine drunkenness level for this hour
-      const timeLabel = moment(hourEntries[0]?.date, 'YYYY-MM-DD HH:mm:ss').format('HH:mm');
-      const level = getDrunkennessLevel(averageBAC).simple;
-      if (!(level in hourlyDrunkennessLevels)) {
-        hourlyDrunkennessLevels[level] = timeLabel; // Store the time at which the level of drunkness was reached
-      }
-    }
-  
-    console.log(`Data for chart processed:`, hourlyBAC);
+    const dataPoints = []; // Array to store BAC values for the chart
+    const labels = []; // Array to store labels for the chart (e.g., hours)
+    const drunkennessLevels = []; // Array to store drunkenness levels for each BAC value
+
+    dayEntries.forEach(entry => {
+        const entryTime = moment(entry.date, "YYYY-MM-DD HH:mm:ss");
+        const bacValue = parseFloat(entry.value || 0);
+        labels.push(entryTime.format('HH:mm')); // Adjust the format as needed
+        dataPoints.push(bacValue);
+
+        // Determine the drunkenness level for this BAC value using the firebase data
+        const level = getDrunkennessLevelFromFirebase(bacValue);
+        drunkennessLevels.push(level); // Store the calculated level
+    });
+
     return {
-      labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
-      bacValues: hourlyBAC.filter(value => !isNaN(value)), // Filter out any NaN values just to be extra safe
-      drunkennessLevels: hourlyDrunkennessLevels
+        labels, // The labels for the chart's X-axis
+        bacValues: dataPoints, // The BAC values for the chart's Y-axis
+        drunkennessLevels, // Corresponding drunkenness levels for the BAC values
     };
+};
+
+  const getDrunkennessLevelFromFirebase = (bac) => {
+      let levelInfo = drunkParameters.find(param => {
+        const [min, max] = param.range.split(' - ').map(Number);
+        return bac >= min && bac <= max;
+      });
+      return levelInfo ? levelInfo.simple : "Unknown";
   };
-  
-  
+
 
   const data1 = processDataForChart(selectedDate1);
   const data2 = processDataForChart(selectedDate2);

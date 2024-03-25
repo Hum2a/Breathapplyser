@@ -2,12 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, Switch, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { LineChart } from 'react-native-chart-kit';
-import { collection, getFirestore, query, orderBy, getDocs } from 'firebase/firestore';
+import { collection, getFirestore, query, orderBy, getDocs, doc, getDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../context/UserContext';
 import moment from 'moment';
 import { chartConfig } from '../chart-handling/chartConfig';
 import { DrunkStyles as styles } from '../../../styles/ChartStyles/DrunknessStyles';
-import { getDrunkennessLevel } from '../../../../../backend/app/background/Drunkness/drunknessCalculator';
 
 const DrunkennessLevelChart = () => {
     const [bacIncreaseValues, setBacIncreaseValues] = useState([]);
@@ -18,8 +17,24 @@ const DrunkennessLevelChart = () => {
     const [selectedDate2, setSelectedDate2] = useState('');
     const [bacIncreaseValues2, setBacIncreaseValues2] = useState([]);
     const [drunkennessLevel, setDrunkenessLevel] = useState([]);
+    const [drunkParameters, setDrunkParameters] = useState([]);
     const firestore = getFirestore();
     const { user } = useContext(UserContext);
+
+    useEffect(() => {
+        const fetchDrunkParameters = async () => {
+            if (user) {
+                const parametersRef = doc(firestore, user.uid, 'Drunk Parameters');
+                const docSnap = await getDoc(parametersRef);
+    
+                if (docSnap.exists()) {
+                    setDrunkParameters(docSnap.data().levels);
+                }
+            }
+        };
+    
+        fetchDrunkParameters();
+    }, [user]);
 
     useEffect(() => {
         const fetchAllEntries = async () => {
@@ -53,7 +68,7 @@ const DrunkennessLevelChart = () => {
         };
     
         fetchAllEntries();
-    }, []);
+    }, [drunkParameters]);
     
 
     const filterDataByDate = (entries, date, date2 = '') => {
@@ -73,10 +88,10 @@ const DrunkennessLevelChart = () => {
             const timeLabel = entry.startTime ? moment(entry.startTime, 'YYYY-MM-DD HH:mm:ss').format('HH:mm') : 'Unknown Time';
             labels.push(timeLabel);
     
-            // Check if the current level of drunkness has been reached
-            const level = getDrunkennessLevel(cumulativeBACIncrease).simple;
+            const levelInfo = getDrunkennessLevel(cumulativeBACIncrease, drunkParameters);
+            const level = levelInfo.simple;
             if (!(level in drunknessLevels)) {
-                drunknessLevels[level] = timeLabel; // Store the time at which the level of drunkness was reached
+                drunknessLevels[level] = timeLabel;
             }
         });
     
@@ -99,6 +114,18 @@ const DrunkennessLevelChart = () => {
     
         console.log('Drunkness Levels:', drunknessLevels); // Print the drunkness levels and their corresponding times
         setDrunkenessLevel(drunknessLevels);
+    };
+
+    const getDrunkennessLevel = (bac, parameters) => {
+        let levelInfo = { simple: "Unknown", detailed: "No data available." };
+        for (const param of parameters) {
+            const [min, max] = param.range.split(' - ').map(Number);
+            if (bac >= min && bac < max) {
+                levelInfo = { simple: param.simple, detailed: param.detailed };
+                break;
+            }
+        }
+        return levelInfo;
     };
     
 
