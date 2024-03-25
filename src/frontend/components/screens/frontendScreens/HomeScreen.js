@@ -6,7 +6,7 @@ import { homeStyles } from '../../styles/StartUpStyles/homeStyles';
 import { appStyles } from '../../styles/AppStyles/appStyles';
 import StatsScreen from './StatsScreens/TodaysStats';
 import BACDecrease from '../../../../backend/app/background/BAC/bacDecreaser';
-import DrunkennessLevel from '../../../../backend/app/background/Drunkness/drunknessCalculator';
+import BACDecreaseFB from '../../../../backend/app/background/BAC/bacDecreaserFB';
 import DrunkennessLevelFb from '../../../../backend/app/background/Drunkness/drunknessCalculatorFb';
 import BacWiper from '../../../../backend/app/background/BAC/bacWiper';
 import { getFirestore, deleteDoc, doc, collection, query, getDocs, getDoc } from 'firebase/firestore';
@@ -122,7 +122,7 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={appStyles.fullScreen}>
       <View style={homeStyles.container}>
-        <BACDecrease user={user} key={refreshKey} />
+        <BACDecreaseFB user={user} key={refreshKey} />
 
         <View style={homeStyles.trackContainer}>
           <UnitTrack />
