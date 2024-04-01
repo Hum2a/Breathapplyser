@@ -1,8 +1,11 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, Image, TouchableWithoutFeedback, SafeAreaView } from 'react-native';
 import { omniStyles as styles } from '../../../styles/ChartStyles/omniStyles';
+import FatManAnimation from '../../../animations/fatman';
 
 const ChartsScreen = ({ navigation }) => {
+  const [playFatManAnimation, setPlayFatManAnimation] = useState(false);
+
   const navigateToChart = (chartType) => {
     navigation.navigate(chartType);
   };
@@ -24,13 +27,13 @@ const ChartsScreen = ({ navigation }) => {
           style={styles.smallIcon}
         />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => navigateToChart('UnitsCharts')}>
-        <Text style={styles.buttonText}>Units Charts</Text>
-        <Image
-          source={require('../../../../assets/images/units.png')}
-          style={styles.smallIcon}
-        />
-      </TouchableOpacity>
+      <TouchableWithoutFeedback style={styles.button} onPressIn={() => setPlayFatManAnimation(true)} onPressOut={() => { setPlayFatManAnimation(false); navigateToChart('UnitsCharts'); }}>
+        <View style={styles.button}>
+          <Text style={styles.buttonText}>Units Charts</Text>
+          <FatManAnimation play={playFatManAnimation} frameRate={24} />
+        </View>
+      </TouchableWithoutFeedback>
+
       <TouchableOpacity style={styles.button} onPress={() => navigateToChart('AmountSpentCharts')}>
         <Text style={styles.buttonText}>Amount Spent Charts</Text>
         <Image

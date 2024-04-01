@@ -4,12 +4,14 @@ import { useNavigation, CommonActions } from '@react-navigation/native';
 import { SettingStyles as styles } from '../../../styles/SettingStyles/settingStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProfileWaveAnimation from '../../../animations/profileWave';
+import MuscleManAnimation from '../../../animations/muscleman';
 import { useUser } from '../../../../context/UserContext';
 
 const Settings = () => {
   const navigation = useNavigation();
   const { logout } = useUser(); // Use the logout function from UserContext
   const [ playProfileWaveAnimation, setPlayProfileWaveAnimation ] = useState(false); 
+  const [ playMuscleManAnimation, setPlayMuscleManAnimation] = useState(false);
 
   const navigateToProfile = () => {
     navigation.navigate('Profile'); // Replace 'Profile' with your actual profile screen name
@@ -70,10 +72,20 @@ const Settings = () => {
         </TouchableWithoutFeedback>
 
 
-        <TouchableOpacity onPress={navigateToLimits} style={styles.item}>
+        {/* <TouchableOpacity onPress={navigateToLimits} style={styles.item}>
           <Text style={styles.text}>Limits</Text>
           <Image source={require('../../../../assets/images/goku_screaming.png')} style={styles.icon} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+
+      <TouchableWithoutFeedback
+         onPressIn={() => setPlayMuscleManAnimation(true)}
+         onPressOut={() => { setPlayMuscleManAnimation(false); navigateToLimits(); } }
+         style={styles.item}>
+          <View style={styles.item}>
+              <Text style={styles.text}>Limits</Text>
+              <MuscleManAnimation play={playMuscleManAnimation} frameRate={24} />
+          </View>
+        </TouchableWithoutFeedback>
 
       <TouchableOpacity onPress={navigateToAlcoholics} style={styles.item}>
         <Text style={styles.text}>Alcoholics</Text>
