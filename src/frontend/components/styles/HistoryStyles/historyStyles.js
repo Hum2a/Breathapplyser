@@ -22,13 +22,9 @@ export const HistoryStyles = StyleSheet.create({
     borderWidth: 1,
   },
   historyItem: {
-    backgroundColor: '#92DDFE', // Light blue background
-    borderRadius: 8, // Rounded corners
-    borderWidth: 1.5, // Border width
-    borderColor: '#E9FAA6', // Yellowish-green border color
-    padding: 20, // Padding inside the item
-    margin: 10, // Margin around the item
-    alignItems: 'center', // Center items horizontally
+    margin: 10,
+    borderWidth: 1.5,
+    borderColor: '#E9FAA6',
     // iOS shadow properties
     shadowColor: '#000', // Black color for the shadow
     shadowOffset: { width: 0, height: 2 }, // Shadow position
@@ -36,7 +32,7 @@ export const HistoryStyles = StyleSheet.create({
     shadowRadius: 3.84, // Shadow blur radius
     // Android elevation
     elevation: 5, // Depth effect for Android
-},
+  },
 
   dateText: {
     fontSize: 18,
@@ -66,19 +62,35 @@ export const HistoryStyles = StyleSheet.create({
   },
   backgroundTextContainer: {
     ...StyleSheet.absoluteFillObject, // Make the text overlay the entire item
-    justifyContent: 'center', // Center vertically
-    alignItems: 'center', // Center horizontally
     transform: [{ rotate: '-40deg' }], // Rotate the container
+    position: 'absolute',
+    left: 0, // Align to the left side
+    top: -35,
+    justifyContent: 'flex-start', // Center vertically
+    alignItems: 'flex-start', // Align text to the start (left)
   },
   backgroundText: {
-    fontSize: 73, // Large text size
+    fontSize: 68, // Large text size
     color: 'rgba(0, 0, 255, 0.2)', // Semi-transparent white
     fontWeight: 'bold',
     textAlign: 'center',
+    zIndex: 1
   },
   itemContent: {
-    zIndex: 2, // Ensure the item content is above the background text
+    flex: 1, // Take available space
+    marginLeft: 180, // Give space for the date on the left, adjust as needed
+    justifyContent: 'center', // Center items vertically inside
+    paddingRight: 20, // Padding from the right edge
+    zindex: 2,
   },
+  gradient: {
+    flex: 1,
+    borderRadius: 8,
+    padding: 20,
+    justifyContent: 'center', // Align children vertically
+    alignItems: 'center', // Align children horizontally
+  },
+  
   
 });
 

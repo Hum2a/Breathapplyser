@@ -6,6 +6,7 @@ import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import moment from 'moment';
 import { homeStyles } from '../../../styles/StartUpStyles/homeStyles';
 import { appStyles } from '../../../styles/AppStyles/appStyles';
+import LinearGradient from 'react-native-linear-gradient';
 
 const HistoryScreen = ({ navigation }) => {
   const [dates, setDates] = useState([]); // Dates with entries
@@ -98,17 +99,21 @@ const HistoryScreen = ({ navigation }) => {
               style={styles.historyItem}
               onPress={() => handleDateClick(item.name)} // Handle date click
             >
-              <View style={styles.backgroundTextContainer}>
-                <Text style={styles.backgroundText}>
-                  {moment(item.name, 'YYYY-MM-DD').format('dddd')} {/* Display day of the week */}
-                </Text>
-              </View>
-              <View style={styles.itemContent}>
-                <Text style={styles.dateText}>{item.name}</Text>
-                <Text style={styles.entriesCountText}>{`Entries: ${item.count}`}</Text>
-                <Text style={styles.entriesCountText}>{`Total Spent: $${item.totalSpent}`}</Text>
-                <Text style={styles.entriesCountText}>{`Total Units: ${item.totalUnits}`}</Text>
-              </View>
+              <LinearGradient
+                colors={['#92DDFE', '#BAEAFF']} // Start and end colors
+                style={styles.gradient}>
+                <View style={styles.backgroundTextContainer}>
+                  <Text style={styles.backgroundText}>
+                    {moment(item.name, 'YYYY-MM-DD').format('dddd')} {/* Display day of the week */}
+                  </Text>
+                </View>
+                <View style={styles.itemContent}>
+                  <Text style={styles.dateText}>{item.name}</Text>
+                  <Text style={styles.entriesCountText}>{`Entries: ${item.count}`}</Text>
+                  <Text style={styles.entriesCountText}>{`Total Spent: $${item.totalSpent}`}</Text>
+                  <Text style={styles.entriesCountText}>{`Total Units: ${item.totalUnits}`}</Text>
+                </View>
+              </LinearGradient>
             </TouchableOpacity>
           )}
           keyExtractor={(item, index) => index.toString()}
