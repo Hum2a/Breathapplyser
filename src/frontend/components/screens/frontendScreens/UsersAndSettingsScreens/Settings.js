@@ -71,12 +71,6 @@ const Settings = () => {
           </View>
         </TouchableWithoutFeedback>
 
-
-        {/* <TouchableOpacity onPress={navigateToLimits} style={styles.item}>
-          <Text style={styles.text}>Limits</Text>
-          <Image source={require('../../../../assets/images/goku_screaming.png')} style={styles.icon} />
-      </TouchableOpacity> */}
-
       <TouchableWithoutFeedback
          onPressIn={() => setPlayMuscleManAnimation(true)}
          onPressOut={() => { setPlayMuscleManAnimation(false); navigateToLimits(); } }
