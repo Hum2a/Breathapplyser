@@ -18,6 +18,7 @@ import SpendingTrack from './StatsScreens/SpendTrack';
 import StarAnimation from '../../animations/favouriteStar';
 import BeerAnimation from '../../animations/beerjug';
 import SpinningCog from '../../animations/settingsCog';
+import MedalShimmerAnimation from '../../animations/medalShimmer';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -27,6 +28,7 @@ const HomeScreen = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [playStarAnimation, setPlayStarAnimation] = useState(false);
   const [playBeerAnimation, setPlayBeerAnimation] = useState(false);
+  const [playMedalAnimation, setPlayMedalAnimation] = useState(false);
   const firestore = getFirestore();
 
   const toggleBeerAnimation = () => {
@@ -143,12 +145,15 @@ const HomeScreen = () => {
           />
         </TouchableOpacity>
       
-          <TouchableOpacity onPress={NavigateToAchievements} style={homeStyles.settingsIcon}>
-            <Image
+          <TouchableWithoutFeedback onPressIn={() => setPlayMedalAnimation(true)} onPressOut={() => { setPlayMedalAnimation(false); NavigateToAchievements(); }}>
+            {/* <Image
               source={require('../../../assets/images/medal.png')}
               style={homeStyles.medalIcon}
-            />
-          </TouchableOpacity>
+            /> */}
+            <View style={homeStyles.settingsIcon}>
+              <MedalShimmerAnimation play={playMedalAnimation} frameRate={24}/>
+            </View>
+          </TouchableWithoutFeedback>
 
         </View>
 
