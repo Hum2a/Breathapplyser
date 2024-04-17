@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { getFirestore, collection, query, getDocs, doc, getDoc } from 'firebase/firestore';
 import moment from 'moment';
-import { RankingStyles as styles } from '../../styles/OnlineStyles/RankingStyles';
 
 const SpentRankings = () => {
   const [rankings, setRankings] = useState([]);
