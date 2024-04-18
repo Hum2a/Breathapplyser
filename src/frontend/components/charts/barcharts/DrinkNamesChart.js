@@ -2,15 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, Switch, Dimensions } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { BarChart } from 'react-native-chart-kit';
-import { collection, getFirestore, query, orderBy, getDocs } from 'firebase/firestore';
+import { collection, getFirestore, query, getDocs } from 'firebase/firestore';
 import { UserContext } from '../../../context/UserContext';
 import moment from 'moment';
-import { chartConfig } from '../linecharts/chart-handling/chartConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import { NameStyles as styles } from '../../styles/ChartStyles/nameStyles';
 
 const DrinkNamesChart = () => {
     const [drinkNamesData, setDrinkNamesData] = useState([]);
-    const [chartLabels, setChartLabels] = useState([]);
     const [allEntries, setAllEntries] = useState([]);
     const [selectedDate, setSelectedDate] = useState('');
     const [comparisonMode, setComparisonMode] = useState(false);
@@ -22,36 +21,57 @@ const DrinkNamesChart = () => {
     useEffect(() => {
         const fetchAllEntries = async () => {
             try {
-                const entriesSnapshot = await getDocs(query(collection(firestore, user.uid, "Alcohol Stuff", "Entries")));
-                const allEntriesData = [];
+                // Check for cached data based on selected date
+                const cachedData = await AsyncStorage.getItem(`drinkNamesChartData_${selectedDate}`);
+                if (cachedData) {
+                    const parsedData = JSON.parse(cachedData);
+                    setAllEntries(parsedData.allEntries);
+                    setDrinkNamesData(parsedData.drinkNamesData);
+                } else {
+                    const entriesSnapshot = await getDocs(query(collection(firestore, user.uid, "Alcohol Stuff", "Entries")));
+                    const allEntriesData = [];
     
-                for (const doc of entriesSnapshot.docs) {
-                    const dateStr = doc.id; // dateStr is a string in 'YYYY-MM-DD' format
-                    const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
-                    const entriesSnapshot = await getDocs(entriesRef);
+                    for (const doc of entriesSnapshot.docs) {
+                        const dateStr = doc.id; // dateStr is a string in 'YYYY-MM-DD' format
+                        const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
+                        const entriesSnapshot = await getDocs(entriesRef);
     
-                    entriesSnapshot.forEach((entryDoc) => {
-                        const entry = entryDoc.data();
-                        entry.date = dateStr; // Use the date string from the document ID
-                        allEntriesData.push(entry);
+                        entriesSnapshot.forEach((entryDoc) => {
+                            const entry = entryDoc.data();
+                            entry.date = dateStr; // Use the date string from the document ID
+                            allEntriesData.push(entry);
+                        });
+                    }
+    
+                    // Filter entries for the selected date
+                    const filteredEntries = allEntriesData.filter(entry => entry.date === selectedDate);
+    
+                    // Sort all entries by date in descending order
+                    filteredEntries.sort((a, b) => moment(b.date, 'YYYY-MM-DD').diff(moment(a.date, 'YYYY-MM-DD')));
+                    setAllEntries(filteredEntries);
+    
+                    const drinkNamesCount = {};
+                    filteredEntries.forEach(entry => {
+                        const drinkName = entry.alcohol;
+                        drinkNamesCount[drinkName] = (drinkNamesCount[drinkName] || 0) + 1;
                     });
+                    setDrinkNamesData(Object.entries(drinkNamesCount));
+    
+                    // Cache fetched data based on selected date
+                    const dataToCache = {
+                        allEntries: filteredEntries,
+                        drinkNamesData: Object.entries(drinkNamesCount),
+                    };
+                    await AsyncStorage.setItem(`drinkNamesChartData_${selectedDate}`, JSON.stringify(dataToCache));
                 }
-    
-                // Sort all entries by date in descending order
-                allEntriesData.sort((a, b) => moment(b.date, 'YYYY-MM-DD').diff(moment(a.date, 'YYYY-MM-DD')));
-                setAllEntries(allEntriesData);
-    
-                // Set selectedDate to today if exists in allEntriesData, otherwise to the most recent date
-                const today = moment().format('YYYY-MM-DD');
-                const mostRecentDate = allEntriesData.find(entry => entry.date <= today)?.date || allEntriesData[0]?.date;
-                setSelectedDate(mostRecentDate);
             } catch (error) {
                 console.error('Error fetching all entries:', error);
             }
         };
     
         fetchAllEntries();
-    }, []);
+    }, [selectedDate]); // Run effect when selectedDate changes
+    
 
     const filterDataByDate = (entries, date, date2 = '') => {
         setSelectedDate(date);
