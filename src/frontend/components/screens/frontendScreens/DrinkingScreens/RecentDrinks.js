@@ -7,6 +7,7 @@ import { UserContext } from '../../../../context/UserContext'; // Update the pat
 import moment from 'moment';
 import { RecentStyles as styles } from '../../../styles/DrinkingStyles/recentStyles';
 import { saveBACLevel } from '../../../../../backend/firebase/queries/saveBACLevel';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RecentDrinks = ({ navigation }) => {
   const [recentDrinks, setRecentDrinks] = useState([]);
@@ -22,45 +23,68 @@ const RecentDrinks = ({ navigation }) => {
   const firestore = getFirestore();
 
   useEffect(() => {
-    const fetchRecentDrinks = async () => {
-        if (!user) {
-          console.error('User is not authenticated.');
-          return;
-        }
-      
-        const maxDaysToLookBack = 30; // Define how many days back you want to search
-        const recentDrinksLimit = 3; // How many recent drinks you want to fetch
-        const fetchedRecentDrinks = [];
-        let currentDate = moment();
-      
-        try {
-          for (let i = 0; i < maxDaysToLookBack && fetchedRecentDrinks.length < recentDrinksLimit; i++) {
-            const dateStr = currentDate.format('YYYY-MM-DD');
-            const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
-            const q = query(entriesRef, orderBy("date", "desc"), limit(recentDrinksLimit));
-            const querySnapshot = await getDocs(q);
-      
-            querySnapshot.docs.forEach(doc => {
-              if (fetchedRecentDrinks.length < recentDrinksLimit) {
-                fetchedRecentDrinks.push({ id: doc.id, ...doc.data() });
-              }
-            });
-      
-            currentDate = currentDate.subtract(1, 'days'); // Move to the previous day
-          }
-      
-          setRecentDrinks(fetchedRecentDrinks);
-        } catch (error) {
-          console.error('Error fetching recent drinks:', error);
-          Alert.alert('Error', 'Could not fetch recent drinks.');
-        }
-      };
-      
     fetchUserProfile();
     fetchRecentDrinks();
     fetchLimits();
   }, [user]);
 
+  const fetchRecentDrinks = async () => {
+    if (!user) {
+      console.error('User is not authenticated.');
+      return;
+    }
+  
+    const cacheKey = 'recentDrinks';
+    const maxDaysToLookBack = 30; // Define how many days back you want to search
+    const recentDrinksLimit = 3; // How many recent drinks you want to fetch
+    let fetchedRecentDrinks = [];
+    let currentDate = moment();
+    let totalQueries = 0;
+    let totalReads = 0;
+  
+    // Try to load the cached data first
+    const cachedData = await AsyncStorage.getItem(cacheKey);
+    if (cachedData) {
+      const parsedCache = JSON.parse(cachedData);
+      const cacheDate = moment(parsedCache.date, 'YYYY-MM-DD');
+      if (cacheDate.isSame(moment(), 'day')) {
+        console.log('Loading drinks from cache');
+        setRecentDrinks(parsedCache.drinks);
+        return;
+      }
+    }
+  
+    try {
+      for (let i = 0; i < maxDaysToLookBack && fetchedRecentDrinks.length < recentDrinksLimit; i++) {
+        const dateStr = currentDate.format('YYYY-MM-DD');
+        const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
+        const q = query(entriesRef, orderBy("date", "desc"), limit(recentDrinksLimit));
+        const querySnapshot = await getDocs(q);
+        totalQueries++; // Count this query
+        totalReads += querySnapshot.docs.length; // Add the number of documents read
+  
+        querySnapshot.docs.forEach(doc => {
+          if (fetchedRecentDrinks.length < recentDrinksLimit) {
+            fetchedRecentDrinks.push({ id: doc.id, ...doc.data() });
+          }
+        });
+  
+        currentDate = currentDate.subtract(1, 'days'); // Move to the previous day
+      }
+  
+      setRecentDrinks(fetchedRecentDrinks);
+      // Update the cache with new data
+      await AsyncStorage.setItem(cacheKey, JSON.stringify({ date: moment().format('YYYY-MM-DD'), drinks: fetchedRecentDrinks }));
+    } catch (error) {
+      console.error('Error fetching recent drinks:', error);
+      Alert.alert('Error', 'Could not fetch recent drinks.');
+    }
+  
+    // Log the total number of queries and reads
+    console.log(`Total Firestore Queries: ${totalQueries}`);
+    console.log(`Total Firestore Reads: ${totalReads}`);
+  };
+  
   const fetchUserProfile = async () => {
     if (!user) return;
   

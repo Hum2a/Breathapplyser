@@ -290,5 +290,13 @@ export const autoStyles = StyleSheet.create({
   },
   selectedButtonText: {
     color: '#FFFFFF', // Adjust as needed
-  },  
+  },
+  drinkTypeContainer: {
+    // flex: 1, // This ensures the container takes up all available space
+    justifyContent: 'center',
+    alignItems: 'center',
+    // padding: 20,
+    // backgroundColor: 'lightgrey' // Temporarily set a background color to debug visibility
+}
+
 });

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Dimensions, Text, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PieChart, LineChart } from 'react-native-chart-kit';
 import { getFirestore, collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import moment from 'moment';
@@ -30,10 +31,39 @@ const VisualDetailedHistory = ({ route }) => {
   }, [date]); // Removed user, firestore from dependencies to prevent unnecessary calls
 
   const fetchData = async () => {
+    const cachedData = await getCachedData(date);
+    if (cachedData) {
+      setData(cachedData);
+    } else {
+      const fetchedData = await fetchFirestoreData(date);
+      setData(fetchedData);
+      cacheData(date, fetchedData);
+    }
+  };
+
+  const getCachedData = async (date) => {
+    try {
+      const cachedData = await AsyncStorage.getItem(`visual_history_${date}`);
+      return cachedData ? JSON.parse(cachedData) : null;
+    } catch (error) {
+      console.error('Error getting cached data:', error);
+      return null;
+    }
+  };
+
+  const cacheData = async (date, fetchedData) => {
+    try {
+      await AsyncStorage.setItem(`visual_history_${date}`, JSON.stringify(fetchedData));
+    } catch (error) {
+      console.error('Error caching data:', error);
+    }
+  };
+
+  const fetchFirestoreData = async (date) => {
     const path = `${user.uid}/Alcohol Stuff/Entries/${date}/EntryDocs`;
     const startOfDay = moment(date, 'YYYY-MM-DD').startOf('day').toDate();
     const endOfDay = moment(date, 'YYYY-MM-DD').endOf('day').toDate();
-    
+
     const q = query(
       collection(firestore, path),
       where("date", ">=", Timestamp.fromDate(startOfDay)),
@@ -51,7 +81,7 @@ const VisualDetailedHistory = ({ route }) => {
       fetchedData.spentOverTime.push({ timestamp: timestamp.toDate(), price });
     });
 
-    setData(processData(fetchedData));
+    return processData(fetchedData);
   };
 
   const processData = (fetchedData) => {
@@ -152,4 +182,3 @@ function prepareLineChartData(data, format = 'HH:mm') {
 }
 
 export default VisualDetailedHistory;
-

@@ -7,6 +7,7 @@ import moment from 'moment';
 import { homeStyles } from '../../../styles/StartUpStyles/homeStyles';
 import { appStyles } from '../../../styles/AppStyles/appStyles';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HistoryScreen = ({ navigation }) => {
   const [dates, setDates] = useState([]); // Dates with entries
@@ -25,7 +26,23 @@ const HistoryScreen = ({ navigation }) => {
 
 
   const fetchData = async () => {
+    const cacheKey = 'history_dates_with_details';
     try {
+      // Attempt to retrieve the cached data
+      const cachedData = await AsyncStorage.getItem(cacheKey);
+      if (cachedData) {
+        const parsedData = JSON.parse(cachedData);
+        const cacheTime = moment(parsedData.timestamp);
+        // Check if the cache is still valid, for example, valid for 1 day
+        if (moment().diff(cacheTime, 'days') < 1) {
+          console.log('Using cached data');
+          setDates(parsedData.data);
+          return;
+        }
+      }
+  
+      if (!user) return;
+  
       const querySnapshot = await getDocs(collection(firestore, user.uid, "Alcohol Stuff", "Entries"));
       const datesWithDetailsPromises = querySnapshot.docs.map(async (doc) => {
         const dateStr = doc.id;
@@ -44,17 +61,17 @@ const HistoryScreen = ({ navigation }) => {
           id: doc.id,
           name: doc.id,
           count: entriesSnapshot.size,
-          totalSpent: totalSpent.toFixed(2), // Round to 2 decimal places
+          totalSpent: totalSpent.toFixed(2),
           totalUnits: totalUnits.toFixed(2)
         };
       });
   
       let datesWithDetails = await Promise.all(datesWithDetailsPromises);
-  
-      // Sort the dates by most recent
-      datesWithDetails = datesWithDetails.sort((a, b) => moment(b.name, 'YYYY-MM-DD').diff(moment(a.name, 'YYYY-MM-DD')));
+      datesWithDetails.sort((a, b) => moment(b.name, 'YYYY-MM-DD').diff(moment(a.name, 'YYYY-MM-DD')));
   
       setDates(datesWithDetails); // Set the sorted dates along with their entry details
+      // Update the cache with new data
+      await AsyncStorage.setItem(cacheKey, JSON.stringify({ timestamp: moment().toISOString(), data: datesWithDetails }));
     } catch (error) {
       console.error('Error fetching dates and their details:', error);
     }

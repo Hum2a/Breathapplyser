@@ -310,6 +310,12 @@ const AutoEntryScreen = ({ navigation }) => {
           </TouchableOpacity>
         ))}
       </View>
+      {selectedDrinkType === null ? (
+        <View style={styles.drinkTypeContainer}>
+          <CommonDrinks />
+          <RecentDrinks />
+        </View>
+      ) : (
       <FlatList
         data={commonDrinks}
         keyExtractor={(item, index) => index.toString()}
@@ -349,6 +355,7 @@ const AutoEntryScreen = ({ navigation }) => {
           </View>
         )}
       />
+    )}
     </View>
   );
 };

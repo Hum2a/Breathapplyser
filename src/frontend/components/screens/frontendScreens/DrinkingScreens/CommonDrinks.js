@@ -5,6 +5,7 @@ import moment from 'moment';
 import { UserContext } from '../../../../context/UserContext'; // Update path as needed
 import { CommonStyles as styles } from '../../../styles/DrinkingStyles/commonStyles';
 import { saveBACLevel } from '../../../../../backend/firebase/queries/saveBACLevel';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const CommonDrinks = () => {
   const [commonDrinks, setCommonDrinks] = useState([]);
@@ -58,43 +59,80 @@ const CommonDrinks = () => {
   const fetchCommonDrinks = async () => {
     if (!user) return;
   
-    const drinkOccurrences = {};
-    let daysChecked = 0;
-    let daysToCheck = 50;
-    let currentDate = moment();
+    const cachedData = await AsyncStorage.getItem('commonDrinksCache');
+    if (cachedData) {
+      const { data, timestamp } = JSON.parse(cachedData);
+      const currentTime = new Date().getTime();
+      const cacheDuration = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+      console.log(`Cache timestamp: ${timestamp}`);
+      console.log(`Current timestamp: ${currentTime}`);
+      console.log(`Time since cache was saved: ${(currentTime - timestamp) / 1000} seconds`);
   
-    while (daysChecked < daysToCheck) {
-      const dateStr = currentDate.format('YYYY-MM-DD');
-      console.log(`Checking entries for date: ${dateStr}`); // Log the date being checked
-  
-      const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
-      const querySnapshot = await getDocs(query(entriesRef, orderBy("date", "desc")));
-  
-      if (!querySnapshot.empty) {
-        querySnapshot.forEach(doc => {
-          const data = doc.data();
-          const key = `${data.alcohol}-${data.type}`;
-          if (!drinkOccurrences[key]) {
-            drinkOccurrences[key] = { count: 1, ...data };
-          } else {
-            drinkOccurrences[key].count += 1;
-          }
-        });
+      if (currentTime - timestamp < cacheDuration) {
+        setCommonDrinks(data);
+        console.log('Loaded common drinks from cache');
+        return; // Exit if cached data was found and is fresh
       } else {
-        // Optionally, log if no entries found for a specific date
-        console.log(`No entries found for date: ${dateStr}`);
+        console.log('Cache is outdated, fetching new data');
       }
-  
-      currentDate = currentDate.subtract(1, 'days');
-      daysChecked++;
+    } else {
+      console.log('No cached data found, fetching new data');
     }
-    
+  
+    // If no cache or cache is outdated, proceed to fetch from Firestore
+    const firestore = getFirestore();
+    const drinkOccurrences = {};
+    let totalQueries = 1; // Start with one for the initial date fetch
+    let totalReads = 0;
+  
+    const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries");
+    const allDatesSnapshot = await getDocs(entriesRef);
+    totalReads += allDatesSnapshot.size; // Add the reads from this initial fetch
+    console.log(`Initial fetch for all entry dates, Read Count: ${allDatesSnapshot.size}`);
+  
+    const endDate = moment();
+    const startDate = moment().subtract(49, 'days'); // last 50 days including today
+    const validDates = [];
+  
+    allDatesSnapshot.forEach(doc => {
+      const dateStr = doc.id; // Assuming document IDs are dates in 'YYYY-MM-DD' format
+      const dateMoment = moment(dateStr, 'YYYY-MM-DD');
+      if (dateMoment.isBetween(startDate, endDate, 'days', '[]')) {
+        validDates.push(dateStr);
+      }
+    });
+  
+    for (const dateStr of validDates) {
+      const dailyEntriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
+      const querySnapshot = await getDocs(query(dailyEntriesRef, orderBy("date", "desc")));
+      totalQueries++;
+      totalReads += querySnapshot.size;
+      console.log(`Fetch for date ${dateStr}, Read Count: ${querySnapshot.size}`);
+  
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const key = `${data.alcohol}-${data.type}`;
+        if (!drinkOccurrences[key]) {
+          drinkOccurrences[key] = { count: 1, ...data };
+        } else {
+          drinkOccurrences[key].count += 1;
+        }
+      });
+    }
   
     const sortedCommonDrinks = Object.values(drinkOccurrences)
       .sort((a, b) => b.count - a.count)
-      .slice(0, 3); // Take top 3
+      .slice(0, 3); // Take top 3 most common drinks
   
     setCommonDrinks(sortedCommonDrinks);
+    await AsyncStorage.setItem('commonDrinksCache', JSON.stringify({
+      data: sortedCommonDrinks,
+      timestamp: new Date().getTime()
+    }));
+  
+    console.log(`Total Firestore Queries: ${totalQueries}`);
+    console.log(`Total Firestore Reads: ${totalReads}`);
+    console.log(`Total Unique Drink Entries: ${Object.keys(drinkOccurrences).length}`);
   };
 
   const fetchLimits = async () => {

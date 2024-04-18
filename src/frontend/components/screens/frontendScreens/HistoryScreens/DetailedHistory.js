@@ -3,10 +3,10 @@ import { View, Text, FlatList, TouchableOpacity, Alert, Image } from 'react-nati
 import { DetailedHistoryStyles as styles } from '../../../styles/HistoryStyles/detailedHistoryStyles';
 import { collection, query, where, getDocs, getFirestore, Timestamp, doc, deleteDoc, getDoc, setDoc } from 'firebase/firestore';
 import moment from 'moment';
-import AllCharts from '../../../charts/linecharts/IndividualCharts';
 import { UserContext } from '../../../../context/UserContext';
 import Dialog from 'react-native-dialog';
 import { dialogStyles } from '../../../styles/AppStyles/dialogueStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DetailedHistoryScreen = ({ route, navigation }) => {
   const { date } = route.params;
@@ -26,37 +26,58 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
   useEffect(() => {
     console.log('DetailedHistoryScreen: Received date parameter:', date);
     const fetchEntries = async () => {
+      const firestorePath = `${user.uid}/Alcohol Stuff/Entries/${date}/EntryDocs`;
+      const cacheKey = `entries-${user.uid}-${date}`;
+    
       try {
-        const firestorePath = `${user.uid}/Alcohol Stuff/Entries/${date}/EntryDocs`;
-        console.log('Firestore Path:', firestorePath); // Logging Firestore Path
-
+        // Attempt to get cached data
+        const cachedData = await AsyncStorage.getItem(cacheKey);
+        if (cachedData) {
+          const parsedCache = JSON.parse(cachedData);
+          const { timestamp, entries } = parsedCache;
+    
+          // Check if the cache is still fresh
+          if (new Date().getTime() - timestamp < 86400000) { // 86400000 milliseconds = 1 day
+            console.log('Using cached data');
+            setEntries(entries);
+            return;
+          } else {
+            // If the cache is outdated, clear it
+            console.log('Cached data is outdated, fetching new data');
+            await AsyncStorage.removeItem(cacheKey);
+          }
+        }
+    
+        // Fetch data from Firestore
+        console.log('Fetching data from Firestore');
         const startOfDay = moment(date, 'YYYY-MM-DD').startOf('day').toDate();
         const endOfDay = moment(date, 'YYYY-MM-DD').endOf('day').toDate();
         const firestoreStart = Timestamp.fromDate(startOfDay);
         const firestoreEnd = Timestamp.fromDate(endOfDay);
-        console.log('Querying Firestore between:', firestoreStart, 'and', firestoreEnd); // Logging the date range for the query
-
+    
         const q = query(
           collection(firestore, firestorePath),
           where("date", ">=", firestoreStart),
           where("date", "<=", firestoreEnd)
         );
-
+    
         const querySnapshot = await getDocs(q);
         const entriesData = querySnapshot.docs.map(doc => {
           const entry = doc.data();
-          entry.id = doc.id; // Store the document ID
+          entry.id = doc.id;
           entry.date = moment(entry.date.toDate()).format('YYYY-MM-DD HH:mm:ss');
           return entry;
         });
-        
-
-        console.log('Fetched entries:', entriesData); // Logging fetched entries
+    
+        // Set entries to state and update the cache
         setEntries(entriesData);
+        const cacheValue = JSON.stringify({ timestamp: new Date().getTime(), entries: entriesData });
+        await AsyncStorage.setItem(cacheKey, cacheValue);
       } catch (error) {
         console.error('Error fetching entries:', error);
       }
     };
+    
     fetchEntries();
   }, [date, firestore, user]);
 

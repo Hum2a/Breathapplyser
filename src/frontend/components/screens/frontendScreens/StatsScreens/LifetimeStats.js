@@ -5,6 +5,7 @@ import { auth } from '../../../../../backend/firebase/database/firebase';
 import moment from 'moment';
 import { UserContext } from '../../../../context/UserContext';
 import { lifetimeStyles as styles } from '../../../styles/StatsStyles/lifetimeStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LifetimeStats = () => {
     const [dayRange, setDayRange] = useState(10); // Now managed by state
@@ -40,6 +41,19 @@ const LifetimeStats = () => {
     
 
     const fetchLifetimeStats = async () => {
+        const cacheKey = `lifetimeStats_${dayRange}`; // Include dayRange in the cache key
+        const cachedData = await AsyncStorage.getItem(cacheKey);
+        if (cachedData) {
+            const parsedData = JSON.parse(cachedData);
+            const cacheTime = moment(parsedData.timestamp);
+            if (moment().diff(cacheTime, 'days') < 1) { // Check if the cache is less than a day old
+                console.log('Using cached data for dayRange:', dayRange);
+                setDrinkTypeDetails(parsedData.data);
+                setExpanded(Object.keys(parsedData.data).reduce((acc, key) => ({ ...acc, [key]: false }), {}));
+                return;
+            }
+        }
+    
         if (!user) return;
     
         let currentDate = moment();
@@ -60,7 +74,6 @@ const LifetimeStats = () => {
                 typeData[type].totalSpent += price;
                 typeData[type].totalCount += 1;
     
-                // Initialize or update the details for each alcohol name within the type
                 if (!typeData[type].names[alcohol]) {
                     typeData[type].names[alcohol] = { totalCount: 1, units, price };
                 } else {
@@ -74,36 +87,63 @@ const LifetimeStats = () => {
         }
     
         setDrinkTypeDetails(typeData);
+        await AsyncStorage.setItem(cacheKey, JSON.stringify({ timestamp: moment().toISOString(), data: typeData }));
         setExpanded(Object.keys(typeData).reduce((acc, key) => ({ ...acc, [key]: false }), {}));
     };
     
-
+    
     const fetchTotalUnitsAndAmountSpent = async () => {
+        const cacheKey = `totalStats_${dayRange}`;
+        const cachedData = await AsyncStorage.getItem(cacheKey);
+        if (cachedData) {
+            const parsedData = JSON.parse(cachedData);
+            const cacheTime = moment(parsedData.timestamp);
+            if (moment().diff(cacheTime, 'days') < 1) {
+                setTotalUnits(parsedData.units);
+                setTotalSpent(parsedData.spent);
+                return;
+            }
+        }
+    
         if (!user) return;
-
+    
         let unitsSum = 0;
         let spentSum = 0;
         let currentDate = moment();
         const endDate = moment().subtract(dayRange, 'days');
-
+    
         while (currentDate.isAfter(endDate)) {
             const dateStr = currentDate.format('YYYY-MM-DD');
             const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
             const querySnapshot = await getDocs(entriesRef);
-
+    
             querySnapshot.forEach(doc => {
                 const { units = 1, price = 0 } = doc.data();
                 unitsSum += units;
                 spentSum += price;
             });
-
+    
             currentDate.subtract(1, 'days');
         }
-
+    
         setTotalUnits(unitsSum);
         setTotalSpent(spentSum);
+        await AsyncStorage.setItem(cacheKey, JSON.stringify({ timestamp: moment().toISOString(), units: unitsSum, spent: spentSum }));
     };
+    
     const fetchDetailedData = async () => {
+        const cacheKey = `detailedStats_${dayRange}`;
+        const cachedData = await AsyncStorage.getItem(cacheKey);
+        if (cachedData) {
+            const parsedData = JSON.parse(cachedData);
+            const cacheTime = moment(parsedData.timestamp);
+            if (moment().diff(cacheTime, 'days') < 1) {
+                setDetailedUnitsData(parsedData.units);
+                setDetailedSpentData(parsedData.spent);
+                return;
+            }
+        }
+    
         if (!user) return;
     
         let unitsByDate = {};
@@ -124,30 +164,20 @@ const LifetimeStats = () => {
                 dailySpent += data.price || 0;
             });
     
-            if (dailyUnits > 0) { // Only record days with entries
-                unitsByDate[dateStr] = dailyUnits;
-            }
+            if (dailyUnits > 0) unitsByDate[dateStr] = dailyUnits;
+            if (dailySpent > 0) spentByDate[dateStr] = dailySpent;
     
-            if (dailySpent > 0) { // Only record days with entries
-                spentByDate[dateStr] = dailySpent;
-            }
-    
-            currentDate = currentDate.subtract(1, 'days');
+            currentDate.subtract(1, 'days');
         }
     
-        // Convert the objects into arrays and sort them
-        const detailedUnitsData = Object.entries(unitsByDate)
-            .map(([date, units]) => ({ date, units }))
-            .sort((a, b) => b.units - a.units);
+        const detailedUnitsData = Object.entries(unitsByDate).map(([date, units]) => ({ date, units })).sort((a, b) => b.units - a.units);
+        const detailedSpentData = Object.entries(spentByDate).map(([date, spent]) => ({ date, spent })).sort((a, b) => b.spent - a.spent);
     
-        const detailedSpentData = Object.entries(spentByDate)
-            .map(([date, spent]) => ({ date, spent }))
-            .sort((a, b) => b.spent - a.spent);
-    
-        setDetailedUnitsData(detailedUnitsData.slice(0, 10)); // Limiting to top 10 for brevity
-        setDetailedSpentData(detailedSpentData.slice(0, 10)); // Limiting to top 10 for brevity
+        setDetailedUnitsData(detailedUnitsData.slice(0, 10));
+        setDetailedSpentData(detailedSpentData.slice(0, 10));
+        await AsyncStorage.setItem(cacheKey, JSON.stringify({ timestamp: moment().toISOString(), units: detailedUnitsData, spent: detailedSpentData }));
     };
-
+    
     const handleAllTime = () => {
         const user = auth.currentUser;
         if (user) {
