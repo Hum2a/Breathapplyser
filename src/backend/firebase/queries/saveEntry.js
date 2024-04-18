@@ -7,7 +7,7 @@ import { getDrunkennessLevel } from '../../app/background/Drunkness/drunknessCal
 const firestore = getFirestore();
 
 export const saveEntry = async (user, userProfile, entryDetails) => {
-  const { alcohol, amount, units, price, type, selectedStartTime, selectedEndTime, selectedDate, selectedCurrency } = entryDetails;
+  const { alcohol, amount, units, price, type, calories, selectedStartTime, selectedEndTime, selectedDate, selectedCurrency } = entryDetails;
 
   if (!user) {
     console.error("User data is not available");
@@ -50,6 +50,7 @@ export const saveEntry = async (user, userProfile, entryDetails) => {
     price: parseFloat(price),
     selectedCurrency,
     type,
+    calories,
     startTime: moment(selectedStartTime, 'HH:mm').toISOString(),
     endTime: moment(selectedEndTime, 'HH:mm').toISOString(),
     BACIncrease,

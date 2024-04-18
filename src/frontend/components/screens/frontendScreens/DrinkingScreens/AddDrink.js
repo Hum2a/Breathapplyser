@@ -11,7 +11,7 @@ const AddEntryScreen = ({ navigation }) => {
   };
 
   return (
-    <View>
+    <View style={{backgroundColor: '#FFFFFF'}}>
       <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>
         <Switch
           value={isAuto}

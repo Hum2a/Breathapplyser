@@ -82,63 +82,64 @@ const AutoEntryScreen = ({ navigation }) => {
       }
   };  
 
-    const handleDrinkSelection = async (drink) => {
-
-      const unitsToAdd = drink.units; // Your logic for units
-      const priceToAdd = parseFloat(prices[drink.name]); // Your logic for price
-
-      const canAddDrink = await handleCheckLimits(unitsToAdd, priceToAdd);
-      if (!canAddDrink) return; // Stop if limits are exceeded
-
-      const price = prices[drink.name];
-      
-      if (!price) {
-          Alert.alert('Error', 'Please enter the price.');
-          return;
-      }
-      
-      try {
-          let units = drink.units;
-          if (selectedDrinkType === 'Spirit') {
-              // If it's a double, double the units
-              units = drink.double ? drink.units * 2 : drink.units;
-          }
-          
-          const entryData = {
-              alcohol: drink.name, // Assuming drink.name contains the name of the drink
-              amount: 1,
-              units: units,
-              price: parseFloat(price),
-              type: selectedDrinkType, // Use the selectedDrinkType for the drink type
-              selectedStartTime: moment(selectedStartTime, 'HH:mm').toISOString(),
-              selectedEndTime: moment(selectedEndTime, 'HH:mm').toISOString(),
-              selectedDate: selectedDate,
-              selectedCurrency: "GBP",
-          };
-      
-          await saveEntry(user, userProfile, entryData);
-          await saveBACLevel(user, entryData.units, userProfile, entryData);
-          
-          // Assuming BACIncrease needs to be calculated for daily totals
-          const BACIncrease = calculateBACIncrease(units, userProfile);
-          
-          // Prepare the entry details array for the daily totals
-          const entryDetailsArray = [{
-              ...entryData,
-              BACIncrease, // Add BACIncrease to the entry details if necessary for daily totals
-          }];
-          
-          // Update daily totals
-          await saveDailyTotals(firestore, user, selectedDate, entryDetailsArray);
-          
-          Alert.alert('Success', 'Drink entry added successfully!');
-          navigation.navigate('Home');
-      } catch (error) {
-          console.error('Error adding drink entry:', error);
-          Alert.alert('Error', 'Failed to add drink entry. Please try again.');
-      }
-  };
+  const handleDrinkSelection = async (drink) => {
+    const unitsToAdd = drink.units; // Your logic for units
+    const priceToAdd = parseFloat(prices[drink.name]); // Your logic for price
+    const caloriesToAdd = drink.calories; // Adding calories information
     
+    const canAddDrink = await handleCheckLimits(unitsToAdd, priceToAdd);
+    if (!canAddDrink) return; // Stop if limits are exceeded
+  
+    const price = prices[drink.name];
+    
+    if (!price) {
+        Alert.alert('Error', 'Please enter the price.');
+        return;
+    }
+    
+    try {
+        let units = drink.units;
+        if (selectedDrinkType === 'Spirit') {
+            // If it's a double, double the units
+            units = drink.double ? drink.units * 2 : drink.units;
+        }
+        
+        const entryData = {
+            alcohol: drink.name, // Assuming drink.name contains the name of the drink
+            amount: 1,
+            units: units,
+            price: parseFloat(price),
+            type: selectedDrinkType, // Use the selectedDrinkType for the drink type
+            calories: caloriesToAdd, // Include calories in entry data
+            selectedStartTime: moment(selectedStartTime, 'HH:mm').toISOString(),
+            selectedEndTime: moment(selectedEndTime, 'HH:mm').toISOString(),
+            selectedDate: selectedDate,
+            selectedCurrency: "GBP",
+        };
+    
+        await saveEntry(user, userProfile, entryData);
+        await saveBACLevel(user, entryData.units, userProfile, entryData);
+        
+        // Assuming BACIncrease needs to be calculated for daily totals
+        const BACIncrease = calculateBACIncrease(units, userProfile);
+        
+        // Prepare the entry details array for the daily totals
+        const entryDetailsArray = [{
+            ...entryData,
+            BACIncrease, // Add BACIncrease to the entry details if necessary for daily totals
+        }];
+        
+        // Update daily totals
+        await saveDailyTotals(firestore, user, selectedDate, entryDetailsArray);
+        
+        Alert.alert('Success', 'Drink entry added successfully!');
+        navigation.navigate('Home');
+    } catch (error) {
+        console.error('Error adding drink entry:', error);
+        Alert.alert('Error', 'Failed to add drink entry. Please try again.');
+    }
+  };
+  
 
     const handlePriceChange = (drinkName, price) => {
         setPrices(prevPrices => ({
@@ -316,7 +317,7 @@ const AutoEntryScreen = ({ navigation }) => {
           <RecentDrinks />
         </View>
       ) : (
-      <FlatList
+        <FlatList
         data={commonDrinks}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
@@ -325,24 +326,25 @@ const AutoEntryScreen = ({ navigation }) => {
               onPress={() => handleDrinkSelection(item)}
               style={styles.drinkContainer}
             >
-              <Text style={styles.drinkText}>{item.name}</Text>
-              <Text style={styles.drinkText}>Alcohol: {item.alcohol}</Text>
+              <Text style={styles.drinkNameText}>{item.name}</Text>
+              <Text style={styles.drinkText}>Type: {item.alcohol}</Text>
               <Text style={styles.drinkText}>Units: {item.units}</Text>
+              <Text style={styles.drinkText}>Calories: {item.calories}</Text>
               {selectedDrinkType === 'Spirit' && (
                 <View style={styles.doubleToggleContainer}>
-                <TouchableOpacity
-                  style={[styles.doubleToggle, !item.double && styles.doubleToggleActive]}
-                  onPress={() => handleToggleDouble(item)}
-                >
-                  <Text style={[styles.doubleToggleText, !item.double && styles.doubleToggleTextActive]}>Single</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.doubleToggle, item.double && styles.doubleToggleActive]}
-                  onPress={() => handleToggleDouble(item)}
-                >
-                  <Text style={[styles.doubleToggleText, item.double && styles.doubleToggleTextActive]}>Double</Text>
-                </TouchableOpacity>
-              </View>              
+                  <TouchableOpacity
+                    style={[styles.doubleToggle, !item.double && styles.doubleToggleActive]}
+                    onPress={() => handleToggleDouble(item)}
+                  >
+                    <Text style={[styles.doubleToggleText, !item.double && styles.doubleToggleTextActive]}>Single</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.doubleToggle, item.double && styles.doubleToggleActive]}
+                    onPress={() => handleToggleDouble(item)}
+                  >
+                    <Text style={[styles.doubleToggleText, item.double && styles.doubleToggleTextActive]}>Double</Text>
+                  </TouchableOpacity>
+                </View>              
               )}
             </TouchableOpacity>
             <TextInput
@@ -354,7 +356,7 @@ const AutoEntryScreen = ({ navigation }) => {
             />
           </View>
         )}
-      />
+      />      
     )}
     </View>
   );
