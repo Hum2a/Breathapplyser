@@ -9,6 +9,8 @@ import { UserContext } from '../../../../context/UserContext';
 import { autoStyles as styles, manualStyles as addStyles } from '../../../styles/DrinkingStyles/addStyles';
 import CommonDrinksList from '../../../../../backend/app/data/commonDrinksList';
 import { saveDailyTotals } from '../../../../../backend/firebase/queries/saveDailyTotals';
+import CommonDrinks from './CommonDrinks';
+import RecentDrinks from './RecentDrinks';
 
 const AutoEntryScreen = ({ navigation }) => {
     const drinkTypes = ['Spirit', 'Beer', 'Lager', 'Wine', 'Liquers', 'Cocktails'];
@@ -69,66 +71,73 @@ const AutoEntryScreen = ({ navigation }) => {
     };
 
     const handleDrinkTypeSelection = (type) => {
-        setSelectedDrinkType(type);
-        fetchCommonDrinks(type);
-      };
+      if (selectedDrinkType === type) {
+          // If the same type is clicked again, reset the selection
+          setSelectedDrinkType(null);
+          setCommonDrinks([]); // Clear the list of drinks
+      } else {
+          // Otherwise, update the selection and fetch the drinks
+          setSelectedDrinkType(type);
+          fetchCommonDrinks(type);
+      }
+  };  
 
-      const handleDrinkSelection = async (drink) => {
+    const handleDrinkSelection = async (drink) => {
 
-        const unitsToAdd = drink.units; // Your logic for units
-        const priceToAdd = parseFloat(prices[drink.name]); // Your logic for price
+      const unitsToAdd = drink.units; // Your logic for units
+      const priceToAdd = parseFloat(prices[drink.name]); // Your logic for price
 
-        const canAddDrink = await handleCheckLimits(unitsToAdd, priceToAdd);
-        if (!canAddDrink) return; // Stop if limits are exceeded
+      const canAddDrink = await handleCheckLimits(unitsToAdd, priceToAdd);
+      if (!canAddDrink) return; // Stop if limits are exceeded
 
-        const price = prices[drink.name];
-        
-        if (!price) {
-            Alert.alert('Error', 'Please enter the price.');
-            return;
-        }
-        
-        try {
-            let units = drink.units;
-            if (selectedDrinkType === 'Spirit') {
-                // If it's a double, double the units
-                units = drink.double ? drink.units * 2 : drink.units;
-            }
-            
-            const entryData = {
-                alcohol: drink.name, // Assuming drink.name contains the name of the drink
-                amount: 1,
-                units: units,
-                price: parseFloat(price),
-                type: selectedDrinkType, // Use the selectedDrinkType for the drink type
-                selectedStartTime: moment(selectedStartTime, 'HH:mm').toISOString(),
-                selectedEndTime: moment(selectedEndTime, 'HH:mm').toISOString(),
-                selectedDate: selectedDate,
-                selectedCurrency: "GBP",
-            };
-        
-            await saveEntry(user, userProfile, entryData);
-            await saveBACLevel(user, entryData.units, userProfile, entryData);
-            
-            // Assuming BACIncrease needs to be calculated for daily totals
-            const BACIncrease = calculateBACIncrease(units, userProfile);
-            
-            // Prepare the entry details array for the daily totals
-            const entryDetailsArray = [{
-                ...entryData,
-                BACIncrease, // Add BACIncrease to the entry details if necessary for daily totals
-            }];
-            
-            // Update daily totals
-            await saveDailyTotals(firestore, user, selectedDate, entryDetailsArray);
-            
-            Alert.alert('Success', 'Drink entry added successfully!');
-            navigation.navigate('Home');
-        } catch (error) {
-            console.error('Error adding drink entry:', error);
-            Alert.alert('Error', 'Failed to add drink entry. Please try again.');
-        }
-    };
+      const price = prices[drink.name];
+      
+      if (!price) {
+          Alert.alert('Error', 'Please enter the price.');
+          return;
+      }
+      
+      try {
+          let units = drink.units;
+          if (selectedDrinkType === 'Spirit') {
+              // If it's a double, double the units
+              units = drink.double ? drink.units * 2 : drink.units;
+          }
+          
+          const entryData = {
+              alcohol: drink.name, // Assuming drink.name contains the name of the drink
+              amount: 1,
+              units: units,
+              price: parseFloat(price),
+              type: selectedDrinkType, // Use the selectedDrinkType for the drink type
+              selectedStartTime: moment(selectedStartTime, 'HH:mm').toISOString(),
+              selectedEndTime: moment(selectedEndTime, 'HH:mm').toISOString(),
+              selectedDate: selectedDate,
+              selectedCurrency: "GBP",
+          };
+      
+          await saveEntry(user, userProfile, entryData);
+          await saveBACLevel(user, entryData.units, userProfile, entryData);
+          
+          // Assuming BACIncrease needs to be calculated for daily totals
+          const BACIncrease = calculateBACIncrease(units, userProfile);
+          
+          // Prepare the entry details array for the daily totals
+          const entryDetailsArray = [{
+              ...entryData,
+              BACIncrease, // Add BACIncrease to the entry details if necessary for daily totals
+          }];
+          
+          // Update daily totals
+          await saveDailyTotals(firestore, user, selectedDate, entryDetailsArray);
+          
+          Alert.alert('Success', 'Drink entry added successfully!');
+          navigation.navigate('Home');
+      } catch (error) {
+          console.error('Error adding drink entry:', error);
+          Alert.alert('Error', 'Failed to add drink entry. Please try again.');
+      }
+  };
     
 
     const handlePriceChange = (drinkName, price) => {

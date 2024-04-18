@@ -283,4 +283,12 @@ export const autoStyles = StyleSheet.create({
   doubleToggleTextActive: {
     color: '#FFFFFF',
   },
+  selectedButton: {
+    backgroundColor: '#0056b3', // A darker or different color to indicate selection
+    borderColor: '#004080', // Optional: add a border color if needed
+    borderWidth: 2, // Optional: border width
+  },
+  selectedButtonText: {
+    color: '#FFFFFF', // Adjust as needed
+  },  
 });
