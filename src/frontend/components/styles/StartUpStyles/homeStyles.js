@@ -9,7 +9,7 @@ export const homeStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#A5F5EF',
+    backgroundColor: '#00797B',
   },
   drinksWidgetContainer: {
     position: 'absolute',

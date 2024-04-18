@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 export const HistoryStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#BAEAFF',
+    backgroundColor: '#00797B',
   },
   title: {
     fontSize: 24,
@@ -25,6 +25,7 @@ export const HistoryStyles = StyleSheet.create({
     margin: 10,
     borderWidth: 1.5,
     borderColor: '#E9FAA6',
+    borderRadius: 10,
     // iOS shadow properties
     shadowColor: '#000', // Black color for the shadow
     shadowOffset: { width: 0, height: 2 }, // Shadow position

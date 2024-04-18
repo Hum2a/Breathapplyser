@@ -205,6 +205,11 @@ export const autoStyles = StyleSheet.create({
     color: '#03396c', // Deep blue drink text
     marginBottom: 5,
   },
+  drinkNameText: {
+    color: '#03396c', // Deep blue drink text
+    marginBottom: 5,
+    fontWeight: 'bold',
+  },
   priceInput: {
     width: '100%',
     height: 45,
@@ -226,6 +231,7 @@ export const autoStyles = StyleSheet.create({
     elevation: 2,
     height: 50,
     width: 65,
+    marginLeft: 1,
     justifyContent: 'center',
   },
   buttonText: {
@@ -292,7 +298,7 @@ export const autoStyles = StyleSheet.create({
     color: '#FFFFFF', // Adjust as needed
   },
   drinkTypeContainer: {
-    // flex: 1, // This ensures the container takes up all available space
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     // padding: 20,

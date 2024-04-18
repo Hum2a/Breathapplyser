@@ -5,7 +5,7 @@ export const RegisterStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#E3F2FD', // Light blue background
+    backgroundColor: '#00797B',
   },
   input: {
     width: '80%',
