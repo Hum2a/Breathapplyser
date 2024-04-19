@@ -23,60 +23,105 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
   const firestore = getFirestore();
   const { user } = useContext(UserContext);
 
+  const fetchEntries = async (forceUpdate = false) => {
+    const firestorePath = `${user.uid}/Alcohol Stuff/Entries/${date}/EntryDocs`;
+    const cacheKey = `entries-${user.uid}-${date}`;
+    
+    if (!forceUpdate) {
+      const cachedData = await AsyncStorage.getItem(cacheKey);
+      if (cachedData) {
+        const parsedCache = JSON.parse(cachedData);
+        const { timestamp, entries } = parsedCache;
+
+        if (new Date().getTime() - timestamp < 86400000) {
+          console.log('Using cached data');
+          setEntries(entries);
+          return;
+        }
+      }
+    }
+
+    console.log('Cached data is outdated or force update triggered, fetching new data');
+    await AsyncStorage.removeItem(cacheKey);
+
+    const startOfDay = moment(date, 'YYYY-MM-DD').startOf('day').toDate();
+    const endOfDay = moment(date, 'YYYY-MM-DD').endOf('day').toDate();
+    const firestoreStart = Timestamp.fromDate(startOfDay);
+    const firestoreEnd = Timestamp.fromDate(endOfDay);
+
+    const q = query(
+      collection(firestore, firestorePath),
+      where("date", ">=", firestoreStart),
+      where("date", "<=", firestoreEnd)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const entriesData = querySnapshot.docs.map(doc => {
+      const entry = doc.data();
+      entry.id = doc.id;
+      entry.date = moment(entry.date.toDate()).format('YYYY-MM-DD HH:mm:ss');
+      return entry;
+    });
+
+    setEntries(entriesData);
+    const cacheValue = JSON.stringify({ timestamp: new Date().getTime(), entries: entriesData });
+    await AsyncStorage.setItem(cacheKey, cacheValue);
+  };
+
   useEffect(() => {
     console.log('DetailedHistoryScreen: Received date parameter:', date);
-    const fetchEntries = async () => {
-      const firestorePath = `${user.uid}/Alcohol Stuff/Entries/${date}/EntryDocs`;
-      const cacheKey = `entries-${user.uid}-${date}`;
+    // const fetchEntries = async () => {
+    //   const firestorePath = `${user.uid}/Alcohol Stuff/Entries/${date}/EntryDocs`;
+    //   const cacheKey = `entries-${user.uid}-${date}`;
     
-      try {
-        // Attempt to get cached data
-        const cachedData = await AsyncStorage.getItem(cacheKey);
-        if (cachedData) {
-          const parsedCache = JSON.parse(cachedData);
-          const { timestamp, entries } = parsedCache;
+    //   try {
+    //     // Attempt to get cached data
+    //     const cachedData = await AsyncStorage.getItem(cacheKey);
+    //     if (cachedData) {
+    //       const parsedCache = JSON.parse(cachedData);
+    //       const { timestamp, entries } = parsedCache;
     
-          // Check if the cache is still fresh
-          if (new Date().getTime() - timestamp < 86400000) { // 86400000 milliseconds = 1 day
-            console.log('Using cached data');
-            setEntries(entries);
-            return;
-          } else {
-            // If the cache is outdated, clear it
-            console.log('Cached data is outdated, fetching new data');
-            await AsyncStorage.removeItem(cacheKey);
-          }
-        }
+    //       // Check if the cache is still fresh
+    //       if (new Date().getTime() - timestamp < 86400000) { // 86400000 milliseconds = 1 day
+    //         console.log('Using cached data');
+    //         setEntries(entries);
+    //         return;
+    //       } else {
+    //         // If the cache is outdated, clear it
+    //         console.log('Cached data is outdated, fetching new data');
+    //         await AsyncStorage.removeItem(cacheKey);
+    //       }
+    //     }
     
-        // Fetch data from Firestore
-        console.log('Fetching data from Firestore');
-        const startOfDay = moment(date, 'YYYY-MM-DD').startOf('day').toDate();
-        const endOfDay = moment(date, 'YYYY-MM-DD').endOf('day').toDate();
-        const firestoreStart = Timestamp.fromDate(startOfDay);
-        const firestoreEnd = Timestamp.fromDate(endOfDay);
+    //     // Fetch data from Firestore
+    //     console.log('Fetching data from Firestore');
+    //     const startOfDay = moment(date, 'YYYY-MM-DD').startOf('day').toDate();
+    //     const endOfDay = moment(date, 'YYYY-MM-DD').endOf('day').toDate();
+    //     const firestoreStart = Timestamp.fromDate(startOfDay);
+    //     const firestoreEnd = Timestamp.fromDate(endOfDay);
     
-        const q = query(
-          collection(firestore, firestorePath),
-          where("date", ">=", firestoreStart),
-          where("date", "<=", firestoreEnd)
-        );
+    //     const q = query(
+    //       collection(firestore, firestorePath),
+    //       where("date", ">=", firestoreStart),
+    //       where("date", "<=", firestoreEnd)
+    //     );
     
-        const querySnapshot = await getDocs(q);
-        const entriesData = querySnapshot.docs.map(doc => {
-          const entry = doc.data();
-          entry.id = doc.id;
-          entry.date = moment(entry.date.toDate()).format('YYYY-MM-DD HH:mm:ss');
-          return entry;
-        });
+    //     const querySnapshot = await getDocs(q);
+    //     const entriesData = querySnapshot.docs.map(doc => {
+    //       const entry = doc.data();
+    //       entry.id = doc.id;
+    //       entry.date = moment(entry.date.toDate()).format('YYYY-MM-DD HH:mm:ss');
+    //       return entry;
+    //     });
     
-        // Set entries to state and update the cache
-        setEntries(entriesData);
-        const cacheValue = JSON.stringify({ timestamp: new Date().getTime(), entries: entriesData });
-        await AsyncStorage.setItem(cacheKey, cacheValue);
-      } catch (error) {
-        console.error('Error fetching entries:', error);
-      }
-    };
+    //     // Set entries to state and update the cache
+    //     setEntries(entriesData);
+    //     const cacheValue = JSON.stringify({ timestamp: new Date().getTime(), entries: entriesData });
+    //     await AsyncStorage.setItem(cacheKey, cacheValue);
+    //   } catch (error) {
+    //     console.error('Error fetching entries:', error);
+    //   }
+    // };
     
     fetchEntries();
   }, [date, firestore, user]);
@@ -180,7 +225,17 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
             style={styles.visualizeButtonImage} 
           />
         </TouchableOpacity>
-    </View>
+        </View>
+        <View style={styles.refreshButtonContainer}>
+        <TouchableOpacity 
+          styles={styles.updateButton}
+          onPress={() => fetchEntries(true)} >
+          <Image
+            source={require('../../../../assets/images/refresh-icon.png')}
+            style={styles.updateButtonImage} 
+          />
+          </TouchableOpacity>
+        </View>
       <Text style={styles.title}>{date}</Text>
       <FlatList
         data={entries}
