@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { LoginStyles } from '../../../styles/StartUpStyles/loginStyles';
+import { StartStyles as styles } from '../../../styles/StartUpStyles/startStyles';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import LinearGradient from 'react-native-linear-gradient'; // Import LinearGradient
 
@@ -22,8 +23,13 @@ const LoginScreen = ({ navigation }) => {
       });
   };
 
+  const navigateToRegister = () => {
+    navigation.navigate('Register');
+  };
+
   return (
     <View style={LoginStyles.container}>
+      <Text style={styles.title}>Breathapplyser</Text>
       <TextInput 
         style={LoginStyles.input} 
         placeholder="Email" 
@@ -46,6 +52,14 @@ const LoginScreen = ({ navigation }) => {
           colors={['#6dd5ed', '#2193b0']} // Example gradient colors
           style={LoginStyles.loginButtonGradient}>
           <Text style={LoginStyles.loginButtonText}>Login</Text>
+        </LinearGradient>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={navigateToRegister} style={LoginStyles.loginButton}>
+        <LinearGradient
+          colors={['#4c669f', '#3b5998', '#192f6a']} // Adjust the colors to fit your theme
+          style={LoginStyles.loginButtonGradient}>
+          <Text style={styles.buttonText}>Register</Text>
         </LinearGradient>
       </TouchableOpacity>
     </View>
