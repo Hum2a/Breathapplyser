@@ -6,6 +6,7 @@ import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 const DrunkParametersScreen = () => {
     const { user } = useContext(UserContext);
     const firestore = getFirestore();
+    const [isFormVisible, setFormVisible] = useState(false);
     const [levels, setLevels] = useState([
         { range: '0.00 - 0.01', simple: 'Sober', detailed: "You're completely unintoxicated... probably." },
         { range: '0.01 - 0.03', simple: 'Buzzed', detailed: 'Mild relaxation, slight body warmth, mood elevation.' },
@@ -21,8 +22,6 @@ const DrunkParametersScreen = () => {
         { range: '0.50 - 2.00', simple: 'Death is coming', detailed: 'Onset of coma, and likelihood of death due to respiratory arrest.' }
     ]);
     
-    
-
     useEffect(() => {
         if (user) {
           const fetchLevels = async () => {
@@ -102,7 +101,10 @@ const DrunkParametersScreen = () => {
         simple: '',
         detailed: ''
       });
-      ;
+      
+      const toggleFormVisibility = () => {
+        setFormVisible(!isFormVisible); // Toggle the visibility state
+    };
     
       return (
         <View style={styles.container}>
@@ -118,38 +120,43 @@ const DrunkParametersScreen = () => {
               </View>
             ))}
           </ScrollView>
-          <View style={styles.formContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Lower Bound"
-            value={newLevel.lowerBound}
-            keyboardType="numeric" // Ensure only numbers can be entered
-            onChangeText={(text) => setNewLevel({ ...newLevel, lowerBound: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Upper Bound"
-            value={newLevel.upperBound}
-            keyboardType="numeric" // Ensure only numbers can be entered
-            onChangeText={(text) => setNewLevel({ ...newLevel, upperBound: text })}
-          />
-            <TextInput
-              style={styles.input}
-              placeholder="Simple Description"
-              value={newLevel.simple}
-              onChangeText={(text) => setNewLevel({ ...newLevel, simple: text })}
-            />
-            <TextInput
-              style={[styles.input, styles.descriptionInput]}
-              placeholder="Detailed Description"
-              value={newLevel.detailed}
-              multiline
-              onChangeText={(text) => setNewLevel({ ...newLevel, detailed: text })}
-            />
-            <TouchableOpacity onPress={addLevel} style={styles.addButton}>
-              <Text style={styles.addButtonLabel}>Add Level</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity onPress={toggleFormVisibility} style={styles.toggleButton}>
+            <Text style={styles.toggleButtonText}>{isFormVisible ? 'Close Form' : 'Add New Level'}</Text>
+          </TouchableOpacity>
+          {isFormVisible && (
+            <View style={styles.formContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Lower Bound"
+                value={newLevel.lowerBound}
+                keyboardType="numeric" // Ensure only numbers can be entered
+                onChangeText={(text) => setNewLevel({ ...newLevel, lowerBound: text })}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Upper Bound"
+                value={newLevel.upperBound}
+                keyboardType="numeric" // Ensure only numbers can be entered
+                onChangeText={(text) => setNewLevel({ ...newLevel, upperBound: text })}
+              />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Simple Description"
+                  value={newLevel.simple}
+                  onChangeText={(text) => setNewLevel({ ...newLevel, simple: text })}
+                />
+                <TextInput
+                  style={[styles.input, styles.descriptionInput]}
+                  placeholder="Detailed Description"
+                  value={newLevel.detailed}
+                  multiline
+                  onChangeText={(text) => setNewLevel({ ...newLevel, detailed: text })}
+                />
+                <TouchableOpacity onPress={addLevel} style={styles.addButton}>
+                  <Text style={styles.addButtonLabel}>Add Level</Text>
+                </TouchableOpacity>
+              </View>
+              )}
         </View>
       );
     };
@@ -167,7 +174,7 @@ const DrunkParametersScreen = () => {
         marginBottom: 20,
         padding: 10,
         borderRadius: 5,
-        backgroundColor: '#f0f0f0',
+        backgroundColor: '#00797B',
       },
       levelTitle: {
         fontSize: 20,
@@ -214,6 +221,17 @@ const DrunkParametersScreen = () => {
       addButtonLabel: {
         color: '#fff',
         fontWeight: 'bold',
+      },
+      toggleButton: {
+        backgroundColor: 'green',
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+      toggleButtonText: {
+          color: '#fff',
+          fontWeight: 'bold',
       },
     });
     
