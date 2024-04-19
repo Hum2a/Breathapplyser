@@ -9,13 +9,10 @@ export const CommonStyles = StyleSheet.create({
       margin: 10,
       maxHeight: 300,
       maxWidth: screenWidth * 0.45,
-      // backgroundColor: '#92DDFE',
       backgroundColor: 'transparent',
-      // borderColor: 'gold',
-      // borderWidth: 0.5,
     },
     listItem: {
-      backgroundColor: 'rgba(249, 249, 249, 0.5)', // Making background slightly transparent
+      backgroundColor: 'rgba(249, 249, 249, 0.5)',
       marginVertical: 6,
       borderRadius: 5,
       padding: 8,
@@ -28,7 +25,6 @@ export const CommonStyles = StyleSheet.create({
       shadowRadius: 1.41,
       elevation: 2,
     },
-    
     text: {
       fontSize: 14,
       color: '#333',
@@ -40,15 +36,26 @@ export const CommonStyles = StyleSheet.create({
       color: '#333',
       textAlign: 'center',
     },
+    refreshButton: {
+        position: 'absolute', // Position it over your component or at a fixed position
+        right: 10,  // Right margin from the container
+        top: 25,   // Top margin from the container
+        padding: 10,
+        zIndex: 1000,  // Make sure it floats above other components
+    },
+    refreshIcon: {
+        width: 24,   // Suitable size for an icon
+        height: 24,  // Matching height for the icon
+    },
     buttonText: {
-        fontSize: 14, // Reduced font size for button text
+        fontSize: 14,
         color: 'white',
         textAlign: 'center',
-      },
+    },
     button: {
-        backgroundColor: '#007bff', // A nice shade of blue for buttons
-        padding: 8, // Reduced padding for buttons
+        backgroundColor: '#007bff',
+        padding: 8,
         borderRadius: 5,
-        marginVertical: 8, // Reduced margin at the top and bottom for buttons
-      }
-  });
+        marginVertical: 8,
+    }
+});

@@ -61,6 +61,11 @@ export const HistoryStyles = StyleSheet.create({
     height: 50,
     alignSelf: 'center',
   },
+  topContainer: {
+    alignContent: 'center',
+    flexDirection: 'row',
+    alignSelf: 'center'
+  },
   backgroundTextContainer: {
     ...StyleSheet.absoluteFillObject, // Make the text overlay the entire item
     transform: [{ rotate: '-40deg' }], // Rotate the container

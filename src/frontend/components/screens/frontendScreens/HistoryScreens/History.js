@@ -25,19 +25,21 @@ const HistoryScreen = ({ navigation }) => {
   }, [user]);
 
 
-  const fetchData = async () => {
+  const fetchData = async (forceRefresh = false) => {
     const cacheKey = 'history_dates_with_details';
     try {
-      // Attempt to retrieve the cached data
-      const cachedData = await AsyncStorage.getItem(cacheKey);
-      if (cachedData) {
-        const parsedData = JSON.parse(cachedData);
-        const cacheTime = moment(parsedData.timestamp);
-        // Check if the cache is still valid, for example, valid for 1 day
-        if (moment().diff(cacheTime, 'days') < 1) {
-          console.log('Using cached data');
-          setDates(parsedData.data);
-          return;
+      // Check the cache unless forceRefresh is true
+      if (!forceRefresh) {
+        const cachedData = await AsyncStorage.getItem(cacheKey);
+        if (cachedData) {
+          const parsedData = JSON.parse(cachedData);
+          const cacheTime = moment(parsedData.timestamp);
+          // Check if the cache is still valid, for example, valid for 1 day
+          if (moment().diff(cacheTime, 'days') < 1) {
+            console.log('Using cached data');
+            setDates(parsedData.data);
+            return;
+          }
         }
       }
   
@@ -77,6 +79,7 @@ const HistoryScreen = ({ navigation }) => {
     }
   };
   
+  
   const fetchEntriesForDate = async (date) => {
     try {
       const dateStr = moment(date).format('YYYY-MM-DD');
@@ -102,12 +105,22 @@ const HistoryScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={appStyles.fullScreen}>
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => handleCalenderClick()}>
+        <View style={styles.topContainer}>
+          <TouchableOpacity onPress={() => handleCalenderClick()}>
+            <Image
+              source={require('./../../../../assets/images/calendar.png')}
+              style={styles.calendarIcon}
+              />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => fetchData(true)}
+          >
           <Image
-            source={require('./../../../../assets/images/calendar.png')}
-            style={styles.calendarIcon}
-            />
+              source={require('./../../../../assets/images/refresh-icon.png')}
+              style={styles.calendarIcon}
+              />
         </TouchableOpacity>
+      </View>
         {/* <Text style={styles.title}>History</Text> */}
         <FlatList
           data={dates}

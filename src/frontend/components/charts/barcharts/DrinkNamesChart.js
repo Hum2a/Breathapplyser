@@ -18,61 +18,60 @@ const DrinkNamesChart = () => {
     const firestore = getFirestore();
     const { user } = useContext(UserContext);
 
-    useEffect(() => {
-        const fetchAllEntries = async () => {
-            try {
-                // Check for cached data based on selected date
-                const cachedData = await AsyncStorage.getItem(`drinkNamesChartData_${selectedDate}`);
-                if (cachedData) {
-                    const parsedData = JSON.parse(cachedData);
-                    setAllEntries(parsedData.allEntries);
-                    setDrinkNamesData(parsedData.drinkNamesData);
-                } else {
-                    const entriesSnapshot = await getDocs(query(collection(firestore, user.uid, "Alcohol Stuff", "Entries")));
-                    const allEntriesData = [];
-    
-                    for (const doc of entriesSnapshot.docs) {
-                        const dateStr = doc.id; // dateStr is a string in 'YYYY-MM-DD' format
-                        const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
-                        const entriesSnapshot = await getDocs(entriesRef);
-    
-                        entriesSnapshot.forEach((entryDoc) => {
-                            const entry = entryDoc.data();
-                            entry.date = dateStr; // Use the date string from the document ID
-                            allEntriesData.push(entry);
-                        });
-                    }
-    
-                    // Filter entries for the selected date
-                    const filteredEntries = allEntriesData.filter(entry => entry.date === selectedDate);
-    
-                    // Sort all entries by date in descending order
-                    filteredEntries.sort((a, b) => moment(b.date, 'YYYY-MM-DD').diff(moment(a.date, 'YYYY-MM-DD')));
-                    setAllEntries(filteredEntries);
-    
-                    const drinkNamesCount = {};
-                    filteredEntries.forEach(entry => {
-                        const drinkName = entry.alcohol;
-                        drinkNamesCount[drinkName] = (drinkNamesCount[drinkName] || 0) + 1;
-                    });
-                    setDrinkNamesData(Object.entries(drinkNamesCount));
-    
-                    // Cache fetched data based on selected date
-                    const dataToCache = {
-                        allEntries: filteredEntries,
-                        drinkNamesData: Object.entries(drinkNamesCount),
-                    };
-                    await AsyncStorage.setItem(`drinkNamesChartData_${selectedDate}`, JSON.stringify(dataToCache));
-                }
-            } catch (error) {
-                console.error('Error fetching all entries:', error);
-            }
-        };
-    
+    useEffect(() => {    
         fetchAllEntries();
     }, [selectedDate]); // Run effect when selectedDate changes
     
+    const fetchAllEntries = async () => {
+        try {
+            // Check for cached data based on selected date
+            const cachedData = await AsyncStorage.getItem(`drinkNamesChartData_${selectedDate}`);
+            if (cachedData) {
+                const parsedData = JSON.parse(cachedData);
+                setAllEntries(parsedData.allEntries);
+                setDrinkNamesData(parsedData.drinkNamesData);
+            } else {
+                const entriesSnapshot = await getDocs(query(collection(firestore, user.uid, "Alcohol Stuff", "Entries")));
+                const allEntriesData = [];
 
+                for (const doc of entriesSnapshot.docs) {
+                    const dateStr = doc.id; // dateStr is a string in 'YYYY-MM-DD' format
+                    const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
+                    const entriesSnapshot = await getDocs(entriesRef);
+
+                    entriesSnapshot.forEach((entryDoc) => {
+                        const entry = entryDoc.data();
+                        entry.date = dateStr; // Use the date string from the document ID
+                        allEntriesData.push(entry);
+                    });
+                }
+
+                // Filter entries for the selected date
+                const filteredEntries = allEntriesData.filter(entry => entry.date === selectedDate);
+
+                // Sort all entries by date in descending order
+                filteredEntries.sort((a, b) => moment(b.date, 'YYYY-MM-DD').diff(moment(a.date, 'YYYY-MM-DD')));
+                setAllEntries(filteredEntries);
+
+                const drinkNamesCount = {};
+                filteredEntries.forEach(entry => {
+                    const drinkName = entry.alcohol;
+                    drinkNamesCount[drinkName] = (drinkNamesCount[drinkName] || 0) + 1;
+                });
+                setDrinkNamesData(Object.entries(drinkNamesCount));
+
+                // Cache fetched data based on selected date
+                const dataToCache = {
+                    allEntries: filteredEntries,
+                    drinkNamesData: Object.entries(drinkNamesCount),
+                };
+                await AsyncStorage.setItem(`drinkNamesChartData_${selectedDate}`, JSON.stringify(dataToCache));
+            }
+        } catch (error) {
+            console.error('Error fetching all entries:', error);
+        }
+    };
+    
     const filterDataByDate = (entries, date, date2 = '') => {
         setSelectedDate(date);
         const filteredEntries = entries.filter(entry => entry.date === date);

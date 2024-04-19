@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert, Image } from 'react-native';
 import { getFirestore, collection, query, orderBy, getDocs, doc, setDoc, getDoc } from 'firebase/firestore';
 import moment from 'moment';
 import { UserContext } from '../../../../context/UserContext'; // Update path as needed
@@ -56,11 +56,11 @@ const CommonDrinks = () => {
     }
   };    
 
-  const fetchCommonDrinks = async () => {
+  const fetchCommonDrinks = async (forceRefresh = false) => {
     if (!user) return;
   
     const cachedData = await AsyncStorage.getItem('commonDrinksCache');
-    if (cachedData) {
+    if (cachedData && !forceRefresh) {
       const { data, timestamp } = JSON.parse(cachedData);
       const currentTime = new Date().getTime();
       const cacheDuration = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
@@ -289,7 +289,12 @@ const CommonDrinks = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Top 3 Common Drinks</Text>
+      <TouchableOpacity
+        style={styles.title} // Define this style to align with your design
+        onPress={() => fetchCommonDrinks(true)}  // Pass true to force a refresh
+      >
+        <Text style={styles.title}>Top 3 Common Drinks</Text>
+      </TouchableOpacity>
       <FlatList
         data={commonDrinks}
         renderItem={renderItem}

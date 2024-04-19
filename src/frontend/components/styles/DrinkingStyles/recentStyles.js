@@ -50,5 +50,15 @@ export const RecentStyles = StyleSheet.create({
     padding: 8, // Reduced padding for buttons
     borderRadius: 5,
     marginVertical: 8, // Reduced margin at the top and bottom for buttons
-  }
+  },
+  refreshButton: {
+    position: 'absolute', // Position it over your component or at a fixed position
+    left: '50%',
+    padding: 10,
+    zIndex: 1000,  // Make sure it floats above other components
+  },
+  refreshIcon: {
+      width: 24,   // Suitable size for an icon
+      height: 24,  // Matching height for the icon
+  },
 });

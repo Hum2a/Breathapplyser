@@ -115,5 +115,19 @@ export const lifetimeStyles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
-    },    
+    },
+    refreshContainer: {
+        alignItems: 'center',
+        marginVertical: 10,
+    },
+    refreshButton: {
+        backgroundColor: '#00F5D4',
+        padding: 10,
+        borderRadius: 5,
+        elevation: 5,
+    },
+    refreshButtonText: {
+        color: 'white',
+        fontSize: 16,
+    },
 });

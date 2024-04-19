@@ -40,17 +40,19 @@ const LifetimeStats = () => {
     }, []);
     
 
-    const fetchLifetimeStats = async () => {
+    const fetchLifetimeStats = async (forceRefresh = false) => {
         const cacheKey = `lifetimeStats_${dayRange}`; // Include dayRange in the cache key
-        const cachedData = await AsyncStorage.getItem(cacheKey);
-        if (cachedData) {
-            const parsedData = JSON.parse(cachedData);
-            const cacheTime = moment(parsedData.timestamp);
-            if (moment().diff(cacheTime, 'days') < 1) { // Check if the cache is less than a day old
-                console.log('Using cached data for dayRange:', dayRange);
-                setDrinkTypeDetails(parsedData.data);
-                setExpanded(Object.keys(parsedData.data).reduce((acc, key) => ({ ...acc, [key]: false }), {}));
-                return;
+        if (!forceRefresh) {
+            const cachedData = await AsyncStorage.getItem(cacheKey);
+            if (cachedData) {
+                const parsedData = JSON.parse(cachedData);
+                const cacheTime = moment(parsedData.timestamp);
+                if (moment().diff(cacheTime, 'days') < 1) { // Check if the cache is less than a day old
+                    console.log('Using cached data for dayRange:', dayRange);
+                    setDrinkTypeDetails(parsedData.data);
+                    setExpanded(Object.keys(parsedData.data).reduce((acc, key) => ({ ...acc, [key]: false }), {}));
+                    return;
+                }
             }
         }
     
@@ -196,6 +198,12 @@ const LifetimeStats = () => {
     // Handlers to adjust the day range
     const increaseDayRange = () => setDayRange(prev => prev + 10);
     const decreaseDayRange = () => setDayRange(prev => Math.max(10, prev - 10)); // Prevent it going below 10
+
+    const handleRefresh = () => {
+        fetchLifetimeStats(true);
+        fetchTotalUnitsAndAmountSpent(true);
+        fetchDetailedData(true);
+    };
     
     
     return (
@@ -283,6 +291,11 @@ const LifetimeStats = () => {
                         </View>
                     )}
                 </TouchableOpacity>
+                <View style={styles.refreshContainer}>
+                    <TouchableOpacity onPress={handleRefresh} style={styles.refreshButton}>
+                        <Text style={styles.refreshButtonText}>Refresh</Text>
+                    </TouchableOpacity>
+                </View>
             </ScrollView>
         </SafeAreaView>
     );

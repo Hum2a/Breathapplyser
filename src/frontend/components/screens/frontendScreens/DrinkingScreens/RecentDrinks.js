@@ -1,7 +1,7 @@
 // RecentDrinks.js
 
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert, Image } from 'react-native';
 import { getFirestore, collection, query, orderBy, limit, getDocs, setDoc, doc, getDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../context/UserContext'; // Update the path according to your project structure
 import moment from 'moment';
@@ -28,7 +28,7 @@ const RecentDrinks = ({ navigation }) => {
     fetchLimits();
   }, [user]);
 
-  const fetchRecentDrinks = async () => {
+  const fetchRecentDrinks = async (forceRefresh = false) => {
     if (!user) {
       console.error('User is not authenticated.');
       return;
@@ -44,7 +44,7 @@ const RecentDrinks = ({ navigation }) => {
   
     // Try to load the cached data first
     const cachedData = await AsyncStorage.getItem(cacheKey);
-    if (cachedData) {
+    if (cachedData && !forceRefresh) {
       const parsedCache = JSON.parse(cachedData);
       const cacheDate = moment(parsedCache.date, 'YYYY-MM-DD');
       if (cacheDate.isSame(moment(), 'day')) {
@@ -252,7 +252,13 @@ const RecentDrinks = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-        <Text style={styles.title}>Recent Drinks</Text>
+
+      <TouchableOpacity
+        style={styles.title} // Define this style to align with your design
+        onPress={() => fetchRecentDrinks(true)}  // Pass true to force a refresh
+      >
+      <Text style={styles.title}>Recent Drinks</Text>
+      </TouchableOpacity>
       <FlatList
         data={recentDrinks}
         renderItem={renderItem}
