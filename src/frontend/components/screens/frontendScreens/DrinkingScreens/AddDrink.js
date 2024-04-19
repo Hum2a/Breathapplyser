@@ -17,7 +17,7 @@ const AddEntryScreen = ({ navigation }) => {
           value={isAuto}
           onValueChange={toggleEntryMode}
         />
-        <Text>{isAuto ? 'Auto Entry' : 'Manual Entry'}</Text>
+        <Text style={{color: 'black', fontWeight: 'bold'}}>{isAuto ? 'Auto Entry' : 'Manual Entry'}</Text>
       </View>
       {isAuto ? <AutoEntryScreen navigation={navigation} /> : <ManualEntryScreen navigation={navigation} />}
     </View>

@@ -258,6 +258,7 @@ const ManualEntryScreen = ({ navigation }) => {
 
     const selectedAmount = parseInt(amount);
     const entryDetailsArray = [];
+    const calories = 100;
 
     for (let i = 0; i < selectedAmount; i++) {
         const entryDetails = {
@@ -265,7 +266,8 @@ const ManualEntryScreen = ({ navigation }) => {
             amount: 1, 
             units, 
             price, 
-            type, 
+            type,
+            calories, 
             selectedStartTime, 
             selectedEndTime, 
             selectedDate, 

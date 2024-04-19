@@ -183,7 +183,8 @@ export const manualStyles = StyleSheet.create({
 
 export const autoStyles = StyleSheet.create({
   container: {
-    backgroundColor: 'white', // Light blue background
+    backgroundColor: 'white',
+    height: '100%',
   },
   title: {
     fontSize: 24,
