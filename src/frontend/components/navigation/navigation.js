@@ -56,7 +56,7 @@ const AppNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator 
-        initialRouteName="Start"
+        initialRouteName="Login"
         screenOptions={{
           headerShown: false,
           gestureEnabled: true, // Enable gestures if desired
