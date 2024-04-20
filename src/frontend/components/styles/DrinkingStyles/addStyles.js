@@ -1,4 +1,24 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+
+const screenWidth = Dimensions.get('window').width;
+
+export const drinkStyles = StyleSheet.create({
+  iconContainer: {
+    right: screenWidth/4,
+    top: 2,
+  },
+  icon: {
+    width: 60,
+    height: 30,
+  },
+  switch: {
+    right: 10
+  },
+  text: {
+    color: 'black',
+    fontWeight: 'bold'
+  }
+})
 
 export const manualStyles = StyleSheet.create({
   container: {

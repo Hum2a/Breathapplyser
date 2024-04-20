@@ -7,6 +7,7 @@ import { UserContext } from '../../../../context/UserContext';
 import Dialog from 'react-native-dialog';
 import { dialogStyles } from '../../../styles/AppStyles/dialogueStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BackButton } from '../../../buttons/backButton';
 
 const DetailedHistoryScreen = ({ route, navigation }) => {
   const { date } = route.params;
@@ -216,6 +217,7 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      <BackButton />
        <View style={styles.pieButtonContainer}>
         <TouchableOpacity
           style={styles.visualizeButton}

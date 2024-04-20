@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../../context/UserContext';
+import { BackButton } from '../../../../buttons/backButton';
 
 const BACDecreaseRefreshPicker = () => {
   const [refreshInterval, setRefreshInterval] = useState(10000); // Initial refresh interval value in milliseconds
@@ -43,6 +44,7 @@ const BACDecreaseRefreshPicker = () => {
 
   return (
     <View style={styles.container}>
+      <BackButton/>
       <Text style={styles.label}>BAC Decrease Refresh Rate:</Text>
       <Picker
         selectedValue={refreshInterval}
@@ -60,24 +62,23 @@ const BACDecreaseRefreshPicker = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 10,
+    flex: 1, // Makes the container fill the whole screen
+    justifyContent: 'center', // Centers content vertically in the container
+    alignItems: 'center', // Centers content horizontally in the container
     backgroundColor: '#E0F2F1', // Light blue background color
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 10,
   },
   label: {
     fontSize: 16,
-    marginRight: 10,
     color: '#1565C0', // Dark blue text color
   },
   picker: {
-    flex: 1,
+    width: '80%', // Set a specific width for the picker or use 'flex: 1' if it should take up more space
     height: 50,
     color: '#1565C0', // Dark blue text color
   },
 });
+
 
 export default BACDecreaseRefreshPicker;

@@ -2,10 +2,12 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import GradientButton from '../../buttons/OnlineComponents/GradientButton';
+import { BackButton } from '../../buttons/backButton';
 
 const RankingsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
+        <BackButton />
         <Text style={styles.title}>Rankings</Text>
       <View style={styles.buttonRow}>
         <GradientButton

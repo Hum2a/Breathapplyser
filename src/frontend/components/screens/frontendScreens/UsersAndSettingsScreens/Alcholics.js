@@ -2,6 +2,7 @@ import React from 'react';
 import { TouchableOpacity, View, Text } from 'react-native';
 import BACDecreaseRefreshPicker from './Alcoholics/BACDecreaseRefreshPicker';
 import { AlcoholicsStyles as styles } from '../../../styles/SettingStyles/alcoholicsStyles';
+import { BackButton } from '../../../buttons/backButton';
 
 const AlcoholicsVariables = ({user, navigation}) => {
 
@@ -15,6 +16,7 @@ const AlcoholicsVariables = ({user, navigation}) => {
 
   return (
     <View style={styles.container}>
+      <BackButton/>
       <TouchableOpacity onPress={navigateToBACRefreshRate} style={styles.button}>
         <Text style={styles.buttonText}> BAC Refresh Rate</Text>
         </TouchableOpacity>

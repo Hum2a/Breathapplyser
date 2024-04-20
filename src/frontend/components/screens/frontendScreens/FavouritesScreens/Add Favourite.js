@@ -4,6 +4,7 @@ import { manualStyles as addStyles } from '../../../styles/DrinkingStyles/addSty
 import { favouriteStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
 import { addNewFavourite } from '../../../../../backend/app/utils/handles/addToFavourites';
 import { UserContext } from '../../../../context/UserContext';
+import { BackButton } from '../../../buttons/backButton';
 
 const AddNewFavouriteScreen = ({ navigation }) => {
   const [drinkName, setDrinkName] = useState(''); // Added a new state for drink name
@@ -34,6 +35,7 @@ const AddNewFavouriteScreen = ({ navigation }) => {
 
   return (
     <View style={addStyles.container}>
+      <BackButton />
       <Text style={addStyles.title}>Add Favorite</Text>
 
       <TextInput

@@ -5,6 +5,7 @@ import FavouriteList from './FavouritesList';
 import { AddNewFavouritesButton } from '../../../buttons/FavoutitesComponents/FavouritesButtons';
 import { appStyles } from '../../../styles/AppStyles/appStyles';
 import { favouriteStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
+import { BackButton } from '../../../buttons/backButton';
 
 const FavouritesScreen = ({ navigation }) => {
   const { user } = useContext(UserContext);
@@ -16,6 +17,7 @@ const FavouritesScreen = ({ navigation }) => {
 
   return (
       <View style={favouriteStyles.container}>
+        <BackButton />
         <AddNewFavouritesButton onPress={navigateToAddFavorite}/>
         <FavouriteList user={user} navigation={navigation} />
       </View>

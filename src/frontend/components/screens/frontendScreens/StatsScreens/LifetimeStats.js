@@ -6,6 +6,7 @@ import moment from 'moment';
 import { UserContext } from '../../../../context/UserContext';
 import { lifetimeStyles as styles } from '../../../styles/StatsStyles/lifetimeStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BackButton } from '../../../buttons/backButton';
 
 const LifetimeStats = () => {
     const [dayRange, setDayRange] = useState(10); // Now managed by state
@@ -209,6 +210,7 @@ const LifetimeStats = () => {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView}>
+                <BackButton />
                 <Text style={styles.title}>Lifetime Stats</Text>
 
                 <TouchableOpacity style={styles.dayRangeButton} onPress={handleAllTime}>

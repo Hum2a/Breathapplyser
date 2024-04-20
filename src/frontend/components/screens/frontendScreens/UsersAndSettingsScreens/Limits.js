@@ -5,6 +5,7 @@ import { limitStyles as styles } from '../../../styles/DrinkingStyles/limitStyle
 import { UserContext } from '../../../../context/UserContext';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BackButton } from '../../../buttons/backButton';
 
 const LimitsScreen = () => {
   const { user } = useContext(UserContext);
@@ -74,6 +75,7 @@ const LimitsScreen = () => {
 
   return (
     <SafeAreaView style={styles.fullScreen}>
+      <BackButton/>
       <Modal
         animationType="slide"
         transparent={true}

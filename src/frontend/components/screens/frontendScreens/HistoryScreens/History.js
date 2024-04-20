@@ -8,6 +8,7 @@ import { homeStyles } from '../../../styles/StartUpStyles/homeStyles';
 import { appStyles } from '../../../styles/AppStyles/appStyles';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BackButton } from '../../../buttons/backButton';
 
 const HistoryScreen = ({ navigation }) => {
   const [dates, setDates] = useState([]); // Dates with entries
@@ -105,6 +106,7 @@ const HistoryScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={appStyles.fullScreen}>
       <View style={styles.container}>
+        <BackButton />
         <View style={styles.topContainer}>
           <TouchableOpacity onPress={() => handleCalenderClick()}>
             <Image

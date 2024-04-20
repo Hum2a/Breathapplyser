@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Dimensions, Text, ScrollView } from 'react-native';
+import { View, Dimensions, Text, ScrollView, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PieChart, LineChart } from 'react-native-chart-kit';
 import { getFirestore, collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import moment from 'moment';
 import { UserContext } from '../../../../context/UserContext';
 import { visualHistoryStyles as styles } from '../../../styles/HistoryStyles/visualHistoryStyles';
+import { BackButton } from '../../../buttons/backButton';
 
 const screenWidth = Dimensions.get('window').width;
 const chartHeight = 180; // Adjusted height for a better fit
@@ -27,19 +28,31 @@ const VisualDetailedHistory = ({ route }) => {
   const { user } = useContext(UserContext);
 
   useEffect(() => {
-    fetchData();
-  }, [date]); // Removed user, firestore from dependencies to prevent unnecessary calls
+    fetchData(false);
+  }, [date]);
 
-  const fetchData = async () => {
-    const cachedData = await getCachedData(date);
-    if (cachedData) {
-      setData(cachedData);
-    } else {
-      const fetchedData = await fetchFirestoreData(date);
-      setData(fetchedData);
-      cacheData(date, fetchedData);
+  const refreshData = () => {
+    fetchData(true); // Force refresh
+};
+
+  // const fetchData = async () => {
+  //   const cachedData = await getCachedData(date);
+  //   if (cachedData) {
+  //     setData(cachedData);
+  //   } else {
+  //     const fetchedData = await fetchFirestoreData(date);
+  //     setData(fetchedData);
+  //     cacheData(date, fetchedData);
+  //   }
+  // };
+
+  const fetchData = async (forceRefresh = false) => {
+    if (forceRefresh || !await getCachedData(date)) {
+        const fetchedData = await fetchFirestoreData(date);
+        setData(fetchedData);
+        cacheData(date, fetchedData);
     }
-  };
+};
 
   const getCachedData = async (date) => {
     try {
@@ -144,10 +157,14 @@ const VisualDetailedHistory = ({ route }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <BackButton />
       {renderPieChart(convertToPieChartData(drinksByType), 'Drinks by Type')}
       {renderPieChart(convertToPieChartData(drinksByName), 'Drinks by Name')}
       {unitsOverTime.length > 0 && renderLineChart(prepareLineChartData(unitsOverTime, 'HH:mm'), 'Units Over Time')}
       {spentOverTime.length > 0 && renderLineChart(prepareLineChartData(spentOverTime, 'HH:mm'), 'Amount Spent Over Time')}
+      <TouchableOpacity onPress={refreshData} style={styles.refreshButton}>
+        <Text style={styles.refreshButtonText}>Refresh</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };

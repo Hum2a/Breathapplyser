@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, SafeAreaView, Switch } from 'react-native';
 import { chartStyles } from '../../../../styles/ChartStyles/chartStyles';
 import { DrinkTypesBarChart, DrinkTypesPieChart } from '../../../../charts/chartIndex';
+import { BackButton } from '../../../../buttons/backButton';
 
 const TypesCharts = () => {
   const [isBarChart, setIsBarChart] = useState(true); // State to toggle between charts
@@ -9,6 +10,7 @@ const TypesCharts = () => {
   return (
     <SafeAreaView style={chartStyles.fullScreen}>
       <ScrollView contentContainerStyle={chartStyles.chartContainer}>
+        <BackButton />
         <View style={{ alignItems: 'center', marginVertical: 20 }}>
           <Text>{isBarChart ? 'Bar Chart' : 'Pie Chart'}</Text>
           <Switch

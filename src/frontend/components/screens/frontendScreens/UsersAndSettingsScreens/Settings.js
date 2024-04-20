@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ProfileWaveAnimation from '../../../animations/profileWave';
 import MuscleManAnimation from '../../../animations/muscleman';
 import { useUser } from '../../../../context/UserContext';
+import { BackButton } from '../../../buttons/backButton';
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -61,6 +62,7 @@ const Settings = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <BackButton />
         <TouchableWithoutFeedback
          onPressIn={() => setPlayProfileWaveAnimation(true)}
          onPressOut={() => { setPlayProfileWaveAnimation(false); navigateToProfile(); } }

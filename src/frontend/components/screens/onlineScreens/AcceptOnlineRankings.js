@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 // Import Firestore and your Firebase config as necessary
 import { collection, doc, getFirestore, setDoc } from 'firebase/firestore';
 import { UserContext } from '../../../context/UserContext';
+import { BackButton } from '../../buttons/backButton';
 
 const AcceptOnlineRankings = ({ navigation }) => {
   const [optIn, setOptIn] = useState(null);
@@ -31,6 +32,7 @@ const AcceptOnlineRankings = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <BackButton />
       {optIn === null && (
         <>
           <Text style={styles.promptText}>Do you want to opt into online rankings?</Text>

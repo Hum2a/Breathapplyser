@@ -107,16 +107,19 @@ export const DetailedHistoryStyles = StyleSheet.create({
   },
   refreshButtonContainer: {
     position: 'relative', // Ensures the button can be absolutely positioned within
-    height: 30, // Ensure this is enough space for the button
-    left: 10,
+    bottom: 12,
+    right: 60,
     width: '100%', // Or adjust to fit your layout
-    alignItems: 'flex-start', // Aligns children to the right
+    alignItems: 'flex-end', // Aligns children to the right
     justifyContent: 'flex-start', // Aligns children to the top
 },
   updateButton: {
+    position: 'position',
     right: 10, // Adjust according to your layout
+    top: 10, // Adjust according to your layout
     width: 34, // Define a proper size for the button
-    height: 34, // Define a proper size for the button
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 25, // Half of width/height to make it round
     backgroundColor: '#81D4FA',
     elevation: 4, // Add shadow for Android

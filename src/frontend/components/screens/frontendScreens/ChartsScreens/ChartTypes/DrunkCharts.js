@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
 import { DrunkScreenStyles } from '../../../../styles/ChartStyles/DrunknessStyles';
 import { DrunknessENTRIESChart, DrunknessBLChart } from '../../../../charts/chartIndex';
+import { BackButton } from '../../../../buttons/backButton';
 
 const DrunkCharts = () => {
   const [showEntriesChart, setShowEntriesChart] = useState(false); // State to control visibility of entries chart
@@ -10,6 +11,7 @@ const DrunkCharts = () => {
   return (
     <SafeAreaView style={DrunkScreenStyles.fullScreen}>
       <ScrollView style={DrunkScreenStyles.chartContainer}>
+        <BackButton />
         {/* Toggle button for Entries chart */}
         <TouchableOpacity onPress={() => setShowEntriesChart(!showEntriesChart)} style={DrunkScreenStyles.button}>
           <Text style={DrunkScreenStyles.buttonText}>{showEntriesChart ? 'Hide Entries Chart' : 'Show Entries Chart'}</Text>

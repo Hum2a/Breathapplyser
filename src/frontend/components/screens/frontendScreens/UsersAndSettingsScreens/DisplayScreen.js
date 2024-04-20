@@ -5,6 +5,7 @@ import { UserContext } from '../../../../context/UserContext';
 import { DisplayStyles as styles } from '../../../styles/SettingStyles/displayStyles';
 import DrunkennessDisplayScreen from './Display/DisplayDrunkenness';
 import EmojiSettingsScreen from './Display/EmojiCustomisation';
+import { BackButton } from '../../../buttons/backButton';
 
 const DisplaySettingsScreen = ({ user, navigation}) => {
   
@@ -14,6 +15,7 @@ const DisplaySettingsScreen = ({ user, navigation}) => {
 
   return (
     <View style={styles.container}>
+      <BackButton/>
       <Text style={styles.header}> Display Settings </Text>
       <DrunkennessDisplayScreen />
       <TouchableOpacity onPress={navigateToEmoji} style={styles.button}>

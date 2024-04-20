@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { getFirestore, collection, query, getDocs, doc, getDoc } from 'firebase/firestore';
 import moment from 'moment';
+import { BackButton } from '../../buttons/backButton';
 
 const SpentRankings = () => {
   const [rankings, setRankings] = useState([]);
@@ -36,6 +37,7 @@ const SpentRankings = () => {
 
   return (
     <View style={styles.container}>
+      <BackButton />
       <Text style={styles.title}>User Rankings - Amount Spent Today</Text>
       <FlatList
         data={rankings}

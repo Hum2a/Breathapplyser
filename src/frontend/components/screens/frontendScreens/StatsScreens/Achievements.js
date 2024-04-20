@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { achievementStyles as styles } from '../../../styles/StatsStyles/achievementsStyles';
+import { BackButton } from '../../../buttons/backButton';
 
 const Achievements = () => {
   // Sample data for achievements
@@ -20,6 +21,7 @@ const Achievements = () => {
 
   return (
     <View style={styles.container}>
+      <BackButton />
       <Text style={styles.header}>Achievements</Text>
       <FlatList
         data={achievements}

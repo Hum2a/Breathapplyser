@@ -5,6 +5,7 @@ import { doc, deleteDoc } from 'firebase/firestore';
 import { useUser } from '../../../../context/UserContext';
 import { CommonActions } from '@react-navigation/native';
 import moment from 'moment';
+import { BackButton } from '../../../buttons/backButton';
 
 const DataManagerScreen = ({ navigation }) => {
   const { logout } = useUser();
@@ -53,6 +54,7 @@ const DataManagerScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <BackButton/>
       {userData ? (
         <View style={styles.infoContainer}>
           <View style={styles.row}>

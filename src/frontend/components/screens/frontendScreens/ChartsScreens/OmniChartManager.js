@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, TouchableWithoutFeedback, SafeAreaView } from 'react-native';
 import { omniStyles as styles } from '../../../styles/ChartStyles/omniStyles';
 import FatManAnimation from '../../../animations/fatman';
+import { BackButton } from '../../../buttons/backButton';
 
 const ChartsScreen = ({ navigation }) => {
   const [playFatManAnimation, setPlayFatManAnimation] = useState(false);
@@ -12,6 +13,7 @@ const ChartsScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <BackButton />
       <Text style={styles.graphTitle}> All Charts </Text>
       <TouchableOpacity style={styles.button} onPress={() => navigateToChart('BACCharts')}>
         <Text style={styles.buttonText}>BAC Charts</Text>

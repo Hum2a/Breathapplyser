@@ -76,6 +76,8 @@ export const favouriteStyles = StyleSheet.create({
     borderWidth: 2,
     marginBottom: 10,
     marginTop: 5,
+    width: '75%',
+    alignSelf: 'flex-end',
   },
   addNewFavouriteButtonText: {
     color: 'white', // White text for clarity and contrast

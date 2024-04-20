@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../../context/UserContext';
+import { BackButton } from '../../../../buttons/backButton';
 
 const EmojiSettingsScreen = () => {
   const { user } = useContext(UserContext);
@@ -43,6 +44,7 @@ const EmojiSettingsScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <BackButton />
       <Text style={styles.header}>Emoji Settings</Text>
       {drunkParameters.map((param, index) => (
         <View key={index} style={styles.option}>

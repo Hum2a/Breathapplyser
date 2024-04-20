@@ -7,6 +7,7 @@ import { appStyles } from '../../../styles/AppStyles/appStyles';
 import { UserContext } from '../../../../context/UserContext';
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BackButton } from '../../../buttons/backButton';
 // import { firestore } from '../../../../backendFB/database/firebase';
 
 const ProfileScreen = () => {
@@ -127,6 +128,7 @@ const ProfileScreen = () => {
   return (
     <SafeAreaView style={appStyles.fullScreen}>
       <View style={profStyles.container}>
+        <BackButton />
         <Text style={profStyles.title}>Your Profile</Text>
 
         <View style={profStyles.inputContainer}>

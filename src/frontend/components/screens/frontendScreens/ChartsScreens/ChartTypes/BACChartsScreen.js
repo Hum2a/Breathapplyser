@@ -8,6 +8,7 @@ import {
   BACEntriesChart,
   BAC12Hours
 } from '../../../../charts/chartIndex';
+import { BackButton } from '../../../../buttons/backButton';
 
 const BACCharts = () => {
   const [showBAC12Hours, setShowBAC12Hours] = useState(false);
@@ -21,6 +22,7 @@ const BACCharts = () => {
     <SafeAreaView style={chartStyles.fullScreen}>
       <ScrollView>
         <View style={chartStyles.chartContainer}>
+          <BackButton />
           <TouchableOpacity
             style={styles.button}
             onPress={() => setShowBAC12Hours(!showBAC12Hours)}

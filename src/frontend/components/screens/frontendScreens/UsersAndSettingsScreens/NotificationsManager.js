@@ -6,6 +6,7 @@ import { notifStyles as styles } from '../../../styles/SettingStyles/notifStyles
 import { UserContext } from '../../../../context/UserContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { appStyles } from '../../../styles/AppStyles/appStyles';
+import { BackButton } from '../../../buttons/backButton';
 
 const NotificationManager = () => {
   const [notificationSettings, setNotificationSettings] = useState({});

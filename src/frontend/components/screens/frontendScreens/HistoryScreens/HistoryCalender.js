@@ -6,6 +6,7 @@ import moment from 'moment';
 import { Calendar } from 'react-native-calendars';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import { appStyles } from '../../../styles/AppStyles/appStyles';
+import { BackButton } from '../../../buttons/backButton';
 
 const HistoryCalendar = ({ navigation }) => {
   const [dates, setDates] = useState([]); // Dates with entries
@@ -59,6 +60,7 @@ const HistoryCalendar = ({ navigation }) => {
   return (
     <SafeAreaView style={appStyles.fullScreen}>
       <View style={styles.container}>
+        <BackButton />
         <Text style={styles.calendarTitle}>History Calendar</Text>
         <Calendar
           markedDates={{
