@@ -96,7 +96,16 @@ export const HistoryStyles = StyleSheet.create({
     justifyContent: 'center', // Align children vertically
     alignItems: 'center', // Align children horizontally
   },
-  
+  updateButton: {
+    padding: 10,
+    margin: 10,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+  },
+  updateButtonImage: {
+    width: 30,
+    height: 30,
+  },
   
 });
 

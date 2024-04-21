@@ -85,6 +85,16 @@ export const favouriteStyles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
   },
+  refreshButton: {
+    padding: 10,
+    margin: 10,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+  },
+  updateButtonImage: {
+    width: 30,
+    height: 30,
+  },
 });
 
 export const dialogStyles = StyleSheet.create({

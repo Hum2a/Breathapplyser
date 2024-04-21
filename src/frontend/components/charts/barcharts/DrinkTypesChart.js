@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, Switch, Dimensions } from 'react-native';
+import { View, Text, Switch, Dimensions, TouchableOpacity, Image } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { BarChart } from 'react-native-chart-kit';
 import { collection, getFirestore, query, orderBy, getDocs } from 'firebase/firestore';
@@ -21,64 +21,116 @@ const DrinkTypeChart = () => {
     const { user } = useContext(UserContext);
 
     useEffect(() => {
-        const fetchAllEntries = async () => {
-            try {
-                const cachedData = await AsyncStorage.getItem('drinkTypesChartData');
-                if (cachedData) {
-                    const parsedData = JSON.parse(cachedData);
-                    setAllEntries(parsedData.allEntries);
-                    setDrinkTypesData(parsedData.drinkTypesData);
-                    // Attempt to set the picker to today's date, or to the most recent date available
-                    const todayFormatted = moment().format('YYYY-MM-DD');
-                    const mostRecentAvailableDate = parsedData.allEntries.find(entry => entry.date <= todayFormatted)?.date || parsedData.allEntries[0]?.date;
-                    setSelectedDate(mostRecentAvailableDate);
-                } else {
-                    const entriesSnapshot = await getDocs(query(collection(firestore, user.uid, "Alcohol Stuff", "Entries")));
-                    let allEntriesData = [];
+        // const fetchAllEntries = async () => {
+        //     try {
+        //         const cachedData = await AsyncStorage.getItem('drinkTypesChartData');
+        //         if (cachedData) {
+        //             const parsedData = JSON.parse(cachedData);
+        //             setAllEntries(parsedData.allEntries);
+        //             setDrinkTypesData(parsedData.drinkTypesData);
+        //             // Attempt to set the picker to today's date, or to the most recent date available
+        //             const todayFormatted = moment().format('YYYY-MM-DD');
+        //             const mostRecentAvailableDate = parsedData.allEntries.find(entry => entry.date <= todayFormatted)?.date || parsedData.allEntries[0]?.date;
+        //             setSelectedDate(mostRecentAvailableDate);
+        //         } else {
+        //             const entriesSnapshot = await getDocs(query(collection(firestore, user.uid, "Alcohol Stuff", "Entries")));
+        //             let allEntriesData = [];
     
-                    for (const doc of entriesSnapshot.docs) {
-                        const dateStr = doc.id;
-                        const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
-                        const entriesSnapshot = await getDocs(entriesRef);
+        //             for (const doc of entriesSnapshot.docs) {
+        //                 const dateStr = doc.id;
+        //                 const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
+        //                 const entriesSnapshot = await getDocs(entriesRef);
     
-                        entriesSnapshot.forEach((entryDoc) => {
-                            const entry = entryDoc.data();
-                            entry.date = dateStr;
-                            allEntriesData.push(entry);
-                        });
-                    }
+        //                 entriesSnapshot.forEach((entryDoc) => {
+        //                     const entry = entryDoc.data();
+        //                     entry.date = dateStr;
+        //                     allEntriesData.push(entry);
+        //                 });
+        //             }
     
-                    // Sort all entries by date in descending order to have the most recent dates first
-                    allEntriesData = allEntriesData.sort((a, b) => moment(b.date).diff(moment(a.date)));
+        //             // Sort all entries by date in descending order to have the most recent dates first
+        //             allEntriesData = allEntriesData.sort((a, b) => moment(b.date).diff(moment(a.date)));
     
-                    setAllEntries(allEntriesData);
+        //             setAllEntries(allEntriesData);
     
-                    // Attempt to set the picker to today's date, or to the most recent date available
-                    const todayFormatted = moment().format('YYYY-MM-DD');
-                    const mostRecentAvailableDate = allEntriesData.find(entry => entry.date <= todayFormatted)?.date || allEntriesData[0]?.date;
-                    setSelectedDate(mostRecentAvailableDate);
+        //             // Attempt to set the picker to today's date, or to the most recent date available
+        //             const todayFormatted = moment().format('YYYY-MM-DD');
+        //             const mostRecentAvailableDate = allEntriesData.find(entry => entry.date <= todayFormatted)?.date || allEntriesData[0]?.date;
+        //             setSelectedDate(mostRecentAvailableDate);
     
-                    const drinkTypesCount = {};
-                    allEntriesData.forEach(entry => {
-                        const drinkType = entry.type;
-                        drinkTypesCount[drinkType] = (drinkTypesCount[drinkType] || 0) + 1;
-                    });
-                    setDrinkTypesData(Object.entries(drinkTypesCount));
+        //             const drinkTypesCount = {};
+        //             allEntriesData.forEach(entry => {
+        //                 const drinkType = entry.type;
+        //                 drinkTypesCount[drinkType] = (drinkTypesCount[drinkType] || 0) + 1;
+        //             });
+        //             setDrinkTypesData(Object.entries(drinkTypesCount));
     
-                    // Cache fetched data
-                    const dataToCache = {
-                        allEntries: allEntriesData,
-                        drinkTypesData: Object.entries(drinkTypesCount),
-                    };
-                    await AsyncStorage.setItem('drinkTypesChartData', JSON.stringify(dataToCache));
-                }
-            } catch (error) {
-                console.error('Error fetching all entries:', error);
-            }
-        };
+        //             // Cache fetched data
+        //             const dataToCache = {
+        //                 allEntries: allEntriesData,
+        //                 drinkTypesData: Object.entries(drinkTypesCount),
+        //             };
+        //             await AsyncStorage.setItem('drinkTypesChartData', JSON.stringify(dataToCache));
+        //         }
+        //     } catch (error) {
+        //         console.error('Error fetching all entries:', error);
+        //     }
+        // };
     
         fetchAllEntries();
     }, [firestore, user.uid]);
+
+    const fetchAllEntries = async () => {
+        try {
+            const cacheKey = `drinkTypesData_${user.uid}`;
+            const cachedData = await getCachedData(cacheKey);
+            
+            if (cachedData) {
+                setAllEntries(cachedData);
+                return;
+            }
+    
+            const entriesSnapshot = await getDocs(query(collection(firestore, user.uid, "Alcohol Stuff", "Entries")));
+            let allEntriesData = [];
+    
+            for (const doc of entriesSnapshot.docs) {
+                const dateStr = doc.id;
+                const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
+                const entriesSnapshot = await getDocs(entriesRef);
+    
+                entriesSnapshot.forEach((entryDoc) => {
+                    const entry = entryDoc.data();
+                    entry.date = dateStr;
+                    allEntriesData.push(entry);
+                });
+            }
+    
+            allEntriesData.sort((a, b) => moment(b.date).diff(moment(a.date))); // Sort by date descending
+            setAllEntries(allEntriesData);
+            await cacheData(cacheKey, allEntriesData); // Cache the fetched data
+        } catch (error) {
+            console.error('Error fetching all entries:', error);
+        }
+    };
+    
+
+    const cacheData = async (key, data) => {
+        try {
+            await AsyncStorage.setItem(key, JSON.stringify(data));
+        } catch (error) {
+            console.error('Error caching data:', error);
+        }
+    };
+    
+    const getCachedData = async (key) => {
+        try {
+            const cachedData = await AsyncStorage.getItem(key);
+            return cachedData ? JSON.parse(cachedData) : null;
+        } catch (error) {
+            console.error('Error retrieving cached data:', error);
+            return null;
+        }
+    };
 
     const filterDataByDate = (entries, date, date2 = '') => {
         setSelectedDate(date);
@@ -197,6 +249,12 @@ const DrinkTypeChart = () => {
             ) : (
                 <Text style={styles.noDataText}>No data available for this date.</Text> // Style this as needed
             )}
+            <TouchableOpacity onPress={() => fetchAllEntries(true)} style={styles.refreshButton}>
+                <Image
+                    source={require('../../../assets/images/refresh-icon.png')}
+                    style={styles.updateButtonImage} 
+                />
+            </TouchableOpacity>
         </View>
     );
 }

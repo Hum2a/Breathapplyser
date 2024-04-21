@@ -50,4 +50,14 @@ export const amountSpentStyles = StyleSheet.create({
     color: '#003366', // Dark blue for readability
     marginTop: 20,
   },
+  refreshButton: {
+    padding: 10,
+    margin: 10,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+  },
+  updateButtonImage: {
+    width: 30,
+    height: 30,
+  },
 });

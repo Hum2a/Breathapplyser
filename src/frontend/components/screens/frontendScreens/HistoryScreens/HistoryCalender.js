@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import { HistoryStyles as styles } from '../../../styles/HistoryStyles/historyStyles';
 import { UserContext } from '../../../../context/UserContext';
 import moment from 'moment';
 import { Calendar } from 'react-native-calendars';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import { appStyles } from '../../../styles/AppStyles/appStyles';
-import { BackButton } from '../../../buttons/backButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HistoryCalendar = ({ navigation }) => {
   const [dates, setDates] = useState([]); // Dates with entries
@@ -21,8 +21,25 @@ const HistoryCalendar = ({ navigation }) => {
     }
   }, [user]);
 
-  const fetchData = async () => {
+  const fetchData = async (forceRefresh = false) => {
     try {
+      if (!forceRefresh) {
+        // Attempt to load cached data first
+        const cachedData = await AsyncStorage.getItem('history_dates_cache');
+        if (cachedData) {
+          const parsedCache = JSON.parse(cachedData);
+          const cacheTime = new Date(parsedCache.timestamp);
+          const now = new Date();
+  
+          // Check if cache is less than 24 hours old
+          if (now.getTime() - cacheTime.getTime() < 24 * 60 * 60 * 1000) {
+            setDates(parsedCache.dates);
+            return; // Use cache and exit if it's still fresh
+          }
+        }
+      }
+  
+      // Fetch new data if no cache, cache is outdated, or force refresh is true
       const querySnapshot = await getDocs(collection(firestore, user.uid, "Alcohol Stuff", "Entries"));
       const datesWithDetails = querySnapshot.docs.map((doc) => {
         const dateStr = doc.id;
@@ -35,11 +52,20 @@ const HistoryCalendar = ({ navigation }) => {
           totalUnits: totalUnits ? totalUnits.toFixed(2) : '0.00'
         };
       });
+  
       setDates(datesWithDetails);
+  
+      // Update the cache with new data
+      await AsyncStorage.setItem('history_dates_cache', JSON.stringify({
+        timestamp: new Date().toISOString(),
+        dates: datesWithDetails
+      }));
+  
     } catch (error) {
-      console.error('Error fetching dates:', error);
+      console.error('Error fetching or caching dates:', error);
     }
   };
+  
 
   const fetchEntriesForDate = async (date) => {
     try {
@@ -60,7 +86,6 @@ const HistoryCalendar = ({ navigation }) => {
   return (
     <SafeAreaView style={appStyles.fullScreen}>
       <View style={styles.container}>
-        <BackButton />
         <Text style={styles.calendarTitle}>History Calendar</Text>
         <Calendar
           markedDates={{
@@ -96,6 +121,14 @@ const HistoryCalendar = ({ navigation }) => {
             textDayHeaderFontSize: 16 // Font size for day headers
           }}
         />
+        <TouchableOpacity 
+          style={styles.updateButton}
+          onPress={() => fetchData(true)} >
+          <Image
+            source={require('../../../../assets/images/refresh-icon.png')}
+            style={styles.updateButtonImage} 
+          />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

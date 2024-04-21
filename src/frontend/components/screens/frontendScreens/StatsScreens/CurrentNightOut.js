@@ -6,6 +6,7 @@ import { cnoStyles } from '../../../styles/StatsStyles/cnoStyles';
 import { BarChart, LineChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
 import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CurrentNightOutScreen = ({ navigation }) => {
   const [drinkTally, setDrinkTally] = useState({});
@@ -32,14 +33,29 @@ const CurrentNightOutScreen = ({ navigation }) => {
   const dateStr = new Date().toISOString().split('T')[0]; // Format the date as 'YYYY-MM-DD'
 
   const fetchAvailableDates = async () => {
-    const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries");
+    const CACHE_KEY = 'availableDates';
     try {
+      // Check if cache exists and is not older than 24 hours
+      const cachedData = await AsyncStorage.getItem(CACHE_KEY);
+      if (cachedData) {
+        const { dates, timestamp } = JSON.parse(cachedData);
+        if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
+          setAvailableDates(dates);
+          return;
+        }
+      }
+  
+      // Fetch data from Firestore
+      const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries");
       const snapshot = await getDocs(entriesRef);
-      const dates = snapshot.docs.map(doc => doc.id); // assuming the doc.id is the date
+      const dates = snapshot.docs.map(doc => doc.id);
       setAvailableDates(dates);
-      console.log(dates); // Log the dates for now
+  
+      // Cache the data
+      const dataToCache = { dates, timestamp: Date.now() };
+      await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(dataToCache));
     } catch (error) {
-      console.error("Error fetching available dates: ", error);
+      console.error("Error fetching or caching available dates: ", error);
     }
   };
 
@@ -207,20 +223,20 @@ const CurrentNightOutScreen = ({ navigation }) => {
 
   return (
     <ScrollView style={cnoStyles.container}>
-      <Text style={cnoStyles.title}>Night Out Summary</Text>
+      <Text style={cnoStyles.title}> Night Out Summary <Text style={{fontSize: 12}}> {selectedDateStr} </Text></Text>
       
       <View style={cnoStyles.statContainer}>
-        <Text style={cnoStyles.statText}>Total Drinks: {Object.values(drinkTally).reduce((sum, val) => sum + val, 0)}</Text>
+        <Text style={cnoStyles.statText}><Text style={{fontWeight: 'bold'}}>Total Drinks:</Text> {Object.values(drinkTally).reduce((sum, val) => sum + val, 0)}</Text>
         {Object.entries(drinkTally).map(([type, count]) => (
           <Text key={type} style={cnoStyles.statText}>{type}: {count}</Text>
         ))}
       </View>
       
       <View style={cnoStyles.statContainer}>
-        <Text style={cnoStyles.statText}>Total Spent: {totalSpent}</Text>
+        <Text style={cnoStyles.statText}><Text style={{fontWeight: 'bold'}}>Total Spent:</Text> {totalSpent}</Text>
         <Text style={cnoStyles.limitText}>Spending Limit: {spendingLimit}</Text>
-        <Text style={cnoStyles.statText}>Total Units: {totalUnits}</Text>
-        <Text style={cnoStyles.limitText}>Unit Limit: {unitLimit}</Text>
+        <Text style={cnoStyles.statText}><Text style={{fontWeight: 'bold'}}>Total Units:</Text> {totalUnits}</Text>
+        <Text style={cnoStyles.limitText}> Limit: {unitLimit}</Text>
       </View>
   
       <View style={cnoStyles.statContainer}>

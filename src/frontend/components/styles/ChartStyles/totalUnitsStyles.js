@@ -54,4 +54,14 @@ export const totalUnitsStyles = StyleSheet.create({
       textAlign: 'center',
       marginBottom: 10,
     },
+    refreshButton: {
+      padding: 10,
+      margin: 10,
+      backgroundColor: 'transparent',
+      alignItems: 'center',
+    },
+    updateButtonImage: {
+      width: 30,
+      height: 30,
+    },
   });

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, ScrollView, Dimensions, Image, SafeAreaView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert, Dimensions, Image, ScrollView } from 'react-native';
 import { favouriteStyles, dialogStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
 import { getFirestore, collection, getDocs, doc, deleteDoc, setDoc } from 'firebase/firestore';
 import moment from 'moment';
 import Svg, { Polygon } from 'react-native-svg';
 import Dialog from 'react-native-dialog';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FavouriteList = ({ user, navigation }) => {
   const [Favourites, setFavourites] = useState([]);
@@ -14,46 +15,42 @@ const FavouriteList = ({ user, navigation }) => {
   const [selectedFavouriteId, setSelectedFavouriteId] = useState(null);
 
   useEffect(() => {
-    const fetchFavourites = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(firestore, user.uid, "Alcohol Stuff", "Favourites"));
-        const FavouritesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setFavourites(FavouritesData);
-      } catch (error) {
-        console.error('Error fetching Favourites:', error);
-      }
-    };
-
-    if (user) {
-      fetchFavourites();
-    } else {
-      console.error('User is not authenticated.');
-    }
+    fetchFavourites();
   }, [user]);
 
-  // const handleDeleteFavourite = async (FavouriteId) => {
-  //   Alert.alert(
-  //     "Delete Favourite",
-  //     "Are you sure you want to delete this favourite?",
-  //     [
-  //       {
-  //         text: "Cancel",
-  //         style: "cancel"
-  //       },
-  //       { text: "Yes", onPress: async () => {
-  //           try {
-  //             await deleteDoc(doc(firestore, user.uid, "Alcohol Stuff", "Favourites", FavouriteId));
-  //             setFavourites(Favourites.filter(favourite => favourite.id !== FavouriteId));
-  //             Alert.alert('Deleted', 'The favourite has been successfully deleted.');
-  //           } catch (error) {
-  //             console.error('Error deleting favourite:', error);
-  //             Alert.alert('Error', 'Could not delete favourite.');
-  //           }
-  //         } 
-  //       }
-  //     ]
-  //   );
-  // };
+  const fetchFavourites = async (ignoreCache = false) => {
+    const cacheKey = `favourites_${user.uid}`;
+    if (!ignoreCache) {
+      const cachedData = await getCachedData(cacheKey);
+      if (cachedData) {
+        setFavourites(cachedData);
+        return;
+      }
+    }
+
+    try {
+      const querySnapshot = await getDocs(collection(firestore, user.uid, "Alcohol Stuff", "Favourites"));
+      const FavouritesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setFavourites(FavouritesData);
+      await AsyncStorage.setItem(cacheKey, JSON.stringify(FavouritesData));
+    } catch (error) {
+      console.error('Error fetching Favourites:', error);
+    }
+  };
+
+  const getCachedData = async (key) => {
+    try {
+      const jsonString = await AsyncStorage.getItem(key);
+      return jsonString != null ? JSON.parse(jsonString) : null;
+    } catch (error) {
+      console.error('Error retrieving data from cache:', error);
+      return null;
+    }
+  };
+
+  const refreshFavourites = () => {
+    fetchFavourites(true);
+  };
 
   const showDeleteDialog = (FavouriteId) => {
     setSelectedFavouriteId(FavouriteId);
@@ -150,7 +147,7 @@ const FavouriteList = ({ user, navigation }) => {
   
 
   return (
-    <View style={favouriteStyles.fullscreen}>
+    <ScrollView style={favouriteStyles.fullscreen}>
       <FlatList
         data={Favourites}
         renderItem={({ item }) => renderItem({ item, navigation })}
@@ -180,7 +177,13 @@ const FavouriteList = ({ user, navigation }) => {
         />
       </Dialog.Container>
 
-    </View>
+      <TouchableOpacity onPress={() => fetchAllEntries(true)} style={favouriteStyles.refreshButton}>
+          <Image
+              source={require('../../../../assets/images/refresh-icon.png')}
+              style={favouriteStyles.updateButtonImage} 
+          />
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
 

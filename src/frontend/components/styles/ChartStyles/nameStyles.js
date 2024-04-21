@@ -4,7 +4,6 @@ export const NameStyles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     padding: 20,
     borderRadius: 10,
     backgroundColor: 'transparent', // Consistent light blue background
@@ -50,5 +49,15 @@ export const NameStyles = StyleSheet.create({
     fontSize: 16,
     color: '#003366', // Dark blue for readability
     marginTop: 20,
+  },
+  refreshButton: {
+    padding: 10,
+    margin: 10,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+  },
+  updateButtonImage: {
+    width: 30,
+    height: 30,
   },
 });

@@ -102,6 +102,16 @@ export const DrunkStyles = StyleSheet.create({
     color: '#1565C0',
     alignSelf: 'center',
   },
+  refreshButton: {
+    padding: 10,
+    margin: 10,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+  },
+  updateButtonImage: {
+    width: 30,
+    height: 30,
+  },
 });
 
 export const DrunkScreenStyles = StyleSheet.create({

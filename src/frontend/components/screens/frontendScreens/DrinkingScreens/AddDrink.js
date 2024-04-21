@@ -5,7 +5,7 @@ import AutoEntryScreen from "./AutoDrink";
 import { drinkStyles as styles, manualStyles } from "../../../styles/DrinkingStyles/addStyles";
 import moment from "moment";
 import { UserContext } from "../../../../context/UserContext";
-import { getFirestore } from "@firebase/firestore";
+import { getFirestore, collection, getDoc, getDocs, doc } from "@firebase/firestore";
 
 const AddEntryScreen = ({ navigation }) => {
   const [isAuto, setIsAuto] = useState(true);

@@ -11,6 +11,7 @@ import CommonDrinksList from '../../../../../backend/app/data/commonDrinksList';
 import { saveDailyTotals } from '../../../../../backend/firebase/queries/saveDailyTotals';
 import CommonDrinks from './CommonDrinks';
 import RecentDrinks from './RecentDrinks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AutoEntryScreen = ({ navigation }) => {
     const drinkTypes = ['Spirit', 'Beer', 'Lager', 'Wine', 'Liquers', 'Cocktails'];
@@ -56,19 +57,45 @@ const AutoEntryScreen = ({ navigation }) => {
 
     const fetchLimits = async () => {
       if (user) {
-        const docRef = doc(getFirestore(), user.uid, "Limits");
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setLimits({
-            spendingLimit: data.spendingLimit || 0,
-            drinkingLimit: data.drinkingLimit || 0,
-            spendingLimitStrictness: data.spendingLimitStrictness || 'soft',
-            drinkingLimitStrictness: data.drinkingLimitStrictness || 'soft',
-          });
+        const cacheKey = `limits_${user.uid}`;
+        try {
+          // Try to get the cached limits
+          const cachedLimits = await AsyncStorage.getItem(cacheKey);
+          if (cachedLimits) {
+            const limits = JSON.parse(cachedLimits);
+            setLimits({
+              spendingLimit: limits.spendingLimit,
+              drinkingLimit: limits.drinkingLimit,
+              spendingLimitStrictness: limits.spendingLimitStrictness,
+              drinkingLimitStrictness: limits.drinkingLimitStrictness,
+            });
+            console.log('Loaded limits from cache');
+            return; // Exit the function as we've loaded the data
+          }
+    
+          // Fetch limits from Firestore if not in cache
+          const docRef = doc(getFirestore(), user.uid, "Limits");
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setLimits({
+              spendingLimit: data.spendingLimit || 0,
+              drinkingLimit: data.drinkingLimit || 0,
+              spendingLimitStrictness: data.spendingLimitStrictness || 'soft',
+              drinkingLimitStrictness: data.drinkingLimitStrictness || 'soft',
+            });
+            // Cache the fetched limits
+            await AsyncStorage.setItem(cacheKey, JSON.stringify(data));
+            console.log('Limits fetched from Firestore and cached');
+          } else {
+            console.log("No limits document found");
+          }
+        } catch (error) {
+          console.error('Error fetching or caching limits:', error);
         }
       }
     };
+    
 
     const handleDrinkTypeSelection = (type) => {
       if (selectedDrinkType === type) {

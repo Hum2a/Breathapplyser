@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, ScrollView, Switch } from 'react-native';
+import { View, Text, ScrollView, Switch, TouchableOpacity, Modal, Button } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../context/UserContext';
 import { cnoStyles } from '../../../styles/StatsStyles/cnoStyles';
 import { BarChart, LineChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
 import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CompareNightsOutScreen = ({ route }) => {
   const { date1, date2 } = route.params; // Receive the dates from navigation
@@ -32,43 +34,65 @@ const CompareNightsOutScreen = ({ route }) => {
 
   const [isCombinedView, setIsCombinedView] = useState(false);
 
+  const [isDate1ModalVisible, setDate1ModalVisible] = useState(false);
+  const [isDate2ModalVisible, setDate2ModalVisible] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date()); // Initialize selectedDate as a Date object
+  const [selectedDateField, setSelectedDateField] = useState(null); // To store which date field is currently being edited
+
+
   const firestore = getFirestore();
   const { user } = useContext(UserContext);
 
+  const CACHE_KEY_PREFIX = 'nightData_';
+
   const fetchDataForNight = async (dateStr, setDataFunction, setLoadingFunction) => {
     setLoadingFunction(true); // Start loading
-    const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
+    const cacheKey = `${CACHE_KEY_PREFIX}${dateStr}`;
+    
     try {
+      // Check if cache exists and is not older than 24 hours
+      const cachedData = await AsyncStorage.getItem(cacheKey);
+      if (cachedData) {
+        const { nightData, timestamp } = JSON.parse(cachedData);
+        if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
+          setDataFunction(nightData);
+          setLoadingFunction(false);
+          return;
+        }
+      }
+  
+      const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
       const entriesSnapshot = await getDocs(entriesRef);
       const entries = entriesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  
+      // Process fetched data
       let tempTotalSpent = 0;
       let tempTotalUnits = 0;
       let tempTotalBACIncrease = 0;
       let tempDrinkTally = {};
       let times = [];
-      let amounts = [];
       let cumulativeAmounts = [];
       let cumulativeAmount = 0;
       let cumulativeUnits = 0;
       let cumulativeUnitsData = [];
-
+  
       entries.forEach(entry => {
         tempTotalSpent += entry.price * entry.amount;
         tempTotalUnits += entry.units;
         tempTotalBACIncrease += entry.BACIncrease;
         cumulativeAmount += entry.price * entry.amount;
         cumulativeUnits += entry.units;
-
-        const entryTime = moment(entry.startTime).format('HH:mm'); // Format time
-        times.push(entryTime); // Use formatted start time for x-axis
-        cumulativeAmounts.push(cumulativeAmount); // Use cumulative amount for y-axis
-        cumulativeUnitsData.push(cumulativeUnits); // Use cumulative units for y-axis
-
+  
+        const entryTime = moment(entry.startTime).format('HH:mm');
+        times.push(entryTime);
+        cumulativeAmounts.push(cumulativeAmount);
+        cumulativeUnitsData.push(cumulativeUnits);
+  
         const drinkType = entry.type;
         tempDrinkTally[drinkType] = (tempDrinkTally[drinkType] || 0) + 1;
       });
-
-      setDataFunction({
+  
+      const nightData = {
         drinkTally: tempDrinkTally,
         totalSpent: tempTotalSpent,
         totalUnits: tempTotalUnits,
@@ -81,13 +105,20 @@ const CompareNightsOutScreen = ({ route }) => {
           labels: times,
           datasets: [{ data: cumulativeUnitsData }],
         },
-      });
-      setLoadingFunction(false); // Done loading
+      };
+  
+      setDataFunction(nightData);
+      setLoadingFunction(false);
+  
+      // Cache the data
+      const dataToCache = { nightData, timestamp: Date.now() };
+      await AsyncStorage.setItem(cacheKey, JSON.stringify(dataToCache));
     } catch (error) {
-      console.error("Error fetching data for night: ", dateStr, error);
+      console.error("Error fetching or caching data for night: ", dateStr, error);
       setLoadingFunction(false);
     }
   };
+  
 
   const mergeChartData = (firstData, secondData) => {
     // Assuming both data sets have the same labels
@@ -106,6 +137,37 @@ const CompareNightsOutScreen = ({ route }) => {
       fetchDataForNight(moment(date2).format('YYYY-MM-DD'), setSecondNightData, setIsLoadingSecondNight);
     }
   }, [user, date1, date2]);
+
+  // Function to show the modal for selecting date1
+  const showDate1Modal = () => {
+    setDate1ModalVisible(true);
+    setSelectedDate(date1);
+    setSelectedDateField('date1');
+  };
+
+  // Function to show the modal for selecting date2
+  const showDate2Modal = () => {
+    setDate2ModalVisible(true);
+    setSelectedDate(date2);
+    setSelectedDateField('date2');
+  };
+
+  // Function to hide both modals
+  const hideModals = () => {
+    setDate1ModalVisible(false);
+    setDate2ModalVisible(false);
+  };
+
+  // Function to handle date selection in the modal
+  const handleDateSelect = (selectedDate) => {
+    if (selectedDateField === 'date1') {
+      setDate1(selectedDate);
+    } else if (selectedDateField === 'date2') {
+      setDate2(selectedDate);
+    }
+    hideModals();
+  };
+
 
   // Chart configuration
   const screenWidth = Dimensions.get('window').width;
@@ -144,9 +206,44 @@ const CompareNightsOutScreen = ({ route }) => {
           <Text style={cnoStyles.title}>Night Comparison</Text>
     
           <View style={cnoStyles.subHeaderContainer}>
-            <Text style={cnoStyles.subHeaderText}>{moment(date1).format('LL')}</Text>
-            <Text style={cnoStyles.subHeaderText}>{moment(date2).format('LL')}</Text>
+            <TouchableOpacity onPress={showDate1Modal}>
+              <Text style={cnoStyles.subHeaderText}>{moment(date1).format('LL')}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={showDate2Modal}>
+              <Text style={cnoStyles.subHeaderText}>{moment(date2).format('LL')}</Text>
+            </TouchableOpacity>
           </View>
+
+          {/* Modal for selecting date1 */}
+          <Modal visible={isDate1ModalVisible} animationType="slide">
+            <View style={cnoStyles.modalContainer}>
+              <DateTimePicker
+                value={selectedDate || new Date()}
+                mode="date"
+                display="default"
+                onChange={(event, date) => setSelectedDate(date)}
+              />
+              <Button title="Confirm" onPress={() => handleDateSelect(selectedDate)} />
+              <Button title="Cancel" onPress={hideModals} />
+            </View>
+          </Modal>
+
+          {/* Modal for selecting date2 */}
+          <Modal visible={isDate2ModalVisible} animationType="slide">
+            <View style={cnoStyles.modalContainer}>
+              <DateTimePicker
+                value={selectedDate || new Date()}
+                mode="date"
+                display="default"
+                onChange={(event, date) => setSelectedDate(date)}
+              />
+              <Button title="Confirm" onPress={() => handleDateSelect(selectedDate)} />
+              <Button title="Cancel" onPress={hideModals} />
+            </View>
+          </Modal>
+
+
     
           <View style={cnoStyles.dataRow}>
             <Text style={cnoStyles.dataText}>{Object.values(firstNightData.drinkTally).reduce((sum, val) => sum + val, 0)}</Text>
