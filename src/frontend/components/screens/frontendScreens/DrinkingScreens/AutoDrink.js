@@ -293,11 +293,11 @@ const AutoEntryScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* <Text style={styles.title}>Common Drinks</Text> */}
-      <View style={addStyles.statsContainer}>
+      {/* <View style={addStyles.statsContainer}>
           <Text style={addStyles.statText}>Total Drinks: {totalDrinks}</Text>
           <Text style={addStyles.statText}>Units: {totalUnits}</Text>
           <Text style={addStyles.statText}>Spending: £{totalSpending}</Text>
-        </View>
+        </View> */}
       <View style={styles.buttonContainer}>
         {drinkTypes.map((type, index) => (
           <TouchableOpacity

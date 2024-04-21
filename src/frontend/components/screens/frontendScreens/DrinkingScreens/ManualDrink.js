@@ -434,11 +434,11 @@ const ManualEntryScreen = ({ navigation }) => {
     <ScrollView contentContainerStyle={addStyles.scrollContainer}>
       <Animated.View style={containerStyle}>
   
-        <View style={addStyles.statsContainer}>
+        {/* <View style={addStyles.statsContainer}>
           <Text style={addStyles.statText}>Total Drinks: {totalDrinks}</Text>
           <Text style={addStyles.statText}>Units: {totalUnits}</Text>
           <Text style={addStyles.statText}>Spending: £{totalSpending}</Text>
-        </View>
+        </View> */}
         
         <AlcoholInput value={alcohol} onChangeText={setAlcohol} />
         <>
