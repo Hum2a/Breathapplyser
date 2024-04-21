@@ -186,15 +186,53 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
     }
   }, [user, selectedDateStr]); // Depend on user and dateStr to refetch data when they change
 
-    //Bar Chart
-    const barchartConfig = {
-        backgroundGradientFrom: '#1E2923',
-        backgroundGradientTo: '#08130D',
-        color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-        barPercentage: 0.5,
-    };
+  const baseChartConfig = {
+    backgroundColor: '#92DDFE', // Light blue background
+    backgroundGradientFrom: '#92DDFE',
+    backgroundGradientTo: '#92DDFE',
+    decimalPlaces: 2, // Number of decimal places on values
+    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // White for contrast
+    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // White labels for clarity
+    style: {
+      borderRadius: 8,
+    },
+    propsForDots: {
+      r: '6',
+      strokeWidth: '2',
+      stroke: '#FFFFFF', // White for dot borders
+    },
+    propsForBackgroundLines: {
+      strokeDasharray: '', // Solid background lines for a clean look
+      strokeWidth: 1,
+      stroke: '#B0E0E6', // Powder blue for subtle grid lines
+    },
+    propsForLabels: {
+      fontSize: 12, // Adequate size for readability
+    }
+  };
+
+  const barChartConfig = {
+    ...baseChartConfig,
+    barPercentage: 0.6, // Slightly wider bars for better visibility
+    barRadius: 4,       // Rounded corners for bars
+    fillShadowGradient: '#5DADE2', // Gradient start - darker shade of light blue
+    fillShadowGradientTo: '#3498DB', // Gradient end - deep sky blue
+    fillShadowGradientOpacity: 1,
+  };
+
+  const lineChartConfig = {
+    ...baseChartConfig,
+    bezier: true, // Enable bezier curves for smoother lines
+    fillShadowGradient: '#5DADE2', // Start of gradient - cornflower blue
+    fillShadowGradientOpacity: 0.5, // Light opacity for a subtle underfill
+    fillShadowGradientTo: '#3498DB', // End of gradient - deep sky blue
+  };
+
+
     
     const screenWidth = Dimensions.get('window').width;
+    const containerPadding = 16; // Assuming there's a 16px padding on both sides
+    const chartWidth = screenWidth - (containerPadding * 4); 
     const drinkTypes = Object.keys(drinkTally);
     const drinkCounts = Object.values(drinkTally);
     
@@ -203,24 +241,6 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
         datasets: [{
         data: drinkCounts
         }]
-    };
-
-    // Line Chart
-    const linechartConfig = {
-        backgroundColor: '#ffffff',
-        backgroundGradientFrom: '#01BCC2', // Light blue
-        backgroundGradientTo: '#B2DFEE', // Lighter shade of blue
-        decimalPlaces: 2, // optional, defaults to 2dp
-        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-        style: {
-        borderRadius: 16,
-        },
-        propsForDots: {
-        r: '6',
-        strokeWidth: '2',
-        stroke: '#ffa726',
-        },
     };
 
 
@@ -258,10 +278,10 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
         <Text style={cnoStyles.chartTitle}>Drinks Tally</Text>
         <BarChart
             data={data}
-            width={screenWidth}
+            width={chartWidth}
             height={220}
             yAxisLabel=""
-            chartConfig={barchartConfig}
+            chartConfig={barChartConfig}
             verticalLabelRotation={0}
             fromZero={true}
             yAxisInterval={1} 
@@ -274,9 +294,9 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
           <Text style={cnoStyles.chartTitle}>Cumulative Amount Spent Over Time</Text>
           <LineChart
             data={lineChartData}
-            width={Dimensions.get('window').width - 16}
+            width={chartWidth}
             height={220}
-            chartConfig={linechartConfig}
+            chartConfig={lineChartConfig}
             fromZero={true}
             yAxisInterval={1} 
             bezier
@@ -290,9 +310,9 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
           <Text style={cnoStyles.chartTitle}>Cumulative Units Over Time</Text>
           <LineChart
             data={unitsChartData}
-            width={Dimensions.get('window').width - 16}
+            width={chartWidth}
             height={220}
-            chartConfig={linechartConfig}
+            chartConfig={lineChartConfig}
             fromZero={true}
             yAxisInterval={1} 
             bezier

@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 
+
 export const cnoStyles = StyleSheet.create({
   container: {
     flex: 1,
