@@ -8,7 +8,10 @@ import { Dimensions } from 'react-native';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const CurrentNightOutScreen = ({ navigation }) => {
+const CurrentNightOutScreen = ({ route, navigation }) => {
+  const currentDateString = new Date().toISOString().split('T')[0]; // Format current date as 'YYYY-MM-DD'
+  const passedDate = route.params?.date; // Optionally passed date from navigation
+  const [selectedDateStr, setSelectedDateStr] = useState(passedDate || currentDateString);
   const [drinkTally, setDrinkTally] = useState({});
   const [totalSpent, setTotalSpent] = useState(0);
   const [totalUnits, setTotalUnits] = useState(0);
@@ -26,7 +29,7 @@ const CurrentNightOutScreen = ({ navigation }) => {
   });
   const [modalVisible, setModalVisible] = useState(false);
   const [availableDates, setAvailableDates] = useState([]);
-  const [selectedDateStr, setSelectedDateStr] = useState(new Date().toISOString().split('T')[0]);
+  // const [selectedDateStr, setSelectedDateStr] = useState(new Date().toISOString().split('T')[0]);
   const [isComparing, setIsComparing] = useState(false);
   const firestore = getFirestore();
   const { user } = useContext(UserContext);

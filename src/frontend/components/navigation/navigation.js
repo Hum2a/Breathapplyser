@@ -47,7 +47,7 @@ import {
   DrunkParametersScreen,
   BACRefreshRateScreen,
   LifeTimeStatsScreen,
-  VisualDetailedHistoryScreen
+  VisualDetailedHistoryScreen,
 } from '../screens/ScreensIndex';
 
 const Stack = createNativeStackNavigator();

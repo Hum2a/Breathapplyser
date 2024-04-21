@@ -10,9 +10,10 @@ export const DetailedHistoryStyles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginVertical: 2,
+    marginVertical: 20,
     color: '#003366', // Deep blue for a striking contrast
     textAlign: 'center',
+    top: 10,
   },
   entryItem: {
     backgroundColor: '#E1F5FE', // Adjust as needed
@@ -73,69 +74,35 @@ export const DetailedHistoryStyles = StyleSheet.create({
     // Add some margin for a better layout
     marginBottom: 5,
   },
-  // In your DetailedHistoryStyles.js or wherever you define your styles
-  pieButtonContainer: {
-    position: 'relative', // Ensures the button can be absolutely positioned within
-    height: 30, // Ensure this is enough space for the button
-    width: '100%', // Or adjust to fit your layout
-    alignItems: 'flex-end', // Aligns children to the right
-    justifyContent: 'flex-start', // Aligns children to the top
-},
-  visualizeButton: {
-    position: 'absolute',
-    right: 10, // Adjust according to your layout
-    top: 10, // Adjust according to your layout
-    width: 34, // Define a proper size for the button
-    height: 34, // Define a proper size for the button
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 25, // Half of width/height to make it round
-    backgroundColor: '#81D4FA',
-    elevation: 4, // Add shadow for Android
-    shadowColor: "#000", // Shadow for iOS
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  visualizeButtonImage: {
-    width: 24, // Set the width of the image
-    height: 24, // Set the height of the image
-    resizeMode: 'contain', // Make sure the image fits within the button
-  },
-  refreshButtonContainer: {
-    position: 'relative', // Ensures the button can be absolutely positioned within
-    bottom: 12,
-    right: 60,
-    width: '100%', // Or adjust to fit your layout
-    alignItems: 'flex-end', // Aligns children to the right
-    justifyContent: 'flex-start', // Aligns children to the top
-},
-  updateButton: {
-    position: 'position',
-    right: 10, // Adjust according to your layout
-    top: 10, // Adjust according to your layout
-    width: 34, // Define a proper size for the button
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 25, // Half of width/height to make it round
-    backgroundColor: '#81D4FA',
-    elevation: 4, // Add shadow for Android
-    shadowColor: "#000", // Shadow for iOS
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
 
-  updateButtonImage: {
-    width: 24, // Set the width of the image
-    height: 24, // Set the height of the image
-    resizeMode: 'contain', // Make sure the image fits within the button
-  },
+  buttonContainer: {
+    position: 'absolute', 
+    top: 10,
+    right: 10,
+    flexDirection: 'row', // This arranges the buttons in a row
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: 120, // Adjust this width based on your button sizing and spacing needs
+},
+
+button: {
+    width: 34, 
+    height: 34, 
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 17, // Half of width/height to make it round
+    backgroundColor: '#81D4FA',
+    elevation: 4, // Shadow for Android
+    shadowColor: "#000", // Shadow for iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+},
+
+buttonImage: {
+    width: 24, 
+    height: 24,
+    resizeMode: 'contain', // Ensures the image fits within the button
+},
 
 });

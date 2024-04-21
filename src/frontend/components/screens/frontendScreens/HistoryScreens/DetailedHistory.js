@@ -212,32 +212,39 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
   };
 
   const handleNavigateToVisualData = () =>{
+    console.log('date passed: ', moment(date).format('YYYY-MM-DD'));
     navigation.navigate('VisualDetailedHistory', { date })
   }
+
+  const handleNavigateToNightOut = () => {
+    console.log('date passed: ', moment(date).format('YYYY-MM-DD'));
+    navigation.navigate('CurrentNight', { date: moment(date).format('YYYY-MM-DD') })
+  }  
 
   return (
     <View style={styles.container}>
       <BackButton />
-       <View style={styles.pieButtonContainer}>
-        <TouchableOpacity
-          style={styles.visualizeButton}
-          onPress={handleNavigateToVisualData}>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={handleNavigateToVisualData}>
           <Image
             source={require('../../../../assets/images/pie.png')}
-            style={styles.visualizeButtonImage} 
+            style={styles.buttonImage} 
           />
         </TouchableOpacity>
-        </View>
-        <View style={styles.refreshButtonContainer}>
-        <TouchableOpacity 
-          styles={styles.updateButton}
-          onPress={() => fetchEntries(true)} >
+        <TouchableOpacity style={styles.button} onPress={() => fetchEntries(true)}>
           <Image
             source={require('../../../../assets/images/refresh-icon.png')}
-            style={styles.updateButtonImage} 
+            style={styles.buttonImage} 
           />
-          </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleNavigateToNightOut}>
+          <Image
+            source={require('../../../../assets/images/discoball.png')}
+            style={styles.buttonImage} 
+          />
+        </TouchableOpacity>
+      </View>
+
       <Text style={styles.title}>{date}</Text>
       <FlatList
         data={entries}
