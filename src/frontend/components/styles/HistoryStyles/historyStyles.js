@@ -26,6 +26,7 @@ export const HistoryStyles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#E9FAA6',
     borderRadius: 10,
+    overflow: 'hidden',
     // iOS shadow properties
     shadowColor: '#000', // Black color for the shadow
     shadowOffset: { width: 0, height: 2 }, // Shadow position
@@ -68,19 +69,21 @@ export const HistoryStyles = StyleSheet.create({
   },
   backgroundTextContainer: {
     ...StyleSheet.absoluteFillObject, // Make the text overlay the entire item
-    transform: [{ rotate: '-40deg' }], // Rotate the container
     position: 'absolute',
     left: 0, // Align to the left side
-    top: -35,
     justifyContent: 'flex-start', // Center vertically
     alignItems: 'flex-start', // Align text to the start (left)
-  },
+},
+
   backgroundText: {
     fontSize: 68, // Large text size
     color: 'rgba(0, 0, 255, 0.2)', // Semi-transparent white
+    transform: [{ rotate: '-40deg' }], // Rotate the container
     fontWeight: 'bold',
     textAlign: 'center',
-    zIndex: 1
+    zIndex: 1,
+    overflow: 'hidden', // Hide any part of the text that overflows the container
+
   },
   itemContent: {
     flex: 1, // Take available space
