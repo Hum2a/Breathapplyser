@@ -16,6 +16,14 @@ export const cnoStyles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#0077B6', // A brighter shade of blue for the underline
   },
+  dateText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#003366', // Dark blue for better contrast and readability
+    textAlign: 'center',
+    marginLeft: 10,
+    marginTop: 5,
+  },
   statContainer: {
     backgroundColor: '#92DDFE', // A softer, lighter blue for containers
     marginVertical: 8,
@@ -72,18 +80,25 @@ export const cnoStyles = StyleSheet.create({
     marginBottom: 10,
   },
   button: {
-    backgroundColor: '#007AFF', // Consistent theme blue
+    backgroundColor: '#FF6347', // Tomato red
     paddingVertical: 12,
     paddingHorizontal: 20,
-    borderRadius: 5,
+    borderRadius: 25, // Increased border radius for a rounder look
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    // Add some gradient effect
+    backgroundImage: 'linear-gradient(45deg, #FFA07A, #FF6347)', // Gradient from light coral to tomato
+    // Add some extra styles for text inside the button
+    color: 'white', // Text color
+    fontSize: 16,
+    fontWeight: 'bold',
+    textTransform: 'uppercase', // Uppercase text
   },
   buttonText: {
     color: 'white',
@@ -111,18 +126,57 @@ export const cnoStyles = StyleSheet.create({
     backgroundColor: '#92DDFE', // Soft light blue for modal background
     borderRadius: 20,
     padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
+    alignItems: 'center',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 4,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
   },
-  buttonClose: {
-    backgroundColor: "#2196F3", // Slightly different shade of blue for the close button
+  modalItemContainer: {
+    backgroundColor: '#D4E6F1', // Light blue for modal item background
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    marginVertical: 10,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  modalItemText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#003366', // Dark blue for readability
+  },
+  closeButton: {
+    backgroundColor: '#FF6347', // Tomato red
+    borderRadius: 25, // Increased border radius for a rounder look
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  closeButtonText: {
+    color: 'white', // Text color
+    fontSize: 16,
+    fontWeight: 'bold',
+    textTransform: 'uppercase', // Uppercase text
   },
   textStyle: {
     color: "white",
@@ -198,3 +252,23 @@ export const cnoStyles = StyleSheet.create({
     // Add shadow or border if needed to match your design preference
   },  
 });
+
+// Styles for the FlatList and available dates
+export const flatListStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  dateItem: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  dateText: {
+    fontSize: 18,
+    color: '#333',
+  },
+});
+

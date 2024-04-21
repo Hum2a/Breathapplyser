@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, ScrollView, Switch, TouchableOpacity, Modal, Button } from 'react-native';
+import { View, Text, ScrollView, Switch, TouchableOpacity, Modal, Button, FlatList } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../context/UserContext';
-import { cnoStyles } from '../../../styles/StatsStyles/cnoStyles';
+import { cnoStyles, flatListStyles } from '../../../styles/StatsStyles/cnoStyles';
 import { BarChart, LineChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CompareNightsOutScreen = ({ route }) => {
-  const { date1, date2 } = route.params; // Receive the dates from navigation
+  const { date1: initialDate1, date2: initialDate2 } = route.params;
+  const [date1, setDate1] = useState(initialDate1);
+  const [date2, setDate2] = useState(initialDate2);
+  const [availableDates, setAvailableDates] = useState([]);
   const [firstNightData, setFirstNightData] = useState({
     drinkTally: {},
     totalSpent: 0,
@@ -44,6 +47,29 @@ const CompareNightsOutScreen = ({ route }) => {
   const { user } = useContext(UserContext);
 
   const CACHE_KEY_PREFIX = 'nightData_';
+
+  useEffect(() => {
+    const fetchAvailableDates = async () => {
+      const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries");
+      try {
+        const snapshot = await getDocs(entriesRef);
+        const dates = snapshot.docs.map(doc => doc.id); // assuming the doc.id is the date
+        setAvailableDates(dates);
+      } catch (error) {
+        console.error("Error fetching available dates: ", error);
+      }
+    };
+
+    fetchAvailableDates();
+  }, [user]);
+
+  const renderDateItem = ({ item }) => {
+    return (
+      <TouchableOpacity onPress={() => handleDatePress(item, selectedDateField)}>
+        <Text>{moment(item, 'YYYY MM DD').format('LL')}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   const fetchDataForNight = async (dateStr, setDataFunction, setLoadingFunction) => {
     setLoadingFunction(true); // Start loading
@@ -138,13 +164,22 @@ const CompareNightsOutScreen = ({ route }) => {
     }
   }, [user, date1, date2]);
 
+  const handleDateSelect = (selectedDate, dateField) => {
+    if (dateField === 'date1') {
+      setDate1(selectedDate);
+    } else if (dateField === 'date2') {
+      setDate2(selectedDate);
+    }
+    hideModals();
+  };
+  
   // Function to show the modal for selecting date1
   const showDate1Modal = () => {
     setDate1ModalVisible(true);
     setSelectedDate(date1);
     setSelectedDateField('date1');
   };
-
+  
   // Function to show the modal for selecting date2
   const showDate2Modal = () => {
     setDate2ModalVisible(true);
@@ -158,15 +193,6 @@ const CompareNightsOutScreen = ({ route }) => {
     setDate2ModalVisible(false);
   };
 
-  // Function to handle date selection in the modal
-  const handleDateSelect = (selectedDate) => {
-    if (selectedDateField === 'date1') {
-      setDate1(selectedDate);
-    } else if (selectedDateField === 'date2') {
-      setDate2(selectedDate);
-    }
-    hideModals();
-  };
 
 
   // Chart configuration
@@ -215,31 +241,39 @@ const CompareNightsOutScreen = ({ route }) => {
             </TouchableOpacity>
           </View>
 
-          {/* Modal for selecting date1 */}
           <Modal visible={isDate1ModalVisible} animationType="slide">
             <View style={cnoStyles.modalContainer}>
-              <DateTimePicker
-                value={selectedDate || new Date()}
-                mode="date"
-                display="default"
-                onChange={(event, date) => setSelectedDate(date)}
+              <ScrollView>
+              <FlatList
+                style={flatListStyles.container}
+                data={availableDates}
+                renderItem={({ item }) => (
+                  <TouchableOpacity style={flatListStyles.dateItem} onPress={() => handleDateSelect(item, 'date1')}>
+                    <Text style={flatListStyles.dateText}>{moment(item, 'YYYY MM DD').format('LL')}</Text>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={(item, index) => index.toString()}
               />
-              <Button title="Confirm" onPress={() => handleDateSelect(selectedDate)} />
+              </ScrollView>
+              <Button title="Confirm" onPress={() => handleDateSelect(selectedDate, 'date1')} />
               <Button title="Cancel" onPress={hideModals} />
             </View>
           </Modal>
 
-          {/* Modal for selecting date2 */}
           <Modal visible={isDate2ModalVisible} animationType="slide">
             <View style={cnoStyles.modalContainer}>
-              <DateTimePicker
-                value={selectedDate || new Date()}
-                mode="date"
-                display="default"
-                onChange={(event, date) => setSelectedDate(date)}
+              <ScrollView>
+              <FlatList
+                style={flatListStyles.container}
+                data={availableDates}
+                renderItem={({ item }) => (
+                  <TouchableOpacity style={flatListStyles.dateItem} onPress={() => handleDateSelect(item, 'date2')}>
+                    <Text style={flatListStyles.dateText}>{moment(item, 'YYYY MM DD').format('LL')}</Text>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={(item, index) => index.toString()}
               />
-              <Button title="Confirm" onPress={() => handleDateSelect(selectedDate)} />
-              <Button title="Cancel" onPress={hideModals} />
+              </ScrollView>
             </View>
           </Modal>
 
@@ -325,7 +359,29 @@ const CompareNightsOutScreen = ({ route }) => {
       {/* Render Seperare Views */}
       {/* Render first night's data */}
       <View style={cnoStyles.statContainer}>
-        <Text style={cnoStyles.title}>Night 1: {moment(date1).format('LL')}</Text>
+        <TouchableOpacity onPress={showDate1Modal}>
+          <Text style={cnoStyles.title}>Night 1: {moment(date1).format('LL')}</Text>
+        </TouchableOpacity>
+
+        <Modal visible={isDate1ModalVisible} animationType="slide">
+            <View style={cnoStyles.modalContainer}>
+              <ScrollView>
+              <FlatList
+                style={flatListStyles.container}
+                data={availableDates}
+                renderItem={({ item }) => (
+                  <TouchableOpacity style={flatListStyles.dateItem} onPress={() => handleDateSelect(item, 'date1')}>
+                    <Text style={flatListStyles.dateText}>{moment(item, 'YYYY MM DD').format('LL')}</Text>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+              />
+              </ScrollView>
+              <Button title="Confirm" onPress={() => handleDateSelect(selectedDate, 'date1')} />
+              <Button title="Cancel" onPress={hideModals} />
+            </View>
+          </Modal>
+
         <View>
             <Text style={cnoStyles.statText}>Total Drinks: {Object.values(firstNightData.drinkTally).reduce((sum, val) => sum + val, 0)}</Text>
             <Text style={cnoStyles.statText}>Total Spent: {firstNightData.totalSpent}</Text>
@@ -371,7 +427,28 @@ const CompareNightsOutScreen = ({ route }) => {
 
       {/* Render second night's data */}
       <View style={cnoStyles.statContainer}>
-        <Text style={cnoStyles.title}>Night 2: {moment(date2).format('LL')}</Text>
+        <TouchableOpacity onPress={showDate2Modal}>
+          <Text style={cnoStyles.title}>Night 2: {moment(date2).format('LL')}</Text>
+        </TouchableOpacity>
+
+        
+          <Modal visible={isDate2ModalVisible} animationType="slide">
+            <View style={cnoStyles.modalContainer}>
+              <ScrollView>
+              <FlatList
+                style={flatListStyles.container}
+                data={availableDates}
+                renderItem={({ item }) => (
+                  <TouchableOpacity style={flatListStyles.dateItem} onPress={() => handleDateSelect(item, 'date2')}>
+                    <Text style={flatListStyles.dateText}>{moment(item, 'YYYY MM DD').format('LL')}</Text>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+              />
+              </ScrollView>
+            </View>
+          </Modal>
+
         <View>
             <Text style={cnoStyles.statText}>Total Drinks: {Object.values(secondNightData.drinkTally).reduce((sum, val) => sum + val, 0)}</Text>
             <Text style={cnoStyles.statText}>Total Spent: {secondNightData.totalSpent}</Text>
@@ -412,8 +489,8 @@ const CompareNightsOutScreen = ({ route }) => {
                 />
             </>
             )}
-      </View>
-      </View>
+          </View>
+        </View>
       </>
       )}
     </ScrollView>

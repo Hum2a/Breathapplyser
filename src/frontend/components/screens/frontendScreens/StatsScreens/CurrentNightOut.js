@@ -72,9 +72,9 @@ const CurrentNightOutScreen = ({ navigation }) => {
                     setSelectedDateStr(item);
                 }
             }}
-            style={cnoStyles.dateItem}
+            style={cnoStyles.modalItemContainer}
         >
-            <Text style={cnoStyles.dateItemText}>{moment(item).format('LL')}</Text>
+            <Text style={cnoStyles.modalItemText}>{moment(item).format('LL')}</Text>
         </TouchableOpacity>
     );
 };
@@ -223,7 +223,14 @@ const CurrentNightOutScreen = ({ navigation }) => {
 
   return (
     <ScrollView style={cnoStyles.container}>
-      <Text style={cnoStyles.title}> Night Out Summary <Text style={{fontSize: 12}}> {selectedDateStr} </Text></Text>
+      <Text style={cnoStyles.title}>
+        Night Out Summary 
+          <TouchableOpacity onPress={handleClick}>
+            <Text style={cnoStyles.dateText}> 
+              {selectedDateStr} 
+            </Text>
+        </TouchableOpacity>
+      </Text>
       
       <View style={cnoStyles.statContainer}>
         <Text style={cnoStyles.statText}><Text style={{fontWeight: 'bold'}}>Total Drinks:</Text> {Object.values(drinkTally).reduce((sum, val) => sum + val, 0)}</Text>
@@ -312,19 +319,19 @@ const CurrentNightOutScreen = ({ navigation }) => {
             }}
         >
             <View style={cnoStyles.centeredView}>
-            <View style={cnoStyles.modalView}>
-            <FlatList
-                data={availableDates}
-                renderItem={renderDateItem}
-                keyExtractor={item => item}
-                />
-                <TouchableOpacity
-                style={[cnoStyles.button, cnoStyles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}
-                >
-                <Text style={cnoStyles.textStyle}>Close</Text>
-                </TouchableOpacity>
-            </View>
+              <View style={cnoStyles.modalView}>
+                <FlatList
+                    data={availableDates}
+                    renderItem={renderDateItem}
+                    keyExtractor={item => item}
+                    />
+                    <TouchableOpacity
+                      style={cnoStyles.closeButton}
+                      onPress={() => setModalVisible(!modalVisible)}
+                      >
+                      <Text style={cnoStyles.closeButtonText}>Close</Text>
+                    </TouchableOpacity>
+              </View>
             </View>
         </Modal>
     </ScrollView>
