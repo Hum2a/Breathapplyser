@@ -9,6 +9,7 @@ import BACDecrease from '../../../../backend/app/background/BAC/bacDecreaser';
 import BACDecreaseFB from '../../../../backend/app/background/BAC/bacDecreaserFB';
 import DrunkennessLevelFb from '../../../../backend/app/background/Drunkness/drunknessCalculatorFb';
 import BacWiper from '../../../../backend/app/background/BAC/bacWiper';
+import BacCleaner from '../../../../backend/app/background/BAC/bacCleaner';
 import { getFirestore, deleteDoc, doc, collection, query, getDocs, getDoc } from 'firebase/firestore';
 import { UserContext } from '../../../context/UserContext';
 import RecentDrinks from './DrinkingScreens/RecentDrinks';
@@ -181,6 +182,7 @@ const HomeScreen = () => {
             style={homeStyles.smallIcon}
           />
         </TouchableOpacity>
+        
 
         <TouchableWithoutFeedback onPressIn={() => setPlayStarAnimation(true)} onPressOut={() => { setPlayStarAnimation(false); NavigateToFavourites(); }}>
             <View style={homeStyles.starContainer}>
@@ -208,6 +210,7 @@ const HomeScreen = () => {
             style={homeStyles.smallIcon}
           />
         </TouchableOpacity>
+        
 
       </View>
 
