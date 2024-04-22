@@ -4,7 +4,6 @@ import { HistoryStyles as styles } from '../../../styles/HistoryStyles/historySt
 import { UserContext } from '../../../../context/UserContext';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import moment from 'moment';
-import { homeStyles } from '../../../styles/StartUpStyles/homeStyles';
 import { appStyles } from '../../../styles/AppStyles/appStyles';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';

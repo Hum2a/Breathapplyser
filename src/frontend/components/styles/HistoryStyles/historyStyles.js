@@ -70,7 +70,7 @@ export const HistoryStyles = StyleSheet.create({
   backgroundTextContainer: {
     ...StyleSheet.absoluteFillObject, // Make the text overlay the entire item
     position: 'absolute',
-    left: 0, // Align to the left side
+    left: -10, // Align to the left side
     justifyContent: 'flex-start', // Center vertically
     alignItems: 'flex-start', // Align text to the start (left)
 },
