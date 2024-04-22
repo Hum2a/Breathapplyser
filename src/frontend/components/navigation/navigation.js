@@ -48,6 +48,7 @@ import {
   BACRefreshRateScreen,
   LifeTimeStatsScreen,
   VisualDetailedHistoryScreen,
+  NightOutCalendarScreen,
 } from '../screens/ScreensIndex';
 
 const Stack = createNativeStackNavigator();
@@ -110,6 +111,7 @@ const AppNavigation = () => {
         <Stack.Screen name="UnitsRankings" component={UnitRankingsScreen} />
         <Stack.Screen name="SpentRankings" component={SpentRankingsScreen} />
         <Stack.Screen name="AcceptRankings" component={AcceptRankingsScreen} />
+        <Stack.Screen name="NightOutCalendar" component={NightOutCalendarScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
