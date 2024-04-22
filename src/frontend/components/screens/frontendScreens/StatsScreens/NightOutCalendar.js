@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { useNavigation } from '@react-navigation/native';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
@@ -45,19 +45,63 @@ const NightOutCalendarScreen = () => {
   
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <Calendar
         onDayPress={(day) => handleDatePress(day.dateString)}
         markedDates={markedDates}
+        theme={{
+          backgroundColor: '#ffffff',
+          calendarBackground: '#ffffff',
+          textSectionTitleColor: '#b6c1cd',
+          selectedDayBackgroundColor: '#00adf5',
+          selectedDayTextColor: '#ffffff',
+          todayTextColor: '#00adf5',
+          dayTextColor: '#2d4150',
+          textDisabledColor: '#d9e1e8',
+          dotColor: '#00adf5',
+          selectedDotColor: '#ffffff',
+          arrowColor: '#00adf5',
+          monthTextColor: '#00adf5',
+          indicatorColor: 'blue',
+          textDayFontFamily: 'monospace',
+          textMonthFontFamily: 'monospace',
+          textDayHeaderFontFamily: 'monospace',
+          textDayFontWeight: '300',
+          textMonthFontWeight: 'bold',
+          textDayHeaderFontWeight: '300',
+          textDayFontSize: 16,
+          textMonthFontSize: 16,
+          textDayHeaderFontSize: 16
+        }}
       />
       <TouchableOpacity
-        style={{ padding: 10, backgroundColor: 'blue', alignItems: 'center' }}
+        style={styles.button}
         onPress={() => navigation.navigate('CurrentNight', { selectedDate })}
       >
-        <Text style={{ color: 'white' }}>View Current Night Out</Text>
+        <Text style={styles.buttonText}>View Current Night Out</Text>
       </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  button: {
+    padding: 15,
+    backgroundColor: '#00adf5',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 18,
+  },
+});
 
 export default NightOutCalendarScreen;
