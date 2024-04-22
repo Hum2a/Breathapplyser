@@ -7,6 +7,7 @@ import { BarChart, LineChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 
 const CurrentNightOutScreen = ({ route, navigation }) => {
   const currentDateString = new Date().toISOString().split('T')[0]; // Format current date as 'YYYY-MM-DD'
@@ -33,7 +34,14 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
   const [isComparing, setIsComparing] = useState(false);
   const firestore = getFirestore();
   const { user } = useContext(UserContext);
-  const dateStr = new Date().toISOString().split('T')[0]; // Format the date as 'YYYY-MM-DD'
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    // Update selected date when the screen is focused
+    if (isFocused) {
+      setSelectedDateStr(passedDate || currentDateString);
+    }
+  }, [isFocused, passedDate, currentDateString]);
 
   const fetchAvailableDates = async () => {
     const CACHE_KEY = 'availableDates';
@@ -87,6 +95,10 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
     setIsComparing(false); // Not comparing, just viewing another night
     setModalVisible(true);
 };
+
+  const handleCalendar = () => {
+    navigation.navigate('NightOutCalendar')
+  }
 
   const handleCompareClick = () => {
       fetchAvailableDates();
@@ -248,7 +260,7 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
     <ScrollView style={cnoStyles.container}>
       <Text style={cnoStyles.title}>
         Night Out Summary 
-          <TouchableOpacity onPress={handleClick}>
+          <TouchableOpacity onPress={handleCalendar}>
             <Text style={cnoStyles.dateText}> 
               {selectedDateStr} 
             </Text>
