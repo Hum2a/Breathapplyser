@@ -115,6 +115,7 @@ export const lifetimeStyles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
+        color: '#000000'
     },
     refreshContainer: {
         alignItems: 'center',
