@@ -126,6 +126,7 @@ const HomeScreen = () => {
     <SafeAreaView style={appStyles.fullScreen}>
       <View style={homeStyles.container}>
         <BACDecreaseFB user={user} key={refreshKey} />
+        {/* <BacCleaner /> */}
 
         <View style={homeStyles.trackContainer}>
           <UnitTrack />

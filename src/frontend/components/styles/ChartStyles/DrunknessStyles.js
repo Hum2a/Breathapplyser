@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 
+
 export const DrunkStyles = StyleSheet.create({
   container: {
     flex: 1,
@@ -22,7 +23,7 @@ export const DrunkStyles = StyleSheet.create({
   pickerStyle: {
     flex: 1,
     height: 50,
-    backgroundColor: '#B3E5FC', // Light blue picker background color
+    backgroundColor: 'rgba(242,66,66,0.4)',
     borderRadius: 10,
     marginRight: 10,
     alignSelf: 'center',
@@ -52,6 +53,7 @@ export const DrunkStyles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
+    marginLeft: 20, // Add marginLeft to create space between legend and drunkness level items
   },
   drunknessLevel: {
     fontWeight: 'bold',
@@ -113,6 +115,7 @@ export const DrunkStyles = StyleSheet.create({
     height: 30,
   },
 });
+
 
 export const DrunkScreenStyles = StyleSheet.create({
   fullScreen: {

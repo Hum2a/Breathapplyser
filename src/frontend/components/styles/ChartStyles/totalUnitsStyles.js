@@ -5,8 +5,14 @@ export const totalUnitsStyles = StyleSheet.create({
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
-      paddingHorizontal: 20, // Adjust the horizontal padding
-      paddingTop: 40, // Add padding top for spacing
+      padding: 20,
+      backgroundColor: '#F0F8FF', // Light blue background
+    },
+    graphTitle: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: '#003366', // Dark blue for contrast and readability
+      marginBottom: 20,
     },
     toggleLabel: {
       fontSize: 18,
@@ -20,14 +26,15 @@ export const totalUnitsStyles = StyleSheet.create({
       padding: 5,
     },
     pickerStyle: {
-      flex: 1,
+      width: '80%',
       height: 40,
-      marginHorizontal: 5, // Adjust horizontal margin for spacing
-      borderWidth: 10,
-      borderColor: '#29B6F6', // Light blue border color
-      borderRadius: 50,
-      backgroundColor: '#E1F5FE', // Lighter blue background for the picker
-    },
+      marginBottom: 20,
+      backgroundColor: 'rgba(242,66,66,0.4)',
+      borderRadius: 20, // Rounded border
+      borderWidth: 1,
+      borderColor: '#007AFF', // Theme consistent blue for the border
+      paddingHorizontal: 10, // Add padding for a softer look
+  },
     legendContainer: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -47,12 +54,6 @@ export const totalUnitsStyles = StyleSheet.create({
       fontSize: 16,
       marginTop: 20,
       textAlign: 'center', // Ensure text is centered
-    },
-    graphTitle: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      textAlign: 'center',
-      marginBottom: 10,
     },
     refreshButton: {
       padding: 10,
