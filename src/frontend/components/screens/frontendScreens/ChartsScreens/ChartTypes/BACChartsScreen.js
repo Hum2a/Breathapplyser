@@ -24,12 +24,11 @@ const BACCharts = () => {
     <SafeAreaView style={chartStyles.fullScreen}>
       <ScrollView>
         <View style={chartStyles.chartContainer}>
-          <BackButton />
           <TouchableOpacity
             style={styles.button}
             onPress={() => setShowBAC12Hours(!showBAC12Hours)}
           >
-            <Text style={styles.buttonText}>Toggle 12 Hours Chart</Text>
+            <Text style={styles.buttonText}>Last 12 Hours</Text>
           </TouchableOpacity>
           {showBAC12Hours && <BAC12Hours />}
           
@@ -37,7 +36,7 @@ const BACCharts = () => {
             style={styles.button}
             onPress={() => setShowBACPredictionChart(!showBACPredictionChart)}
           >
-            <Text style={styles.buttonText}>Toggle Prediction Chart</Text>
+            <Text style={styles.buttonText}>Time till Sober</Text>
           </TouchableOpacity>
           {showBACPredictionChart && <BACPredictionChart />}
 
@@ -45,7 +44,7 @@ const BACCharts = () => {
             style={styles.button}
             onPress={() => setShowBACComparisonGraph(!showBACComparisonGraph)}
           >
-            <Text style={styles.buttonText}>Toggle Comparison Graph</Text>
+            <Text style={styles.buttonText}>Compare 2 Full Days</Text>
           </TouchableOpacity>
           {showBACComparisonGraph && <BACComparisonGraph />}
 
@@ -53,7 +52,7 @@ const BACCharts = () => {
             style={styles.button}
             onPress={() => setShowBACEntriesChart(!showBACEntriesChart)}
           >
-            <Text style={styles.buttonText}>Toggle Entries Chart</Text>
+            <Text style={styles.buttonText}>BAC of each entry</Text>
           </TouchableOpacity>
           {showBACEntriesChart && <BACEntriesChart />}
 
@@ -61,7 +60,7 @@ const BACCharts = () => {
             style={styles.button}
             onPress={() => setShowBACChart(!showBACChart)}
           >
-            <Text style={styles.buttonText}>Toggle BAC Chart</Text>
+            <Text style={styles.buttonText}>Cumulative Increase of the Night</Text>
           </TouchableOpacity>
           {showBACChart && <BACChart />}
 
@@ -69,7 +68,7 @@ const BACCharts = () => {
             style={styles.button}
             onPress={() => setShowBACTrackingChart(!showBACTrackingChart)}
           >
-            <Text style={styles.buttonText}>Toggle BAC Tracking Chart</Text>
+            <Text style={styles.buttonText}>DELETE</Text>
           </TouchableOpacity>
           {showBACTrackingChart && <BACTrackingChart />}
         </View>

@@ -60,33 +60,60 @@ const BACIncreaseChart = () => {
         const newValues = [];
         const labels = [];
         let cumulativeBACIncrease = 0;
-
+    
         filteredEntries.sort((a, b) => moment(a.startTime, 'YYYY-MM-DD HH:mm:ss').diff(moment(b.startTime, 'YYYY-MM-DD HH:mm:ss')));
-
+    
         filteredEntries.forEach(entry => {
             cumulativeBACIncrease += parseFloat(entry.BACIncrease || 0);
             newValues.push(cumulativeBACIncrease);
             const timeLabel = entry.startTime ? moment(entry.startTime, 'YYYY-MM-DD HH:mm:ss').format('HH:mm') : 'Unknown Time';
             labels.push(timeLabel);
         });
-
+    
         setBacIncreaseValues(newValues);
         setChartLabels(labels);
-
+    
         if (comparisonMode && date2) {
             setSelectedDate2(date2);
             const filteredEntries2 = entries.filter(entry => entry.date === date2);
             const newValues2 = [];
+            const labels2 = [];
             let cumulativeBACIncrease2 = 0;
-
+    
+            filteredEntries2.sort((a, b) => moment(a.startTime, 'YYYY-MM-DD HH:mm:ss').diff(moment(b.startTime, 'YYYY-MM-DD HH:mm:ss')));
+    
             filteredEntries2.forEach(entry => {
-                cumulativeBACIncrease2 += parseFloat(entry.bacIncrease || 0);
+                cumulativeBACIncrease2 += parseFloat(entry.BACIncrease || 0);
                 newValues2.push(cumulativeBACIncrease2);
+                const timeLabel = entry.startTime ? moment(entry.startTime, 'YYYY-MM-DD HH:mm:ss').format('HH:mm') : 'Unknown Time';
+                labels2.push(timeLabel);
             });
-
-            setBacIncreaseValues2(newValues2);
+    
+            // Combine the datasets only if comparison mode is active and both dates have data
+            if (labels.length > 0 && newValues2.length > 0) {
+                const combined = combineDatasets(labels, newValues, labels2, newValues2);
+                setChartLabels(combined.labels);
+                setBacIncreaseValues(combined.datasets[0]);
+                setBacIncreaseValues2(combined.datasets[1]);
+            } else {
+                setBacIncreaseValues2(newValues2);
+            }
+        } else {
+            setBacIncreaseValues2([]);
         }
     };
+    
+
+    const combineDatasets = (labels1, values1, labels2, values2) => {
+        const combinedLabels = [...new Set([...labels1, ...labels2])].sort((a, b) => moment(a, 'HH:mm').diff(moment(b, 'HH:mm')));
+        const combinedValues1 = combinedLabels.map(label => labels1.includes(label) ? values1[labels1.indexOf(label)] : null);
+        const combinedValues2 = combinedLabels.map(label => labels2.includes(label) ? values2[labels2.indexOf(label)] : null);
+      
+        return {
+          labels: combinedLabels,
+          datasets: [combinedValues1, combinedValues2],
+        };
+      };
 
     const uniqueDates = [...new Set(allEntries.map(entry => entry.date))];
 
@@ -113,18 +140,20 @@ const BACIncreaseChart = () => {
               </Picker>
             </View>
             {comparisonMode && (
-                <Picker
-                    selectedValue={selectedDate2}
-                    onValueChange={(itemValue) => {
-                        setSelectedDate2(itemValue);
-                        filterDataByDate(allEntries, selectedDate, itemValue);
-                    }}
-                    style={styles.pickerStyle}
-                >
-                    {uniqueDates.map(date => (
-                        <Picker.Item key={date} label={date} value={date} />
-                    ))}
-                </Picker>
+                <View style={styles.pickersContainer}>
+                    <Picker
+                        selectedValue={selectedDate2}
+                        onValueChange={(itemValue) => {
+                            setSelectedDate2(itemValue);
+                            filterDataByDate(allEntries, selectedDate, itemValue);
+                        }}
+                        style={styles.pickerStyle}
+                    >
+                        {uniqueDates.map(date => (
+                            <Picker.Item key={date} label={date} value={date} />
+                        ))}
+                    </Picker>
+                </View>
             )}
             {bacIncreaseValues.length > 0 ? (
                 <View>
