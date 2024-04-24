@@ -4,7 +4,6 @@ import { StyleSheet } from 'react-native';
 export const DrunkStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E0F2F1', // Light blue background color
     alignItems: 'center',
     justifyContent: 'center',
   },
