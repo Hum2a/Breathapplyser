@@ -12,18 +12,18 @@ const BacCleaner = () => {
         const bacRef = collection(firestore, bacLevelPath);
 
         try {
-            const q = query(bacRef, orderBy("lastUpdated"));
+            const q = query(bacRef, orderBy("date"));
             const querySnapshot = await getDocs(q);
             const hourlyDocs = {};
 
             // Group docs by their nearest hour
             querySnapshot.forEach(doc => {
                 const data = doc.data();
-                const hour = moment(data.lastUpdated).startOf('hour').format();
+                const hour = moment(data.date).startOf('hour').format();
                 if (!hourlyDocs[hour]) {
                     hourlyDocs[hour] = [];
                 }
-                hourlyDocs[hour].push({ id: doc.id, timestamp: data.lastUpdated });
+                hourlyDocs[hour].push({ id: doc.id, timestamp: data.date });
             });
 
             // Keep only the closest document to the start of the hour and delete others
@@ -36,7 +36,8 @@ const BacCleaner = () => {
 
                 hourlyDocs[hour].forEach(async (doc) => {
                     if (doc.id !== closestDoc.id) {
-                        await deleteDoc(doc(firestore, bacLevelPath, doc.id));
+                        const deleteRef = doc(firestore, bacLevelPath, doc.id);
+                        await deleteDoc(deleteRef);
                         console.log(`Deleted BAC doc with ID: ${doc.id} which was not closest to the hour.`);
                     }
                 });

@@ -23,7 +23,7 @@ export const NameStyles = StyleSheet.create({
     width: Dimensions.get('window').width * 0.9, // Use a percentage of the screen width for responsiveness
     height: 40,
     marginBottom: 20,
-    backgroundColor: 'transparent', // Very light blue for subtle contrast
+    backgroundColor: 'rgba(242,66,66,0.4)',
     borderRadius: 5,
     borderWidth: 1,
     borderColor: '#007AFF', // Theme consistent blue for the border

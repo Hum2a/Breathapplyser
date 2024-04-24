@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, Switch, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { View, Text, Switch, TouchableOpacity, Image, Dimensions, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { LineChart } from 'react-native-chart-kit';
 import { collection, getFirestore, query, getDocs } from 'firebase/firestore';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserContext } from '../../../../context/UserContext';
-import { chartConfig } from '../chart-handling/chartConfig';
 import { amountSpentStyles as styles } from '../../../styles/ChartStyles/amountSpentStyles';
 
 const AmountSpentChart = () => {
@@ -159,7 +158,6 @@ const AmountSpentChart = () => {
                     width={Dimensions.get('window').width - 16}
                     height={220}
                     chartConfig={{
-                        ...chartConfig,
                         backgroundColor: '#ffffff',
                         backgroundGradientFrom: '#ffffff',
                         backgroundGradientTo: '#ffffff',
