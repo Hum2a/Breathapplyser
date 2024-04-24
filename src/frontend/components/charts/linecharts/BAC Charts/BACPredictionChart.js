@@ -21,8 +21,13 @@ const PredictBACDecrease = () => {
       if (!querySnapshot.empty) {
         const doc = querySnapshot.docs[0];
         const initialBAC = doc.data().value;
+        if (initialBAC === 0) {
+          setPredictionData(null);
+        }
+        else {
         const prediction = generatePredictionData(initialBAC);
         setPredictionData(prediction);
+        }
       }
     };
 
@@ -69,7 +74,9 @@ const PredictBACDecrease = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.graphTitle}>{isPredictedTime ? 'Predicted BAC Decrease Over Time' : 'Real-Time BAC Decrease Over Time'}</Text>
-      {predictionData && (
+      {!predictionData ? (
+        <Text style={styles.soberText}>You are Sober.</Text>
+      ) : (
         <LineChart
             data={{
                 labels: isPredictedTime ? predictionData.predictedLabels : predictionData.realTimeLabels,

@@ -67,4 +67,20 @@ export const combinedBacStyles = StyleSheet.create({
       fontSize: 16,
       fontWeight: 'bold',
     },
+    soberText: {
+      fontSize: 22,
+      fontWeight: 'bold',
+      color: '#0293ee', // A vivid blue
+      textShadowColor: 'rgba(0, 0, 0, 0.75)',
+      textShadowOffset: { width: -1, height: 1 },
+      textShadowRadius: 10,
+      marginTop: 20,
+      fontStyle: 'italic',
+      transform: [{ rotate: '-2deg' }],
+      borderWidth: 2,
+      borderColor: '#0293ee',
+      padding: 10,
+      borderRadius: 20,
+      backgroundColor: 'rgba(255, 255, 255, 0.8)', // Slightly transparent white
+    }
 });
