@@ -10,8 +10,7 @@ import { DrunkStyles as styles } from '../../../styles/ChartStyles/DrunknessStyl
 const DrunkennessGraph = () => {
   const [bacData, setBacData] = useState({});
   const [uniqueDates, setUniqueDates] = useState([]);
-  const [selectedDate1, setSelectedDate1] = useState(moment().format("YYYY-MM-DD"));
-  const [selectedDate2, setSelectedDate2] = useState('');
+  const [selectedDate, setSelectedDate] = useState(moment().format("YYYY-MM-DD"));
   const [drunkParameters, setDrunkParameters] = useState([]);
   const firestore = getFirestore();
   const { user } = useContext(UserContext);
@@ -31,33 +30,30 @@ const DrunkennessGraph = () => {
   }, [user]);
 
   useEffect(() => {
-    console.log('Fetching BAC data...');
     const fetchData = async () => {
-      try {
-        const q = query(collection(firestore, user.uid, "Alcohol Stuff", "BAC Level"), orderBy("date"));
-        const querySnapshot = await getDocs(q);
-        const entries = {};
-        querySnapshot.forEach(doc => {
-          const data = doc.data();
-          const formattedDate = moment(data.date, "YYYY-MM-DD HH:mm:ss").format('YYYY-MM-DD');
-          console.log(`Processing data for date: ${formattedDate}`);
+      const q = query(collection(firestore, user.uid, "Alcohol Stuff", "BAC Level"), orderBy("date"));
+      const querySnapshot = await getDocs(q);
+      const entries = {};
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        console.log("Raw date from Firestore:", data.date); // This will show you what the dates look like coming from Firestore
+        const formattedDate = moment(data.date, "YYYY-MM-DD HH:mm:ss").format('YYYY-MM-DD');
+        if (!formattedDate || formattedDate === "Invalid date") {
+          console.error("Error parsing date:", data.date);
+        } else {
           if (!entries[formattedDate]) {
             entries[formattedDate] = [];
           }
           entries[formattedDate].push(data);
-        });
-        console.log('BAC data fetched and processed:', entries);
-        setBacData(entries);
-  
-        const sortedUniqueDates = Object.keys(entries).sort((a, b) => moment(b).diff(moment(a)));
-        console.log('Unique dates set:', sortedUniqueDates);
-        setUniqueDates(sortedUniqueDates);
-        setSelectedDate1(sortedUniqueDates[0]); // Default to the most recent date
-        setSelectedDate2(sortedUniqueDates[1] || sortedUniqueDates[0]);
-      } catch (error) {
-        console.error('Error fetching BAC data:', error);
-      }
+        }
+      });
+      setBacData(entries);
+    
+      const sortedUniqueDates = Object.keys(entries).sort((a, b) => moment(b).diff(moment(a)));
+      setUniqueDates(sortedUniqueDates);
+      setSelectedDate(sortedUniqueDates[0] || moment().format("YYYY-MM-DD"));
     };
+    
   
     if (drunkParameters.length > 0) {
       fetchData();
@@ -65,157 +61,104 @@ const DrunkennessGraph = () => {
   }, [user, firestore, drunkParameters]);
 
   const processDataForChart = (date) => {
-    console.log(`Processing data for chart on date: ${date}`);
     const dayEntries = bacData[date] || [];
-    const dataPoints = []; // Array to store BAC values for the chart
-    const labels = []; // Array to store labels for the chart (e.g., hours)
-    const drunkennessLevels = []; // Array to store drunkenness levels for each BAC value
-
+    const dataPoints = []; // Store BAC values for transition points
+    const labels = []; // Store labels for transition points
+    let lastLevel = null;
+    const levelsReached = {}; // Store the time each level was first reached
+  
     dayEntries.forEach(entry => {
-        const entryTime = moment(entry.date, "YYYY-MM-DD HH:mm:ss");
-        const bacValue = parseFloat(entry.value || 0);
-        labels.push(entryTime.format('HH:mm')); // Adjust the format as needed
-        dataPoints.push(bacValue);
-
-        // Determine the drunkenness level for this BAC value using the firebase data
-        const level = getDrunkennessLevelFromFirebase(bacValue);
-        drunkennessLevels.push(level); // Store the calculated level
+      const entryTime = moment(entry.date, "YYYY-MM-DD HH:mm:ss");
+      const bacValue = parseFloat(entry.value || 0);
+      const currentLevel = getDrunkennessLevelFromFirebase(bacValue);
+  
+      // Add point only if level changes
+      if (currentLevel !== lastLevel) {
+        if (!levelsReached[currentLevel]) { // Only add the level if it has not been added before
+          levelsReached[currentLevel] = entryTime.format('HH:mm');
+          labels.push(entryTime.format('HH:mm')); // Add time label for chart
+          dataPoints.push(bacValue); // Add BAC value for chart
+        }
+        lastLevel = currentLevel;
+      }
     });
-
+  
     return {
-        labels, // The labels for the chart's X-axis
-        bacValues: dataPoints, // The BAC values for the chart's Y-axis
-        drunkennessLevels, // Corresponding drunkenness levels for the BAC values
+      labels,
+      dataPoints,
+      levelsReached // include this in the returned object
     };
-};
-
+  };
+  
   const getDrunkennessLevelFromFirebase = (bac) => {
-      let levelInfo = drunkParameters.find(param => {
-        const [min, max] = param.range.split(' - ').map(Number);
-        return bac >= min && bac <= max;
-      });
-      return levelInfo ? levelInfo.simple : "Unknown";
+    let levelInfo = drunkParameters.find(param => {
+      const [min, max] = param.range.split(' - ').map(Number);
+      return bac >= min && bac <= max;
+    });
+    return levelInfo ? levelInfo.simple : "Unknown";
   };
 
-
-  const data1 = processDataForChart(selectedDate1);
-  const data2 = processDataForChart(selectedDate2);
-
-  console.log("Data prepared for graph 1:", data1);
-  console.log("Data prepared for graph 2:", data2);
+  const data = processDataForChart(selectedDate);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.graphTitle}>Drunkenness Comparison Chart</Text>
-      <View style={styles.pickersContainer}>
-        <Picker
-          selectedValue={selectedDate1}
-          onValueChange={(itemValue) => setSelectedDate1(itemValue)}
-          style={styles.pickerStyle}
-        >
-          {uniqueDates.map(date => (
-            <Picker.Item key={date} label={date} value={date} />
-          ))}
-        </Picker>
-        <Picker
-          selectedValue={selectedDate2}
-          onValueChange={(itemValue) => setSelectedDate2(itemValue)}
-          style={styles.pickerStyle}
-        >
-          {uniqueDates.map(date => (
-            <Picker.Item key={date} label={date} value={date} />
-          ))}
-        </Picker>
-      </View>
-      {data1.bacValues.length > 0 && data2.bacValues.length > 0 ? (
+      <Text style={styles.graphTitle}>Drunkenness Levels for {selectedDate}</Text>
+      <Picker
+        selectedValue={selectedDate}
+        onValueChange={setSelectedDate}
+        style={styles.pickerStyle}
+      >
+        {uniqueDates.map(date => (
+          <Picker.Item key={date} label={date} value={date} />
+        ))}
+      </Picker>
+
+      {data.dataPoints.length > 0 ? (
         <LineChart
           data={{
-            labels: data1.labels,
-            datasets: [
-              {
-                data: data1.bacValues,
-                color: () => '#2979FF',
-              },
-              {
-                data: data2.bacValues,
-                color: () => '#FF6D00',
-              }
-            ],
+            labels: data.labels,
+            datasets: [{ data: data.dataPoints, color: () => '#2979FF' }]
           }}
           width={350}
           height={200}
-          chartConfig={{
-            backgroundColor: '#b6e6fd', // Light blue background
-            backgroundGradientFrom: '#81d4fa', // Lighter shade of blue
-            backgroundGradientTo: '#4fc3f7', // Slightly darker shade of blue for gradient end
-            decimalPlaces: 4, // Keep the precision for BAC values
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // White color for the chart lines
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Using black for readability against the light blue background
-            style: {
-              borderRadius: 16
-            },
-            propsForDots: {
-              r: '6',
-              strokeWidth: '2',
-              stroke: '#0293ee' // A blue color that fits well with the theme for the dots stroke
-            },
-            propsForLabels: { // Customizing label font size
-              fontSize: 10,
-            }
-          }}
-          
+          chartConfig={chartConfig}
           bezier
           fromZero
-          />
-          ) : (
-              <Text>Loading data...</Text> // Show a loading message or a spinner
-          )}
+        />
+      ) : (
+        <Text>No BAC data available for selected date.</Text>
+      )}
+
       <View style={styles.legendContainer}>
-        {data1?.bacValues && (
-          <>
-            <View style={[styles.legendItem, { backgroundColor: '#2979FF' }]} />
-            <Text style={styles.legendLabel}>{selectedDate1}</Text>
-          </>
-        )}
-        {data2?.bacValues && (
-          <>
-            <View style={[styles.legendItem, { backgroundColor: '#FF6D00' }]} />
-            <Text style={styles.legendLabel}>{selectedDate2}</Text>
-          </>
-        )}
+        {Object.entries(data.levelsReached).map(([level, time]) => (
+          <View key={level} style={styles.drunknessLevelContainer}>
+            <Text style={styles.drunknessLevel}>{level}</Text>
+            <Text style={styles.drunknessTime}>{time}</Text>
+          </View>
+        ))}
       </View>
-
-      <View style={styles.drunknessLevelsContainer}>
-        <View style={styles.column}>
-            <Text style={styles.columnHeader}>Data 1</Text>
-            {Object.entries(data1.drunkennessLevels).map(([level, time]) => (
-            // Check if the level is "Sober" and skip rendering if it is
-            level !== "Sober" && (
-                <View key={level} style={styles.drunknessLevelContainer}>
-                <Text style={styles.drunknessLevel}>{level}</Text>
-                <Text style={styles.drunknessTime}>{time}</Text>
-                </View>
-            )
-            ))}
-        </View>
-        <View style={styles.column}>
-            <Text style={styles.columnHeader}>Data 2</Text>
-            {Object.entries(data2.drunkennessLevels).map(([level, time]) => (
-            // Check if the level is "Sober" and skip rendering if it is
-            level !== "Sober" && (
-                <View key={level} style={styles.drunknessLevelContainer}>
-                <Text style={styles.drunknessLevel}>{level}</Text>
-                <Text style={styles.drunknessTime}>{time}</Text>
-                </View>
-            )
-            ))}
-        </View>
-        </View>
-
-
-
     </View>
   );
+};
+
+const chartConfig = {
+  backgroundColor: '#b6e6fd',
+  backgroundGradientFrom: '#81d4fa',
+  backgroundGradientTo: '#4fc3f7',
+  decimalPlaces: 2,
+  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+  style: {
+    borderRadius: 16
+  },
+  propsForDots: {
+    r: '6',
+    strokeWidth: '2',
+    stroke: '#0293ee'
+  },
+  propsForLabels: {
+    fontSize: 10,
+  }
 };
 
 export default DrunkennessGraph;

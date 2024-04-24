@@ -15,7 +15,7 @@ const PredictBACDecrease = () => {
     const fetchMostRecentBAC = async () => {
       const firestore = getFirestore();
       const bacRef = collection(firestore, user.uid, 'Alcohol Stuff', 'BAC Level');
-      const q = query(bacRef, orderBy('lastUpdated', 'desc'), limit(1));
+      const q = query(bacRef, orderBy('date', 'desc'), limit(1));
 
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.empty) {

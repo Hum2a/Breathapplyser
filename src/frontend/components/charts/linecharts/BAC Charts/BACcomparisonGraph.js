@@ -18,12 +18,12 @@ const BACComparisonGraph = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const q = query(collection(firestore, user.uid, "Alcohol Stuff", "BAC Level"), orderBy("lastUpdated"));
+        const q = query(collection(firestore, user.uid, "Alcohol Stuff", "BAC Level"), orderBy("date"));
         const querySnapshot = await getDocs(q);
         const entries = {};
         querySnapshot.forEach(doc => {
           const data = doc.data();
-          const formattedDate = moment(data.lastUpdated, "YYYY-MM-DD HH:mm:ss").format('YYYY-MM-DD');
+          const formattedDate = moment(data.date, "YYYY-MM-DD HH:mm:ss").format('YYYY-MM-DD');
           if (!entries[formattedDate]) {
             entries[formattedDate] = [];
           }
@@ -56,7 +56,7 @@ const BACComparisonGraph = () => {
     let hourlyBAC = new Array(24).fill(0);
   
     for (let hour = 0; hour < 24; hour++) {
-      const entry = dayEntries.find(entry => moment(entry.lastUpdated, "YYYY-MM-DD HH:mm:ss").hour() === hour);
+      const entry = dayEntries.find(entry => moment(entry.date, "YYYY-MM-DD HH:mm:ss").hour() === hour);
       // Check if entry exists and entry.value is a number
       if (entry && !isNaN(entry.value)) {
         hourlyBAC[hour] = entry.value;

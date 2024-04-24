@@ -6,7 +6,8 @@ import {
   BACPredictionChart,
   BACComparisonGraph,
   BACEntriesChart,
-  BAC12Hours
+  BAC12Hours,
+  BACTrackingChart
 } from '../../../../charts/chartIndex';
 import { BackButton } from '../../../../buttons/backButton';
 
@@ -16,6 +17,7 @@ const BACCharts = () => {
   const [showBACComparisonGraph, setShowBACComparisonGraph] = useState(false);
   const [showBACEntriesChart, setShowBACEntriesChart] = useState(false);
   const [showBACChart, setShowBACChart] = useState(false);
+  const [showBACTrackingChart, setShowBACTrackingChart] = useState(false);
 
   
   return (
@@ -62,6 +64,14 @@ const BACCharts = () => {
             <Text style={styles.buttonText}>Toggle BAC Chart</Text>
           </TouchableOpacity>
           {showBACChart && <BACChart />}
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => setShowBACTrackingChart(!showBACTrackingChart)}
+          >
+            <Text style={styles.buttonText}>Toggle BAC Tracking Chart</Text>
+          </TouchableOpacity>
+          {showBACTrackingChart && <BACTrackingChart />}
         </View>
       </ScrollView>
     </SafeAreaView>
