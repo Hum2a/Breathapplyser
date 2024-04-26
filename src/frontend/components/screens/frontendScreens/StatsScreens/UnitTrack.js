@@ -44,6 +44,10 @@ const UnitTrack = () => {
 
   // Calculate the color dynamically based on the ratio of unitIntake to limits
   const calculateColor = () => {
+    if (limits === 0) {
+      // When limits are zero, return a default color (e.g., gray to indicate no data or limit)
+      return 'rgb(128, 128, 128)';
+  }
     const ratio = unitIntake / limits;
     const green = Math.round(255 * (1 - ratio)); // Change the intensity of green based on the ratio
     const red = Math.round(255 * ratio); // Change the intensity of red based on the ratio

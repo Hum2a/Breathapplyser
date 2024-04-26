@@ -103,15 +103,17 @@ const DrunkennessGraph = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.graphTitle}>Drunkenness Levels for {selectedDate}</Text>
-      <Picker
-        selectedValue={selectedDate}
-        onValueChange={setSelectedDate}
-        style={styles.pickerStyle}
-      >
-        {uniqueDates.map(date => (
-          <Picker.Item key={date} label={date} value={date} />
-        ))}
-      </Picker>
+      <View style={styles.pickersContainer}>
+        <Picker
+          selectedValue={selectedDate}
+          onValueChange={setSelectedDate}
+          style={styles.pickerStyle}
+        >
+          {uniqueDates.map(date => (
+            <Picker.Item key={date} label={date} value={date} />
+          ))}
+        </Picker>
+      </View>
 
       {data.dataPoints.length > 0 ? (
         <LineChart

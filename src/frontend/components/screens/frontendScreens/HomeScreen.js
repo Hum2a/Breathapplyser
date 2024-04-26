@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Image, TouchableOpacity, Text, SafeAreaView, TouchableWithoutFeedback } from 'react-native';
+import { View, Image, TouchableOpacity, Text, SafeAreaView } from 'react-native';
 import Video from 'react-native-video';
 import { useNavigation } from '@react-navigation/native';
 import { homeStyles } from '../../styles/StartUpStyles/homeStyles';
@@ -147,15 +147,15 @@ const HomeScreen = () => {
           />
         </TouchableOpacity>
       
-          <TouchableWithoutFeedback onPressIn={() => setPlayMedalAnimation(true)} onPressOut={() => { setPlayMedalAnimation(false); NavigateToAchievements(); }}>
+          <TouchableOpacity onPressIn={() => setPlayMedalAnimation(true)} onPressOut={() => { setPlayMedalAnimation(false); NavigateToAchievements(); }}>
             {/* <Image
               source={require('../../../assets/images/medal.png')}
               style={homeStyles.medalIcon}
             /> */}
             <View style={homeStyles.settingsIcon}>
-              <MedalShimmerAnimation play={playMedalAnimation} frameRate={24}/>
+              <MedalShimmerAnimation play={playMedalAnimation} frameRate={20}/>
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
 
         </View>
 
@@ -185,11 +185,11 @@ const HomeScreen = () => {
         </TouchableOpacity>
         
 
-        <TouchableWithoutFeedback onPressIn={() => setPlayStarAnimation(true)} onPressOut={() => { setPlayStarAnimation(false); NavigateToFavourites(); }}>
+        <TouchableOpacity onPressIn={() => setPlayStarAnimation(true)} onPressOut={() => { setPlayStarAnimation(false); NavigateToFavourites(); }}>
             <View style={homeStyles.starContainer}>
-                <StarAnimation play={playStarAnimation} frameRate={24} />
+                <StarAnimation play={playStarAnimation} frameRate={20} />
             </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
 
         
         <TouchableOpacity onPress={() => { toggleBeerAnimation(); NavigateToDrinking(); }} style={homeStyles.beerContainer}>

@@ -107,8 +107,7 @@ const DrunkennessLevelChart = () => {
         const filteredEntries = entries.filter(entry => entry.date === date);
         const newValues = [];
         const labels = [];
-        const drunknessLevels = {}; // Object to store the time at which each level of drunkness was reached
-    
+        let drunkennessLevels = []; // Array to store levels for the first date
         let cumulativeBACIncrease = 0;
     
         filteredEntries.sort((a, b) => moment(a.startTime, 'YYYY-MM-DD HH:mm:ss').diff(moment(b.startTime, 'YYYY-MM-DD HH:mm:ss')));
@@ -119,34 +118,47 @@ const DrunkennessLevelChart = () => {
             const timeLabel = entry.startTime ? moment(entry.startTime, 'YYYY-MM-DD HH:mm:ss').format('HH:mm') : 'Unknown Time';
             labels.push(timeLabel);
     
-            const levelInfo = getDrunkennessLevel(cumulativeBACIncrease, drunkParameters);
-            const level = levelInfo.simple;
-            if (!(level in drunknessLevels)) {
-                drunknessLevels[level] = timeLabel;
-            }
+            // We're not checking for duplicates here, assuming that BACIncrease is always increasing
+            drunkennessLevels.push({
+                level: getDrunkennessLevel(cumulativeBACIncrease, drunkParameters).simple,
+                time: timeLabel,
+                date: date // Adding the date to each level for the first date
+            });
         });
     
         setBacIncreaseValues(newValues);
         setChartLabels(labels);
     
+        let drunkennessLevels2 = []; // Array to store levels for the second date, if present
         if (comparisonMode && date2) {
             setSelectedDate2(date2);
             const filteredEntries2 = entries.filter(entry => entry.date === date2);
             const newValues2 = [];
             let cumulativeBACIncrease2 = 0;
     
+            filteredEntries2.sort((a, b) => moment(a.startTime, 'YYYY-MM-DD HH:mm:ss').diff(moment(b.startTime, 'YYYY-MM-DD HH:mm:ss')));
+    
             filteredEntries2.forEach(entry => {
-                cumulativeBACIncrease2 += parseFloat(entry.bacIncrease || 0);
+                cumulativeBACIncrease2 += parseFloat(entry.BACIncrease || 0);
                 newValues2.push(cumulativeBACIncrease2);
+    
+                // We're not checking for duplicates here, assuming that BACIncrease is always increasing
+                drunkennessLevels2.push({
+                    level: getDrunkennessLevel(cumulativeBACIncrease2, drunkParameters).simple,
+                    time: entry.startTime ? moment(entry.startTime, 'YYYY-MM-DD HH:mm:ss').format('HH:mm') : 'Unknown Time',
+                    date: date2 // Adding the date to each level for the second date
+                });
             });
     
             setBacIncreaseValues2(newValues2);
+            setDrunkenessLevel([...drunkennessLevels, ...drunkennessLevels2]); // Combine levels from both dates
+        } else {
+            setDrunkenessLevel(drunkennessLevels); // Only levels for the first date
+            setBacIncreaseValues2([]);
         }
-    
-        console.log('Drunkness Levels:', drunknessLevels); // Print the drunkness levels and their corresponding times
-        setDrunkenessLevel(drunknessLevels);
     };
-
+    
+    
     const getDrunkennessLevel = (bac, parameters) => {
         let levelInfo = { simple: "Unknown", detailed: "No data available." };
         for (const param of parameters) {
@@ -185,18 +197,20 @@ const DrunkennessLevelChart = () => {
               </Picker>
             </View>
             {comparisonMode && (
-                <Picker
-                    selectedValue={selectedDate2}
-                    onValueChange={(itemValue) => {
-                        setSelectedDate2(itemValue);
-                        filterDataByDate(allEntries, selectedDate, itemValue);
-                    }}
-                    style={styles.pickerStyle}
-                >
-                    {uniqueDates.map(date => (
-                        <Picker.Item key={date} label={date} value={date} />
-                    ))}
-                </Picker>
+                <View style={styles.pickersContainer}>
+                    <Picker
+                        selectedValue={selectedDate2}
+                        onValueChange={(itemValue) => {
+                            setSelectedDate2(itemValue);
+                            filterDataByDate(allEntries, selectedDate, itemValue);
+                        }}
+                        style={styles.pickerStyle}
+                    >
+                        {uniqueDates.map(date => (
+                            <Picker.Item key={date} label={date} value={date} />
+                        ))}
+                    </Picker>
+                </View>
             )}
             {bacIncreaseValues.length > 0 ? (
                 <View>
@@ -214,9 +228,9 @@ const DrunkennessLevelChart = () => {
                         height={200}
                         chartConfig={{
                             ...chartConfig,
-                            backgroundColor: '#ffffff',
-                            backgroundGradientFrom: '#ffffff',
-                            backgroundGradientTo: '#ffffff',
+                            backgroundColor: '#b6e6fd',
+                            backgroundGradientFrom: '#81d4fa',
+                            backgroundGradientTo: '#4fc3f7',
                             decimalPlaces: 2,
                             color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                             style: { borderRadius: 16 },
@@ -228,13 +242,29 @@ const DrunkennessLevelChart = () => {
                         <View style={[styles.legendItem, { backgroundColor: '#2979FF' }]} />
                         <Text style={styles.legendLabel}>BAC Increase</Text>
                     </View>
-                    {Object.entries(drunkennessLevel).map(([level, time]) => (
-                        <View key={level} style={styles.drunknessLevelContainer}>
-                            <Text style={styles.drunknessLevel}>{level}</Text>
-                            <Text style={styles.drunknessTime}>{time}</Text>
+                    <View style={styles.drunkennessLevelsContainer}>
+                        <View style={styles.column}>
+                            <Text style={styles.columnHeader}>{selectedDate || "Date 1"}</Text>
+                            {drunkennessLevel.filter(dl => dl.date === selectedDate).map((dl, index) => (
+                                <View key={index} style={styles.drunknessItemContainer}>
+                                    <Text style={[styles.drunknessLabel, {color: '#2979FF'}]}>{dl.level}</Text>
+                                    <Text style={styles.drunknessTime}>{dl.time}</Text>
+                                </View>
+                            ))}
                         </View>
-                    ))}
-                </View>
+                        {comparisonMode && (
+                            <View style={styles.column}>
+                                <Text style={styles.columnHeader}>{selectedDate2 || "Date 2"}</Text>
+                                {drunkennessLevel.filter(dl => dl.date === selectedDate2).map((dl, index) => (
+                                    <View key={index} style={styles.drunknessItemContainer}>
+                                        <Text style={[styles.drunknessLabel, {color: '#FF6D00'}]}>{dl.level}</Text>
+                                        <Text style={styles.drunknessTime}>{dl.time}</Text>
+                                    </View>
+                                ))}
+                            </View>
+                        )}
+                    </View>
+                                </View>
             ) : (
                 <Text style={styles.noDataText}>No data available for this date.</Text>
             )}

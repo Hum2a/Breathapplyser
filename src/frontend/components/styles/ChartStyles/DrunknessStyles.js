@@ -6,23 +6,22 @@ export const DrunkStyles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'transparent', // Light background color
   },
   graphTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#1565C0', // Dark blue text color
-  },
+    color: '#1565C0',
+},
   pickersContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    alignSelf: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 10,
   },
   pickerStyle: {
     flex: 1,
     height: 50,
-    backgroundColor: 'rgba(242,66,66,0.4)',
+    backgroundColor: '#ffffff',
     borderRadius: 10,
     marginRight: 10,
     alignSelf: 'center',
@@ -78,31 +77,29 @@ export const DrunkStyles = StyleSheet.create({
     alignSelf: 'center',
   },
   drunknessItemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 5,
-    backgroundColor: '#B3E5FC', // Light blue background color for the row
+    backgroundColor: '#e3f2fd', // Light blue background for items
     padding: 10,
     borderRadius: 5,
-  },
-  drunknessLevelsContainer: {
+    marginBottom: 5,
+    width: '100%',
+    alignItems: 'center',
+},
+  drunkennessLevelsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     marginTop: 20,
-    paddingHorizontal: 20,
-  },
-  column: {
-    flex: 1,
-    marginLeft: 10,
-    marginRight: 10,
-  },
-  columnHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#1565C0',
-    alignSelf: 'center',
-  },
+    justifyContent: 'space-around',
+    width: '100%',
+},
+    column: {
+        flex: 1,
+        alignItems: 'center',
+    },
+    columnHeader: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: '#1565C0',
+    },
   refreshButton: {
     padding: 10,
     margin: 10,

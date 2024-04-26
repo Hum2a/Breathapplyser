@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Alert} from 'react-native';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { SettingStyles as styles } from '../../../styles/SettingStyles/settingStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProfileWaveAnimation from '../../../animations/profileWave';
 import MuscleManAnimation from '../../../animations/muscleman';
+import PaintRollerAnimation from '../../../animations/paintRoller';
 import { useUser } from '../../../../context/UserContext';
 import { BackButton } from '../../../buttons/backButton';
 
@@ -13,6 +14,7 @@ const Settings = () => {
   const { logout } = useUser(); // Use the logout function from UserContext
   const [ playProfileWaveAnimation, setPlayProfileWaveAnimation ] = useState(false); 
   const [ playMuscleManAnimation, setPlayMuscleManAnimation] = useState(false);
+  const [ playPaintRollerAnimation, setPlayPaintRollerAnimation ] = useState(false);
 
   const navigateToProfile = () => {
     navigation.navigate('Profile'); // Replace 'Profile' with your actual profile screen name
@@ -63,34 +65,36 @@ const Settings = () => {
   return (
     <SafeAreaView style={styles.container}>
       <BackButton />
-        <TouchableWithoutFeedback
+        <TouchableOpacity
          onPressIn={() => setPlayProfileWaveAnimation(true)}
-         onPressOut={() => { setPlayProfileWaveAnimation(false); navigateToProfile(); } }
-         style={styles.item}>
+         onPressOut={() => { setPlayProfileWaveAnimation(false); navigateToProfile(); } }>
           <View style={styles.item}>
               <Text style={styles.text}>Profile</Text>
-              <ProfileWaveAnimation play={playProfileWaveAnimation} frameRate={24} />
+              <ProfileWaveAnimation play={playProfileWaveAnimation} frameRate={30} />
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
 
-      <TouchableWithoutFeedback
+      <TouchableOpacity
          onPressIn={() => setPlayMuscleManAnimation(true)}
-         onPressOut={() => { setPlayMuscleManAnimation(false); navigateToLimits(); } }
-         style={styles.item}>
+         onPressOut={() => { setPlayMuscleManAnimation(false); navigateToLimits(); } }>
           <View style={styles.item}>
               <Text style={styles.text}>Limits</Text>
-              <MuscleManAnimation play={playMuscleManAnimation} frameRate={24} />
+              <MuscleManAnimation play={playMuscleManAnimation} frameRate={30} />
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
 
       <TouchableOpacity onPress={navigateToAlcoholics} style={styles.item}>
         <Text style={styles.text}>Alcoholics</Text>
         <Image source={require('../../../../assets/images/timer.png')} style={styles.icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={navigateToDisplay} style={styles.item}>
-        <Text style={styles.text}>Display</Text>
-        <Image source={require('../../../../assets/images/themes.png')} style={styles.icon} />
+      <TouchableOpacity
+         onPressIn={() => setPlayPaintRollerAnimation(true)}
+         onPressOut={() => { setPlayPaintRollerAnimation(false); navigateToDisplay(); } }>
+          <View style={styles.item}>
+              <Text style={styles.text}>Display</Text>
+              <PaintRollerAnimation play={playPaintRollerAnimation} frameRate={41} />
+          </View>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={navigateToNotifications} style={styles.item}>

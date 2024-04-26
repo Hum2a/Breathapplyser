@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, TouchableWithoutFeedback, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { omniStyles as styles } from '../../../styles/ChartStyles/omniStyles';
 import FatManAnimation from '../../../animations/fatman';
+import WalletAnimation from '../../../animations/wallet';
 import { BackButton } from '../../../buttons/backButton';
 
 const ChartsScreen = ({ navigation }) => {
   const [playFatManAnimation, setPlayFatManAnimation] = useState(false);
+  const [playWalletAnimation, setPlayWalletAnimation] = useState(false);
 
   const navigateToChart = (chartType) => {
     navigation.navigate(chartType);
@@ -29,20 +31,20 @@ const ChartsScreen = ({ navigation }) => {
           style={styles.smallIcon}
         />
       </TouchableOpacity>
-      <TouchableWithoutFeedback style={styles.button} onPressIn={() => setPlayFatManAnimation(true)} onPressOut={() => { setPlayFatManAnimation(false); navigateToChart('UnitsCharts'); }}>
+      <TouchableOpacity onPressIn={() => setPlayFatManAnimation(true)} onPressOut={() => { setPlayFatManAnimation(false); navigateToChart('UnitsCharts'); }}>
         <View style={styles.button}>
           <Text style={styles.buttonText}>Units Charts</Text>
-          <FatManAnimation play={playFatManAnimation} frameRate={24} />
+          <FatManAnimation play={playFatManAnimation} frameRate={30} />
         </View>
-      </TouchableWithoutFeedback>
-
-      <TouchableOpacity style={styles.button} onPress={() => navigateToChart('AmountSpentCharts')}>
-        <Text style={styles.buttonText}>Amount Spent Charts</Text>
-        <Image
-          source={require('../../../../assets/images/wallet.png')}
-          style={styles.smallIcon}
-        />
       </TouchableOpacity>
+
+      <TouchableOpacity onPressIn={() => setPlayWalletAnimation(true)} onPressOut={() => { setPlayWalletAnimation(false); navigateToChart('AmountSpentCharts'); }}>
+        <View style={styles.button}>
+          <Text style={styles.buttonText}>Amount Spent Charts</Text>
+          <WalletAnimation play={playWalletAnimation} frameRate={41} />
+        </View>
+      </TouchableOpacity>
+
       <TouchableOpacity style={styles.button} onPress={() => navigateToChart('TypesCharts')}>
         <Text style={styles.buttonText}>Types Charts</Text>
         <Image
