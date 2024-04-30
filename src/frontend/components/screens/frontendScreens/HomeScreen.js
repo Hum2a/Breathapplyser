@@ -20,6 +20,7 @@ import StarAnimation from '../../animations/favouriteStar';
 import BeerAnimation from '../../animations/beerjug';
 import SpinningCog from '../../animations/settingsCog';
 import MedalShimmerAnimation from '../../animations/medalShimmer';
+import DiscoBallAnimation from '../../animations/discoBall';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -30,11 +31,8 @@ const HomeScreen = () => {
   const [playStarAnimation, setPlayStarAnimation] = useState(false);
   const [playBeerAnimation, setPlayBeerAnimation] = useState(false);
   const [playMedalAnimation, setPlayMedalAnimation] = useState(false);
+  const [playDiscoBallAnimation, setPlayDiscoBallAnimation ] = useState(false);
   const firestore = getFirestore();
-
-  const toggleBeerAnimation = () => {
-    setPlayBeerAnimation(!playBeerAnimation);
-  };
 
   const NavigateToDrinking = () => {
     navigation.navigate('AddEntry');
@@ -148,12 +146,8 @@ const HomeScreen = () => {
         </TouchableOpacity>
       
           <TouchableOpacity onPressIn={() => setPlayMedalAnimation(true)} onPressOut={() => { setPlayMedalAnimation(false); NavigateToAchievements(); }}>
-            {/* <Image
-              source={require('../../../assets/images/medal.png')}
-              style={homeStyles.medalIcon}
-            /> */}
             <View style={homeStyles.settingsIcon}>
-              <MedalShimmerAnimation play={playMedalAnimation} frameRate={20}/>
+              <MedalShimmerAnimation play={playMedalAnimation} frameRate={60}/>
             </View>
           </TouchableOpacity>
 
@@ -187,14 +181,14 @@ const HomeScreen = () => {
 
         <TouchableOpacity onPressIn={() => setPlayStarAnimation(true)} onPressOut={() => { setPlayStarAnimation(false); NavigateToFavourites(); }}>
             <View style={homeStyles.starContainer}>
-                <StarAnimation play={playStarAnimation} frameRate={20} />
+                <StarAnimation play={playStarAnimation} frameRate={60} />
             </View>
         </TouchableOpacity>
 
         
-        <TouchableOpacity onPress={() => { toggleBeerAnimation(); NavigateToDrinking(); }} style={homeStyles.beerContainer}>
+        <TouchableOpacity onPressIn={() => setPlayBeerAnimation(true)} onPressOut={() => { setPlayBeerAnimation(false); NavigateToDrinking(); }} style={homeStyles.beerContainer}>
           <Text style={homeStyles.buttonText}>Tap to Start Drinking</Text>
-          <BeerAnimation frameRate={24} play={playBeerAnimation} />
+          <BeerAnimation frameRate={20} play={playBeerAnimation} />
           <BacWiper />
         </TouchableOpacity>
 
@@ -205,11 +199,10 @@ const HomeScreen = () => {
           />
         </TouchableOpacity>
 
-        <TouchableOpacity style={homeStyles.nightoutContainer} onPress={NavigateToCurrentNight}>
-          <Image
-            source={require('../../../assets/images/discoball.png')}
-            style={homeStyles.smallIcon}
-          />
+        <TouchableOpacity onPressIn={() => setPlayDiscoBallAnimation(true)} onPressOut={() => { setPlayDiscoBallAnimation(false); NavigateToCurrentNight(); }}>
+            <View style={homeStyles.nightoutContainer}>
+                <DiscoBallAnimation play={playDiscoBallAnimation} frameRate={60} />
+            </View>
         </TouchableOpacity>
         
 

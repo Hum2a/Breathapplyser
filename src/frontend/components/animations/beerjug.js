@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Image } from 'react-native';
 import { homeStyles } from '../styles/StartUpStyles/homeStyles';
+import FastImage from 'react-native-fast-image';
 
 // Pre-filled array with the required frame images
 const frames = [
@@ -29,38 +30,44 @@ const frames = [
   require('../../assets/animations/beerFrames/frame_23.png'),
   require('../../assets/animations/beerFrames/frame_24.png'),
   require('../../assets/animations/beerFrames/frame_25.png'),
-
 ];
 
-const BeerAnimation = ({ frameRate, play }) => {
-    const [currentFrame, setCurrentFrame] = useState(0);
-  
-    useEffect(() => {
-      let interval;
-      if (play) {
-        interval = setInterval(() => {
-          setCurrentFrame(prevCurrentFrame => {
-            // Check if we've reached the last frame. If so, do not increment.
-            if (prevCurrentFrame < frames.length - 1) {
-              return prevCurrentFrame + 1;
-            } else {
-              // Once the last frame is reached, stop the interval and hold on the last frame
-              clearInterval(interval);
-              return prevCurrentFrame;
-            }
-          });
-        }, 1000 / frameRate);
-      } else {
-        // Optionally, you could also decide to reset to the first frame or hold the last frame when stopped
-        setCurrentFrame(0); // Reset to first frame when not playing
-        // setCurrentFrame(frames.length - 1); // Uncomment to hold the last frame when not playing
-      }
-      return () => clearInterval(interval);
-    }, [play, frameRate]);
-  
-    return (
-      <Image source={frames[currentFrame]} style={homeStyles.beer} />
-    );
+const BeerAnimation = ({ frameRate, play, onComplete }) => {
+  const [currentFrame, setCurrentFrame] = useState(0);
+  const animationRef = useRef({});
+
+  useEffect(() => {
+    if (play) {
+        // Set up the interval to change frames
+        animationRef.current.interval = setInterval(() => {
+            setCurrentFrame(prevCurrentFrame => {
+                const nextFrame = prevCurrentFrame + 1;
+                if (nextFrame < frames.length) {
+                    return nextFrame;  // Move to the next frame
+                } else {
+                    return 0;  // Reset to the first frame to loop the animation
+                }
+            });
+        }, 1000 / frameRate);  // Calculate interval time based on the desired frame rate
+    } else {
+        // Clear the interval and reset the frame if 'play' is set to false
+        clearInterval(animationRef.current.interval);
+        setCurrentFrame(0);  // Reset to the first frame when not playing
+    }
+
+    // Clean up the interval when the component unmounts or when 'play' or 'frameRate' changes
+    return () => {
+        clearInterval(animationRef.current.interval);
+    };
+}, [play, frameRate]);
+
+
+  return (
+    <FastImage
+      source={frames[currentFrame]}
+      style={homeStyles.beer}
+    />
+  );
 };
 
 export default BeerAnimation;
