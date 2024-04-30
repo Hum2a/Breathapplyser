@@ -14,7 +14,7 @@ const Settings = () => {
   const { logout } = useUser(); // Use the logout function from UserContext
   const [ playProfileWaveAnimation, setPlayProfileWaveAnimation ] = useState(false); 
   const [ playMuscleManAnimation, setPlayMuscleManAnimation] = useState(false);
-  const [ playPaintRollerAnimation, setPlayPaintRollerAnimation ] = useState(false);
+  const [ playPaintRollerAnimation, setPlayPaintRollerAnimation ] = useState(true);
 
   const navigateToProfile = () => {
     navigation.navigate('Profile'); // Replace 'Profile' with your actual profile screen name
@@ -79,7 +79,7 @@ const Settings = () => {
          onPressOut={() => { setPlayMuscleManAnimation(false); navigateToLimits(); } }>
           <View style={styles.item}>
               <Text style={styles.text}>Limits</Text>
-              <MuscleManAnimation play={playMuscleManAnimation} frameRate={30} />
+              <MuscleManAnimation play={playMuscleManAnimation} frameRate={60} />
           </View>
         </TouchableOpacity>
 
@@ -93,7 +93,7 @@ const Settings = () => {
          onPressOut={() => { setPlayPaintRollerAnimation(false); navigateToDisplay(); } }>
           <View style={styles.item}>
               <Text style={styles.text}>Display</Text>
-              <PaintRollerAnimation play={playPaintRollerAnimation} frameRate={41} />
+              <PaintRollerAnimation play={playPaintRollerAnimation} frameRate={60} />
           </View>
       </TouchableOpacity>
 
