@@ -15,6 +15,7 @@ export const RegisterStyles = StyleSheet.create({
     padding: 10,
     marginVertical: 8,
     borderRadius: 10,
+    color: 'black',
     backgroundColor: '#FFFFFF', // White input background
   },
   datePickerButton: {

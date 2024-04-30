@@ -9,10 +9,10 @@ import LinearGradient from 'react-native-linear-gradient'; // Import LinearGradi
 
 
 const RegisterScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('tester');
-  const [email, setEmail] = useState('test@test.test');
-  const [password, setPassword] = useState('tester');
-  const [confirmPassword, setConfirmPassword] = useState('tester');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
   const firestore = getFirestore();
@@ -53,25 +53,29 @@ const RegisterScreen = ({ navigation }) => {
       <TextInput
         style={RegisterStyles.input}
         placeholder="Username"
+        placeholderTextColor={'black'}
         value={username}
         onChangeText={setUsername}
       />
       <TextInput
         style={RegisterStyles.input}
         placeholder="Email"
+        placeholderTextColor={'black'}
         value={email}
         onChangeText={setEmail}
       />
       <TextInput
         style={RegisterStyles.input}
         placeholder="Password"
+        placeholderTextColor={'black'}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
       <TextInput
         style={RegisterStyles.input}
-        placeholder="Password"
+        placeholder="Confirm Password"
+        placeholderTextColor={'black'}
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         secureTextEntry
