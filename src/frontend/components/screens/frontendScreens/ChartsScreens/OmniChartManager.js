@@ -3,11 +3,15 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { omniStyles as styles } from '../../../styles/ChartStyles/omniStyles';
 import FatManAnimation from '../../../animations/fatman';
 import WalletAnimation from '../../../animations/wallet';
+import PenWritingAnimation from '../../../animations/penWriting';
+import BloodAnimation from '../../../animations/blood';
 import { BackButton } from '../../../buttons/backButton';
 
 const ChartsScreen = ({ navigation }) => {
   const [playFatManAnimation, setPlayFatManAnimation] = useState(false);
   const [playWalletAnimation, setPlayWalletAnimation] = useState(false);
+  const [playPenWritingAnimation, setPlayPenWritingAnimation] = useState(false);
+  const [playBloodAnimation, setPlayBloodAnimation] = useState(true);
 
   const navigateToChart = (chartType) => {
     navigation.navigate(chartType);
@@ -17,12 +21,11 @@ const ChartsScreen = ({ navigation }) => {
     <View style={styles.container}>
       <BackButton />
       <Text style={styles.graphTitle}> All Charts </Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigateToChart('BACCharts')}>
-        <Text style={styles.buttonText}>BAC Charts</Text>
-        <Image
-          source={require('../../../../assets/images/blood.png')}
-          style={styles.smallIcon}
-        />
+      <TouchableOpacity onPressIn={() => setPlayBloodAnimation(true)} onPressOut={() => { setPlayBloodAnimation(true); navigateToChart('BACCharts'); }}>
+        <View style={styles.button}>
+          <Text style={styles.buttonText}>BAC Charts</Text>
+          <BloodAnimation play={playBloodAnimation} frameRate={60} />
+        </View>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigateToChart('DrunkCharts')}>
         <Text style={styles.buttonText}>Drunkenness Charts</Text>
@@ -52,12 +55,12 @@ const ChartsScreen = ({ navigation }) => {
           style={styles.smallIcon}
         />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => navigateToChart('NamesCharts')}>
-        <Text style={styles.buttonText}>Names Charts</Text>
-        <Image
-          source={require('../../../../assets/images/writing.png')}
-          style={styles.smallIcon}
-        />
+
+      <TouchableOpacity onPressIn={() => setPlayPenWritingAnimation(true)} onPressOut={() => { setPlayPenWritingAnimation(false); navigateToChart('NamesCharts'); }}>
+        <View style={styles.button}>
+          <Text style={styles.buttonText}>Names Charts</Text>
+          <PenWritingAnimation play={playPenWritingAnimation} frameRate={60} />
+        </View>
       </TouchableOpacity>
     </View>
   );
