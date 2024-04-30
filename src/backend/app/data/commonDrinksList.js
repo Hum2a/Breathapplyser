@@ -58,6 +58,7 @@ const CommonDrinksList = {
     { name: 'Chartreuse', alcohol: 'Liquer', units: 2, calories: 110 },
     { name: 'Triple Sec', alcohol: 'Liquer', units: 2, calories: 110 },
     { name: 'Galliano', alcohol: 'Liquer', units: 2, calories: 120 },
+    { name: 'Jägermeister', alcohol: 'Liquer', units: 2, calories: 120},
   ],
   Cocktails: [
     { name: 'Margarita', alcohol: 'Cocktail', units: 2, calories: 200 },
