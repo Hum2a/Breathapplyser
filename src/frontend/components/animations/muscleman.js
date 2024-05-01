@@ -44,28 +44,28 @@ const MuscleManAnimation = ({ frameRate, play, onComplete }) => {
 
   useEffect(() => {
     if (play) {
-      animationRef.current.interval = setInterval(() => {
-        setCurrentFrame(prevCurrentFrame => {
-          const nextFrame = prevCurrentFrame + 1;
-          if (nextFrame < frames.length) {
-            return nextFrame;
-          } else {
-            clearInterval(animationRef.current.interval);
-            if (onComplete) {
-              // Ensure onComplete is called outside the render phase
-              setTimeout(onComplete, 0);
-            }
-            return prevCurrentFrame; // Keep showing the last frame
-          }
-        });
-      }, 1000 / frameRate);
+        // Set up the interval to change frames
+        animationRef.current.interval = setInterval(() => {
+            setCurrentFrame(prevCurrentFrame => {
+                const nextFrame = prevCurrentFrame + 1;
+                if (nextFrame < frames.length) {
+                    return nextFrame;  // Move to the next frame
+                } else {
+                    return 0;  // Reset to the first frame to loop the animation
+                }
+            });
+        }, 1000 / frameRate);  // Calculate interval time based on the desired frame rate
     } else {
-      setCurrentFrame(0); // Reset to the first frame when not playing
+        // Clear the interval and reset the frame if 'play' is set to false
+        clearInterval(animationRef.current.interval);
+        setCurrentFrame(0);  // Reset to the first frame when not playing
     }
 
-    // Cleanup interval on component unmount or when play changes
-    return () => clearInterval(animationRef.current.interval);
-  }, [play, frameRate, onComplete]);
+    // Clean up the interval when the component unmounts or when 'play' or 'frameRate' changes
+    return () => {
+        clearInterval(animationRef.current.interval);
+    };
+}, [play, frameRate]);
 
   return (
     <FastImage
