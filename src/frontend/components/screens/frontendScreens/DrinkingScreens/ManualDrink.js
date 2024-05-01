@@ -433,12 +433,6 @@ const ManualEntryScreen = ({ navigation }) => {
   return (
     <ScrollView contentContainerStyle={addStyles.scrollContainer}>
       <Animated.View style={containerStyle}>
-  
-        {/* <View style={addStyles.statsContainer}>
-          <Text style={addStyles.statText}>Total Drinks: {totalDrinks}</Text>
-          <Text style={addStyles.statText}>Units: {totalUnits}</Text>
-          <Text style={addStyles.statText}>Spending: £{totalSpending}</Text>
-        </View> */}
         
         <AlcoholInput value={alcohol} onChangeText={setAlcohol} />
         <>
@@ -446,6 +440,7 @@ const ManualEntryScreen = ({ navigation }) => {
             selectedValue={type}
             style={addStyles.picker}
             onValueChange={(itemValue, itemIndex) => setType(itemValue)}
+            mode='dropdown'
           >
             {drinkTypes.map((type, index) => (
               <Picker.Item key={index} label={type} value={type} />
@@ -456,6 +451,7 @@ const ManualEntryScreen = ({ navigation }) => {
             selectedValue={amount}
             style={addStyles.picker}
             onValueChange={(itemValue, itemIndex) => setAmount(itemValue)}
+            mode='dropdown'
           >
             {[...Array(9).keys()].map((n) => (
               <Picker.Item key={n} label={`${n + 1}`} value={n + 1} />
@@ -463,12 +459,18 @@ const ManualEntryScreen = ({ navigation }) => {
           </Picker>
         </>
 
-        <UnitsInput value={units} onChangeText={setUnits} />
+        <UnitsInput 
+          value={units} 
+          onChangeText={setUnits} 
+          keyboardType="decimal-pad" // Ensure the keyboard supports decimal input
+        />
+
 
         <View style={addStyles.priceInputContainer}>
           <TextInput
             style={addStyles.priceInput}
             placeholder="Price"
+            placeholderTextColor={'black'}
             keyboardType="numeric"
             value={price}
             onChangeText={setPrice}
@@ -480,6 +482,17 @@ const ManualEntryScreen = ({ navigation }) => {
             style={addStyles.currencyPicker}
           />
         </View>
+
+        <TouchableOpacity
+          style={addStyles.timeButton}
+          onPress={() => {
+            const currentTime = moment().format('HH:mm');
+            setSelectedStartTime(currentTime);  // Assuming this is for the start time picker
+            setSelectedEndTime(currentTime);  
+          }}
+        >
+          <Text style={addStyles.timeButtonText}>Set to Current Time</Text>
+      </TouchableOpacity>
 
         <AnimatedButton
           title={`Start Time: ${selectedStartTime}`}
