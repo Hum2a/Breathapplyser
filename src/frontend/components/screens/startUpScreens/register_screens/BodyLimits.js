@@ -104,6 +104,7 @@ const BodyLimitsScreen = ({ navigation }) => {
                 value={spendingLimit}
                 onValueChange={setSpendingLimit}
                 minimumTrackTintColor="#03a9f4"
+                maximumTrackTintColor="#BDBDBD"
                 thumbTintColor="#0288d1"
               />
             </View>
@@ -121,6 +122,7 @@ const BodyLimitsScreen = ({ navigation }) => {
                 value={drinkingLimit}
                 onValueChange={setDrinkingLimit}
                 minimumTrackTintColor="#03a9f4"
+                maximumTrackTintColor="#BDBDBD"
                 thumbTintColor="#0288d1"
               />
             </View>
