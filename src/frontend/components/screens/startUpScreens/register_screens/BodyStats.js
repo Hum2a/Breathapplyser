@@ -9,8 +9,10 @@ import { UserContext } from '../../../../context/UserContext';
 const BodyStats = ({ route, navigation }) => {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
-  const [heightUnit, setHeightUnit] = useState('cm'); // Default unit for height
-  const [weightUnit, setWeightUnit] = useState('kg'); // Default unit for weight
+  const [heightUnit, setHeightUnit] = useState('cm');
+  const [feet, setFeet] = useState('');
+  const [inches, setInches] = useState('');
+  const [weightUnit, setWeightUnit] = useState('kg');
   const [age, setAge] = useState('');
   const [sex, setSex] = useState('male');
   const [bmi, setBMI] = useState('');
@@ -19,10 +21,15 @@ const BodyStats = ({ route, navigation }) => {
 
   const calculateBMI = () => {
     // Convert height and weight to a common unit (e.g., cm and kg)
-    const heightInCM = heightUnit === 'ft' ? height * 30.48 : height;
-    const weightInKG = weightUnit === 'lbs' ? weight / 2.20462 : weight;
-
-    // Calculate BMI using height in cm and weight in kg
+    let heightInCM;
+    if (heightUnit === 'ft') {
+      // Convert feet and inches to centimeters
+      const totalInches = parseInt(feet) * 12 + parseInt(inches);
+      heightInCM = totalInches * 2.54;
+    } else {
+      heightInCM = parseFloat(height);
+    }
+    const weightInKG = weightUnit === 'lbs' ? parseFloat(weight) / 2.20462 : parseFloat(weight);
     const heightInMeters = heightInCM / 100;
     const bmiValue = weightInKG / (heightInMeters * heightInMeters);
     setBMI(bmiValue.toFixed(2));
@@ -73,26 +80,64 @@ const BodyStats = ({ route, navigation }) => {
     <View style={profStyles.container}>
       {/* Inputs for height, weight, age, and sex */}
       <View style={profStyles.unitPickerContainer}>
-        <TextInput
-          style={profStyles.input}
-          placeholder={`Height (${heightUnit})`}
-          value={height}
-          onChangeText={setHeight}
-          keyboardType="numeric"
-        />
+        {heightUnit === 'cm' ? (
+          <TextInput
+            style={profStyles.input}
+            placeholder="Height (cm)"
+            placeholderTextColor={'black'}
+            value={height}
+            onChangeText={setHeight}
+            keyboardType="numeric"
+          />
+        ) : (
+          <View style={{ flexDirection: 'row', flex: 1 }}>
+            <TextInput
+              style={[profStyles.input, { flex: 0.5, marginRight: 4 }]}
+              placeholder="Feet"
+              placeholderTextColor={'black'}
+              value={feet}
+              onChangeText={setFeet}
+              keyboardType="numeric"
+            />
+            <TextInput
+              style={[profStyles.input, { flex: 0.5 }]}
+              placeholder="Inches"
+              placeholderTextColor={'black'}
+              value={inches}
+              onChangeText={setInches}
+              keyboardType="numeric"
+            />
+          </View>
+        )}
         <Picker
           style={profStyles.unitPicker}
           selectedValue={heightUnit}
-          onValueChange={setHeightUnit}
+          onValueChange={(itemValue) => {
+            setHeightUnit(itemValue);
+            if (itemValue === 'cm') {
+              // Convert feet and inches to cm when switching back to cm
+              const totalInches = parseInt(feet) * 12 + parseInt(inches);
+              setHeight((totalInches * 2.54).toFixed(0));
+            } else {
+              // Reset feet and inches when switching to feet
+              const cmInFeet = Math.floor(height / 30.48);
+              const cmInInches = ((height / 30.48) - cmInFeet) * 12;
+              setFeet(cmInFeet.toString());
+              setInches(cmInInches.toFixed(0));
+            }
+          }}
+          mode="dropdown"
         >
           <Picker.Item label="cm" value="cm" />
           <Picker.Item label="ft" value="ft" />
         </Picker>
       </View>
+
       <View style={profStyles.unitPickerContainer}>
         <TextInput
           style={profStyles.input}
           placeholder={`Weight (${weightUnit})`}
+          placeholderTextColor={'black'}
           value={weight}
           onChangeText={setWeight}
           keyboardType="numeric"
@@ -101,28 +146,33 @@ const BodyStats = ({ route, navigation }) => {
           style={profStyles.unitPicker}
           selectedValue={weightUnit}
           onValueChange={setWeightUnit}
+          mode='dropdown'
         >
           <Picker.Item label="kg" value="kg" />
           <Picker.Item label="lbs" value="lbs" />
         </Picker>
       </View>
-      <TextInput
-        style={profStyles.input}
-        placeholder="Age"
-        value={age}
-        onChangeText={setAge}
-        keyboardType="numeric"
-      />
-      <Picker
-        style={profStyles.unitPicker}
-        selectedValue={sex}
-        onValueChange={setSex}
-      >
-        <Picker.Item label="Male" value="male" />
-        <Picker.Item label="Female" value="female" />
-      </Picker>
+      <View style={profStyles.unitPickerContainer}>
+        <TextInput
+          style={profStyles.input}
+          placeholder="Age"
+          placeholderTextColor={'black'}
+          value={age}
+          onChangeText={setAge}
+          keyboardType="numeric"
+        />
+        <Picker
+          style={profStyles.unitPicker}
+          selectedValue={sex}
+          onValueChange={setSex}
+          mode="dropdown"
+        >
+          <Picker.Item label="Male" value="male" />
+          <Picker.Item label="Female" value="female" />
+        </Picker>
+      </View>
       
-      <Text style={profStyles.text}>BMI: {bmi}</Text>
+      <Text style={profStyles.bmiLabel}>BMI: {bmi}</Text>
       {/* Action Buttons */}
       <TouchableOpacity style={profStyles.button} onPress={calculateBMI}>
         <Text style={profStyles.buttonText}>Calculate BMI</Text>

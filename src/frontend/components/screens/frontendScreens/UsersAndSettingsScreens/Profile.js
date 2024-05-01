@@ -131,28 +131,31 @@ const ProfileScreen = () => {
         <BackButton />
         <Text style={profStyles.title}>Your Profile</Text>
 
-        <View style={profStyles.inputContainer}>
-          <Text style={profStyles.inputLabel}>Height</Text>
+        <Text style={profStyles.inputLabel}>Height</Text>
+        <View style={profStyles.unitPickerContainer}>
           {heightUnit === 'cm' ? (
             <TextInput
               style={profStyles.input}
-              placeholder="Height in cm"
+              placeholder="Height (cm)"
+              placeholderTextColor={'black'}
               value={height}
               onChangeText={setHeight}
               keyboardType="numeric"
             />
           ) : (
-            <View style={profStyles.inputDualContainer}>
+            <View style={{ flexDirection: 'row', flex: 1 }}>
               <TextInput
-                style={[profStyles.input, profStyles.inputDual]}
+                style={[profStyles.input, { flex: 0.5, marginRight: 4 }]}
                 placeholder="Feet"
+                placeholderTextColor={'black'}
                 value={heightFeet}
                 onChangeText={setHeightFeet}
                 keyboardType="numeric"
               />
               <TextInput
-                style={[profStyles.input, profStyles.inputDual]}
+                style={[profStyles.input, { flex: 0.5 }]}
                 placeholder="Inches"
+                placeholderTextColor={'black'}
                 value={heightInches}
                 onChangeText={setHeightInches}
                 keyboardType="numeric"
@@ -162,18 +165,33 @@ const ProfileScreen = () => {
           <Picker
             style={profStyles.unitPicker}
             selectedValue={heightUnit}
-            onValueChange={(itemValue) => setHeightUnit(itemValue)}
+            onValueChange={(itemValue) => {
+              setHeightUnit(itemValue);
+              if (itemValue === 'cm') {
+                // Convert feet and inches to cm when switching back to cm
+                const totalInches = parseInt(heightFeet) * 12 + parseInt(heightInches);
+                setHeight((totalInches * 2.54).toFixed(0));
+              } else {
+                // Reset feet and inches when switching to feet
+                const cmInFeet = Math.floor(height / 30.48);
+                const cmInInches = ((height / 30.48) - cmInFeet) * 12;
+                setHeightFeet(cmInFeet.toString());
+                setHeightInches(cmInInches.toFixed(0));
+              }
+            }}
+            mode="dropdown"
           >
             <Picker.Item label="cm" value="cm" />
-            <Picker.Item label="feet" value="feet" />
+            <Picker.Item label="ft" value="ft" />
           </Picker>
         </View>
 
-        <View style={profStyles.inputContainer}>
-          <Text style={profStyles.inputLabel}>Weight</Text>
+        <Text style={profStyles.inputLabel}>Weight</Text>
+        <View style={profStyles.unitPickerContainer}>
           <TextInput
             style={profStyles.input}
-            placeholder="Weight"
+            placeholder={`Weight (${weightUnit})`}
+            placeholderTextColor={'black'}
             value={weight}
             onChangeText={setWeight}
             keyboardType="numeric"
@@ -181,30 +199,33 @@ const ProfileScreen = () => {
           <Picker
             style={profStyles.unitPicker}
             selectedValue={weightUnit}
-            onValueChange={(itemValue) => setWeightUnit(itemValue)}
+            onValueChange={setWeightUnit}
+            mode='dropdown'
           >
             <Picker.Item label="kg" value="kg" />
             <Picker.Item label="lbs" value="lbs" />
           </Picker>
         </View>
 
-        <View style={profStyles.inputContainer}>
-          <Text style={profStyles.inputLabel}>Age</Text>
+        <Text style={profStyles.inputLabel}>Age</Text>
+        <View style={profStyles.unitPickerContainer}>
           <TextInput
             style={profStyles.input}
             placeholder="Age"
+            placeholderTextColor={'black'}
             value={age}
             onChangeText={setAge}
             keyboardType="numeric"
           />
         </View>
 
-        <View style={profStyles.inputContainer}>
-          <Text style={profStyles.inputLabel}>Sex</Text>
+        <Text style={profStyles.inputLabel}>Sex</Text>
+        <View style={profStyles.unitPickerContainer}>
           <Picker
             style={profStyles.unitPicker}
             selectedValue={sex}
-            onValueChange={(itemValue) => setSex(itemValue)}
+            onValueChange={setSex}
+            mode="dropdown"
           >
             <Picker.Item label="Male" value="male" />
             <Picker.Item label="Female" value="female" />
