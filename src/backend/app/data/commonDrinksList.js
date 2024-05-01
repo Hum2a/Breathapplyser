@@ -50,6 +50,7 @@ const CommonDrinksList = {
   Liquers: [
     { name: 'Baileys Irish Cream', alcohol: 'Liquer', units: 2, calories: 230 },
     { name: 'Amaretto', alcohol: 'Liquer', units: 2, calories: 220 },
+    { name: 'Jägermeister', alcohol: 'Liquer', units: 1, calories: 120},
     { name: 'Kahlua', alcohol: 'Liquer', units: 2, calories: 130 },
     { name: 'Grand Marnier', alcohol: 'Liquer', units: 2, calories: 103 },
     { name: 'Frangelico', alcohol: 'Liquer', units: 2, calories: 190 },
@@ -58,7 +59,6 @@ const CommonDrinksList = {
     { name: 'Chartreuse', alcohol: 'Liquer', units: 2, calories: 110 },
     { name: 'Triple Sec', alcohol: 'Liquer', units: 2, calories: 110 },
     { name: 'Galliano', alcohol: 'Liquer', units: 2, calories: 120 },
-    { name: 'Jägermeister', alcohol: 'Liquer', units: 2, calories: 120},
   ],
   Cocktails: [
     { name: 'Margarita', alcohol: 'Cocktail', units: 2, calories: 200 },
