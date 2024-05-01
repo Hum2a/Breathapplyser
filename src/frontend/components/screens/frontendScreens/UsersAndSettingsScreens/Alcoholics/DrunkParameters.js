@@ -159,6 +159,9 @@ const DrunkParametersScreen = () => {
                 </TouchableOpacity>
               </View>
               )}
+            <TouchableOpacity onPress={() => saveLevelsToFirebase()} style={styles.saveAllButton}>
+              <Text style={styles.saveAllButtonText}>Save All Levels</Text>
+            </TouchableOpacity>
         </View>
       );
     };
@@ -236,6 +239,19 @@ const DrunkParametersScreen = () => {
           color: '#fff',
           fontWeight: 'bold',
       },
+      saveAllButton: {
+        backgroundColor: '#4CAF50',  // A vibrant green color
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+        marginBottom: 10,
+      },
+      saveAllButtonText: {
+        color: '#FFFFFF',
+        fontWeight: 'bold',
+        fontSize: 16,
+      },
+      
     });
     
     export default DrunkParametersScreen;
