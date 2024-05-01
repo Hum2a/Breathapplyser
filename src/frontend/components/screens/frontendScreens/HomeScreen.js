@@ -28,10 +28,10 @@ const HomeScreen = () => {
   const [statUpdateCount, setStatUpdateCount] = useState(0);
   const [bacUpdateCount, setBACUpdateCount] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [playStarAnimation, setPlayStarAnimation] = useState(false);
+  const [playStarAnimation, setPlayStarAnimation] = useState(true);
   const [playBeerAnimation, setPlayBeerAnimation] = useState(false);
   const [playMedalAnimation, setPlayMedalAnimation] = useState(false);
-  const [playDiscoBallAnimation, setPlayDiscoBallAnimation ] = useState(false);
+  const [playDiscoBallAnimation, setPlayDiscoBallAnimation ] = useState(true);
   const firestore = getFirestore();
 
   const NavigateToDrinking = () => {
@@ -181,14 +181,14 @@ const HomeScreen = () => {
 
         <TouchableOpacity onPressIn={() => setPlayStarAnimation(true)} onPressOut={() => { setPlayStarAnimation(false); NavigateToFavourites(); }}>
             <View style={homeStyles.starContainer}>
-                <StarAnimation play={playStarAnimation} frameRate={60} />
+                <StarAnimation play={playStarAnimation} frameRate={24} />
             </View>
         </TouchableOpacity>
 
         
         <TouchableOpacity onPressIn={() => setPlayBeerAnimation(true)} onPressOut={() => { setPlayBeerAnimation(false); NavigateToDrinking(); }} style={homeStyles.beerContainer}>
           <Text style={homeStyles.buttonText}>Tap to Start Drinking</Text>
-          <BeerAnimation frameRate={20} play={playBeerAnimation} />
+          <BeerAnimation frameRate={24} play={playBeerAnimation} />
           <BacWiper />
         </TouchableOpacity>
 
@@ -201,7 +201,7 @@ const HomeScreen = () => {
 
         <TouchableOpacity onPressIn={() => setPlayDiscoBallAnimation(true)} onPressOut={() => { setPlayDiscoBallAnimation(false); NavigateToCurrentNight(); }}>
             <View style={homeStyles.nightoutContainer}>
-                <DiscoBallAnimation play={playDiscoBallAnimation} frameRate={60} />
+                <DiscoBallAnimation play={playDiscoBallAnimation} frameRate={24} />
             </View>
         </TouchableOpacity>
         

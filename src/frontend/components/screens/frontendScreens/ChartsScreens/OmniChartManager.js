@@ -8,9 +8,9 @@ import BloodAnimation from '../../../animations/blood';
 import { BackButton } from '../../../buttons/backButton';
 
 const ChartsScreen = ({ navigation }) => {
-  const [playFatManAnimation, setPlayFatManAnimation] = useState(false);
-  const [playWalletAnimation, setPlayWalletAnimation] = useState(false);
-  const [playPenWritingAnimation, setPlayPenWritingAnimation] = useState(false);
+  const [playFatManAnimation, setPlayFatManAnimation] = useState(true);
+  const [playWalletAnimation, setPlayWalletAnimation] = useState(true);
+  const [playPenWritingAnimation, setPlayPenWritingAnimation] = useState(true);
   const [playBloodAnimation, setPlayBloodAnimation] = useState(true);
 
   const navigateToChart = (chartType) => {
@@ -24,7 +24,7 @@ const ChartsScreen = ({ navigation }) => {
       <TouchableOpacity onPressIn={() => setPlayBloodAnimation(true)} onPressOut={() => { setPlayBloodAnimation(true); navigateToChart('BACCharts'); }}>
         <View style={styles.button}>
           <Text style={styles.buttonText}>BAC Charts</Text>
-          <BloodAnimation play={playBloodAnimation} frameRate={60} />
+          <BloodAnimation play={playBloodAnimation} frameRate={45} />
         </View>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigateToChart('DrunkCharts')}>
@@ -59,7 +59,7 @@ const ChartsScreen = ({ navigation }) => {
       <TouchableOpacity onPressIn={() => setPlayPenWritingAnimation(true)} onPressOut={() => { setPlayPenWritingAnimation(false); navigateToChart('NamesCharts'); }}>
         <View style={styles.button}>
           <Text style={styles.buttonText}>Names Charts</Text>
-          <PenWritingAnimation play={playPenWritingAnimation} frameRate={60} />
+          <PenWritingAnimation play={playPenWritingAnimation} frameRate={30} />
         </View>
       </TouchableOpacity>
     </View>

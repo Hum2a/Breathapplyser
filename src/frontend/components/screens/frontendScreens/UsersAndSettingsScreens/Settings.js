@@ -12,8 +12,8 @@ import { BackButton } from '../../../buttons/backButton';
 const Settings = () => {
   const navigation = useNavigation();
   const { logout } = useUser(); // Use the logout function from UserContext
-  const [ playProfileWaveAnimation, setPlayProfileWaveAnimation ] = useState(false); 
-  const [ playMuscleManAnimation, setPlayMuscleManAnimation] = useState(false);
+  const [ playProfileWaveAnimation, setPlayProfileWaveAnimation ] = useState(true); 
+  const [ playMuscleManAnimation, setPlayMuscleManAnimation] = useState(true);
   const [ playPaintRollerAnimation, setPlayPaintRollerAnimation ] = useState(true);
 
   const navigateToProfile = () => {
@@ -79,7 +79,7 @@ const Settings = () => {
          onPressOut={() => { setPlayMuscleManAnimation(false); navigateToLimits(); } }>
           <View style={styles.item}>
               <Text style={styles.text}>Limits</Text>
-              <MuscleManAnimation play={playMuscleManAnimation} frameRate={60} />
+              <MuscleManAnimation play={playMuscleManAnimation} frameRate={30} />
           </View>
         </TouchableOpacity>
 
