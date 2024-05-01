@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Switch, Text, TouchableOpacity, Image } from "react-native";
+import { View, Switch, Text, TouchableOpacity, Image, ScrollView } from "react-native";
 import ManualEntryScreen from "./ManualDrink";
 import AutoEntryScreen from "./AutoDrink";
 import { drinkStyles as styles, manualStyles } from "../../../styles/DrinkingStyles/addStyles";
@@ -64,7 +64,7 @@ const AddEntryScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={{backgroundColor: '#FFFFFF'}}>
+    <ScrollView style={{backgroundColor: '#FFFFFF'}}>
       <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>
         <TouchableOpacity style={styles.iconContainer} onPress={back}>
           <Image source={require('../../../../assets/images/back_arrow.png')} style={styles.icon} />
@@ -82,7 +82,7 @@ const AddEntryScreen = ({ navigation }) => {
           <Text style={manualStyles.statText}>Spending: £{totalSpending}</Text>
         </View>
       {isAuto ? <AutoEntryScreen navigation={navigation} /> : <ManualEntryScreen navigation={navigation} />}
-    </View>
+    </ScrollView>
   );
 };
 
