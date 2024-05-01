@@ -6,7 +6,6 @@ export const amountSpentStyles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       padding: 20,
-      backgroundColor: '#F0F8FF', // Light blue background
     },
     graphTitle: {
       fontSize: 24,
