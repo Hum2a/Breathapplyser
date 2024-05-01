@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { chartStyles } from '../../../../styles/ChartStyles/chartStyles';
 import {
   BACChart,
@@ -11,7 +11,7 @@ import {
 } from '../../../../charts/chartIndex';
 import { BackButton } from '../../../../buttons/backButton';
 
-const BACCharts = () => {
+const BACCharts = ({ navigation }) => {
   const [showBAC12Hours, setShowBAC12Hours] = useState(false);
   const [showBACPredictionChart, setShowBACPredictionChart] = useState(false);
   const [showBACComparisonGraph, setShowBACComparisonGraph] = useState(false);
@@ -19,11 +19,18 @@ const BACCharts = () => {
   const [showBACChart, setShowBACChart] = useState(false);
   const [showBACTrackingChart, setShowBACTrackingChart] = useState(false);
 
+  const back = () => {
+    navigation.pop(1); // Navigate back one screen
+  };
+
   
   return (
     <SafeAreaView style={chartStyles.fullScreen}>
       <ScrollView>
         <View style={chartStyles.chartContainer}>
+          <TouchableOpacity style={chartStyles.iconContainer} onPress={back}>
+            <Image source={require('../../../../../assets/images/back_arrow.png')} style={chartStyles.icon} />
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
             onPress={() => setShowBAC12Hours(!showBAC12Hours)}
