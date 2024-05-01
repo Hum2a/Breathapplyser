@@ -90,12 +90,12 @@ export const manualStyles = StyleSheet.create({
     marginVertical: 10,
   },
   currencyPicker: {
-    // Styles adjusted for consistent theme
     width: 110,
     height: 45,
     borderColor: '#0392cf',
     borderRadius: 8,
     backgroundColor: '#E3F2FD',
+    color: 'navy',
     marginLeft: 10,
   },
   priceInput: {
@@ -198,7 +198,16 @@ export const manualStyles = StyleSheet.create({
     overflow: 'hidden', // This ensures the borderRadius is applied
     backgroundColor: '#E3F2FD',
   },
- 
+  timeButton: {
+    backgroundColor: 'black',
+    padding: 8,
+    alignItems: 'center',
+    borderRadius: 20,
+  } ,
+  timeButtonText: {
+    color: 'pink',
+    fontSize: 14,
+  }
 });
 
 export const autoStyles = StyleSheet.create({
@@ -324,6 +333,6 @@ export const autoStyles = StyleSheet.create({
     alignItems: 'center',
     // padding: 20,
     // backgroundColor: 'lightgrey' // Temporarily set a background color to debug visibility
-}
+},
 
 });

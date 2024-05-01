@@ -24,7 +24,7 @@ export const RegisterStyles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     marginVertical: 10,
-    backgroundColor: '#29B6F6', // Similar to gradient start
+    backgroundColor: '#F24242', // Similar to gradient start
   },
   datePickerButtonText: {
     color: 'white',
@@ -34,7 +34,13 @@ export const RegisterStyles = StyleSheet.create({
   dateOfBirthText: {
     marginVertical: 10,
     fontSize: 16,
-    color: '#0277BD', // Dark blue for contrast
+    color: 'white', // Dark blue for contrast
+    backgroundColor: '#F24242',
+    padding: 15,
+    borderRadius: 10,
+    width: '80%',
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
   // Style for the touchable area of the button
     gradientButton: {
@@ -55,4 +61,46 @@ export const RegisterStyles = StyleSheet.create({
       fontWeight: 'bold',
       fontSize: 16,
     },
+    toggleButton: {
+      marginTop: 10,
+      marginBottom: 10,
+      backgroundColor: '#f0f0f0',
+      padding: 10,
+      borderRadius: 5,
+      alignItems: 'center', // Centers the text horizontally
+      justifyContent: 'center', // Centers the text vertically
+      borderWidth: 1,
+      borderColor: '#ccc', // A subtle border color that fits the light theme
+      width: '50%', // Specifies the width of the button to be half of its container width
+      alignSelf: 'center', // Centers the button within its container
+  },
+  
+  // Also consider adding active touch feedback for better user experience:
+    toggleButtonActive: {
+      backgroundColor: '#e0e0e0', // Slightly darker for the pressed state
+  },
+
+    inputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center', 
+      width: '80%',
+      marginBottom: 10, 
+    },
+    
+    input: {
+      flex: 1, 
+      height: 50,
+      borderWidth: 1,
+      borderColor: '#B3E5FC',
+      padding: 10,
+      borderRadius: 10,
+      color: 'navy',
+      backgroundColor: '#FFFFFF',
+    },
+    
+    toggleButton: {
+      padding: 10,
+      marginHorizontal: 5,
+    },
+    
 });

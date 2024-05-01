@@ -17,6 +17,7 @@ export const DrunkStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 10,
+    backgroundColor: 'red',
   },
   pickerStyle: {
     flex: 1,
@@ -25,6 +26,7 @@ export const DrunkStyles = StyleSheet.create({
     borderRadius: 10,
     marginRight: 10,
     alignSelf: 'center',
+    color: 'black',
   },
   legendContainer: {
     flexDirection: 'row',
