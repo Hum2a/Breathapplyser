@@ -23,26 +23,36 @@ export const profStyles = StyleSheet.create({
     marginBottom: 5,
     color: '#003366', // Dark blue for input labels
   },
-  input: {
-    height: 40,
-    borderColor: '#0077B6', // Bright blue for input border
-    borderWidth: 1,
+  unitPickerContainer: {
+    flexDirection: 'row', // Align items in a row
+    alignItems: 'center', // Align items vertically in the center
+    marginBottom: 20,
+    backgroundColor: '#E7F2F8', // Consistent background color
     borderRadius: 5,
+  },
+  input: {
+    flex: 1, // Allows the input to expand and fill the space
+    height: 40,
     paddingHorizontal: 10,
-    backgroundColor: '#E7F2F8', // Very light blue for input background
-    color: '#003366', // Dark blue for input text
+    color: '#003366',
   },
   unitPicker: {
+    width: 100, // Set a fixed width for the picker
     height: 40,
-    backgroundColor: '#E7F2F8', // Very light blue for picker background
-    borderRadius: 5,
-    color: '#003366', // Dark blue for picker text
+    backgroundColor: '#E7F2F8',
+    borderTopRightRadius: 5, // Only round the right corners
+    borderBottomRightRadius: 5,
+    color: '#003366',
   },
   bmiLabel: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 10,
+    margin: 10,
     color: '#003366', // Dark blue for BMI label
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 2,
     textAlign: 'center',
   },
   button: {
