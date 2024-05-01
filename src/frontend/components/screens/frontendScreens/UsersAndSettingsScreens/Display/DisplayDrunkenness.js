@@ -6,7 +6,7 @@ import { DisplayStyles as styles } from '../../../../styles/SettingStyles/displa
 
 const DrunkennessDisplayScreen = () => {
   const { user } = useContext(UserContext);
-  const [displayMode, setDisplayMode] = useState(null); // Initially set to null
+  const [displayMode, setDisplayMode] = useState('both'); // Initially set to null
   const firestore = getFirestore();
 
   useEffect(() => {
