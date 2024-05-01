@@ -109,6 +109,7 @@ const DrunkParametersScreen = () => {
     
       return (
         <View style={styles.container}>
+          <BackButton />
           <ScrollView style={styles.scrollView}>
             {levels.map((level, index) => (
               <View key={index} style={styles.levelContainer}>
@@ -165,11 +166,12 @@ const DrunkParametersScreen = () => {
     const styles = StyleSheet.create({
       container: {
         flex: 1,
-        padding: 20,
+        padding: 15,
         backgroundColor: '#fff',
       },
       scrollView: {
         marginBottom: 20,
+        marginTop: 25,
       },
       levelContainer: {
         marginBottom: 20,

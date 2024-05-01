@@ -181,6 +181,15 @@ export const DrunkScreenStyles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#E7F2F8', // A lighter shade for the inner container for subtle contrast
   },
+  iconContainer: {
+    alignItems: 'flex-start',
+    top: -13,
+    },
+  icon: {
+    width: 40, // Set a fixed width for your icon
+    height: 40, // Set a fixed height for your icon
+    resizeMode: 'contain' // Ensure the icon scales properly
+}
 });
 
 

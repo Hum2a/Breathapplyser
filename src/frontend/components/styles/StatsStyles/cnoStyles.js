@@ -5,7 +5,7 @@ export const cnoStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#BAEAFF', // Consistent light blue background
-    padding: 20,
+    padding: 15,
   },
   title: {
     fontSize: 24,
@@ -252,6 +252,17 @@ export const cnoStyles = StyleSheet.create({
     padding: 10, // Space around the FlatList items
     // Add shadow or border if needed to match your design preference
   },  
+  iconContainer: {
+    position: 'absolute', // Position the button absolutely relative to its parent
+    top: -24, // Distance from the top of the parent container
+    left: -10, // Distance from the left of the parent container
+    padding: 10, // Add padding for easier tapping
+},
+  icon: {
+    width: 40, // Set a fixed width for your icon
+    height: 40, // Set a fixed height for your icon
+    resizeMode: 'contain' // Ensure the icon scales properly
+}
 });
 
 // Styles for the FlatList and available dates

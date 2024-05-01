@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, FlatList } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
 import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../context/UserContext';
 import { cnoStyles } from '../../../styles/StatsStyles/cnoStyles';
@@ -8,6 +8,7 @@ import { Dimensions } from 'react-native';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
+import { BackButton } from '../../../buttons/backButton';
 
 const CurrentNightOutScreen = ({ route, navigation }) => {
   const currentDateString = new Date().toISOString().split('T')[0]; // Format current date as 'YYYY-MM-DD'
@@ -255,9 +256,15 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
         }]
     };
 
+    const back = () => {
+      navigation.pop(1); // Navigate back one screen
+  };
 
   return (
     <ScrollView style={cnoStyles.container}>
+      <TouchableOpacity style={cnoStyles.iconContainer} onPress={back}>
+          <Image source={require('../../../../assets/images/back_arrow.png')} style={cnoStyles.icon} />
+      </TouchableOpacity>
       <Text style={cnoStyles.title}>
         Night Out Summary 
           <TouchableOpacity onPress={handleCalendar}>

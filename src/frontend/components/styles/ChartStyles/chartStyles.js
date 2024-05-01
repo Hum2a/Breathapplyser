@@ -63,6 +63,17 @@ export const chartStyles = StyleSheet.create({
     color: '#003366', // Consistent dark blue for readability
     transform: [{ rotate: '-45deg' }], // Maintain rotation for style
   },
+  iconContainer: {
+    position: 'absolute', // Position the button absolutely relative to its parent
+    top: -24, // Distance from the top of the parent container
+    left: -10, // Distance from the left of the parent container
+    padding: 10, // Add padding for easier tapping
+},
+  icon: {
+    width: 40, // Set a fixed width for your icon
+    height: 40, // Set a fixed height for your icon
+    resizeMode: 'contain' // Ensure the icon scales properly
+}
 });
   
 export const toggleButtonStyles = StyleSheet.create({
