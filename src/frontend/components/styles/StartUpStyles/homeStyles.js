@@ -62,6 +62,11 @@ export const homeStyles = StyleSheet.create({
     height: 50,
     backgroundColor: 'transparent',
   },
+  wallet: {
+    width: 80,
+    height: 50,
+    backgroundColor: 'transparent',
+  },
   trackContainer: {
     flexDirection: "row",
     position: 'absolute',
