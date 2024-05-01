@@ -56,7 +56,7 @@ const VisualDetailedHistory = ({ route }) => {
 
   const getCachedData = async (date) => {
     try {
-      const cachedData = await AsyncStorage.getItem(`visual_history_${date}`);
+      const cachedData = await AsyncStorage.getItem(`visual_history_${date}_${user.uid}`);
       return cachedData ? JSON.parse(cachedData) : null;
     } catch (error) {
       console.error('Error getting cached data:', error);

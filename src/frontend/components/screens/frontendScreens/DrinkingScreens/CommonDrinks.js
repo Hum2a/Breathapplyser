@@ -59,7 +59,7 @@ const CommonDrinks = () => {
   const fetchCommonDrinks = async (forceRefresh = false) => {
     if (!user) return;
   
-    const cachedData = await AsyncStorage.getItem('commonDrinksCache');
+    const cachedData = await AsyncStorage.getItem(`commonDrinksCache_${user.uid}`);
     if (cachedData && !forceRefresh) {
       const { data, timestamp } = JSON.parse(cachedData);
       const currentTime = new Date().getTime();
@@ -125,7 +125,7 @@ const CommonDrinks = () => {
       .slice(0, 3); // Take top 3 most common drinks
   
     setCommonDrinks(sortedCommonDrinks);
-    await AsyncStorage.setItem('commonDrinksCache', JSON.stringify({
+    await AsyncStorage.setItem(`commonDrinksCache_${user.uid}`, JSON.stringify({
       data: sortedCommonDrinks,
       timestamp: new Date().getTime()
     }));

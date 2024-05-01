@@ -34,7 +34,7 @@ const RecentDrinks = ({ navigation }) => {
       return;
     }
   
-    const cacheKey = 'recentDrinks';
+    const cacheKey = `recentDrinks_${user.uid}`;
     const maxDaysToLookBack = 30; // Define how many days back you want to search
     const recentDrinksLimit = 3; // How many recent drinks you want to fetch
     let fetchedRecentDrinks = [];

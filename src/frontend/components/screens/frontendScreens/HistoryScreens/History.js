@@ -26,7 +26,7 @@ const HistoryScreen = ({ navigation }) => {
 
 
   const fetchData = async (forceRefresh = false) => {
-    const cacheKey = 'history_dates_with_details';
+    const cacheKey = `history_dates_with_details_${user.uid}`;
     try {
       // Check the cache unless forceRefresh is true
       if (!forceRefresh) {
