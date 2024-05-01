@@ -16,14 +16,6 @@ export const omniStyles = StyleSheet.create({
     flexDirection: 'row', // Align text and icon horizontally
     justifyContent: 'space-between', // Distribute space evenly between text and icon
     alignItems: 'center', // Center items vertically
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   buttonText: {
     color: 'white',
