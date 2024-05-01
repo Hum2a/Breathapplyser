@@ -37,14 +37,14 @@ const ChartsScreen = ({ navigation }) => {
       <TouchableOpacity onPressIn={() => setPlayFatManAnimation(true)} onPressOut={() => { setPlayFatManAnimation(false); navigateToChart('UnitsCharts'); }}>
         <View style={styles.button}>
           <Text style={styles.buttonText}>Units Charts</Text>
-          <FatManAnimation play={playFatManAnimation} frameRate={30} />
+          <FatManAnimation play={playFatManAnimation} frameRate={24} />
         </View>
       </TouchableOpacity>
 
       <TouchableOpacity onPressIn={() => setPlayWalletAnimation(true)} onPressOut={() => { setPlayWalletAnimation(false); navigateToChart('AmountSpentCharts'); }}>
         <View style={styles.button}>
           <Text style={styles.buttonText}>Amount Spent Charts</Text>
-          <WalletAnimation play={playWalletAnimation} frameRate={41} />
+          <WalletAnimation play={playWalletAnimation} frameRate={24} />
         </View>
       </TouchableOpacity>
 
@@ -59,7 +59,7 @@ const ChartsScreen = ({ navigation }) => {
       <TouchableOpacity onPressIn={() => setPlayPenWritingAnimation(true)} onPressOut={() => { setPlayPenWritingAnimation(false); navigateToChart('NamesCharts'); }}>
         <View style={styles.button}>
           <Text style={styles.buttonText}>Names Charts</Text>
-          <PenWritingAnimation play={playPenWritingAnimation} frameRate={30} />
+          <PenWritingAnimation play={playPenWritingAnimation} frameRate={24} />
         </View>
       </TouchableOpacity>
     </View>
