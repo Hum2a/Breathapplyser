@@ -9,9 +9,11 @@ export const validateAmount = (value) => {
     return !isNaN(parseFloat(value)) && isFinite(value) && parseFloat(value) > 0;
 };
 
-export const validateUnits = (value) => {
-    return Number.isInteger(parseFloat(value)) && parseFloat(value) > 0;
+export const validateUnits = (units) => {
+    const number = parseFloat(units);
+    return !isNaN(number) && number > 0;
 };
+
 
 export const validatePrice = (value) => {
     return !isNaN(parseFloat(value)) && isFinite(value) && parseFloat(value) > 0;
