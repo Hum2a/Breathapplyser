@@ -49,7 +49,7 @@ const frames = [
 ];
 
 const WalletAnimation = ({ frameRate, play, onComplete }) => {
-  const [currentFrame, setCurrentFrame] = useState(0);
+  const [currentFrame, setCurrentFrame] = useState(1);
   const animationRef = useRef({});
 
   useEffect(() => {
@@ -81,7 +81,7 @@ const WalletAnimation = ({ frameRate, play, onComplete }) => {
   return (
     <FastImage
       source={frames[currentFrame]}
-      style={homeStyles.smallIcon}
+      style={homeStyles.wallet}
     />
   );
 };
