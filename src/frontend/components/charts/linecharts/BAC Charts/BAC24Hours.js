@@ -9,6 +9,8 @@ const BACGraphLast12Hours = () => {
   const [bacData, setBacData] = useState([]);
   const firestore = getFirestore();
   const { user } = useContext(UserContext);
+  let queryCount = 0;
+  let totalReads = 0;
 
   useEffect(() => {
     const fetchBACDataLast12Hours = async () => {
@@ -19,6 +21,8 @@ const BACGraphLast12Hours = () => {
         const bacRef = collection(firestore, user.uid, "Alcohol Stuff", "BAC Level");
         const q = query(bacRef, where("date", ">=", twelveHoursAgo), where("date", "<=", now), orderBy("date"));
         const querySnapshot = await getDocs(q);
+        queryCount += 1;
+        totalReads += querySnapshot.docs.length;
         const fetchedData = [];
     
         querySnapshot.forEach(doc => {
@@ -46,11 +50,18 @@ const BACGraphLast12Hours = () => {
   const dataPoints = [];
   const currentHour = moment().startOf('hour');
   for (let i = 11; i >= 0; i--) {
-    const hourLabel = currentHour.clone().subtract(i, 'hours').format('HH:mm');
+    const hourLabel = currentHour.clone().subtract(i, 'hours').format('HH');
     labels.push(hourLabel);
     const bacEntry = bacData.find(entry => moment(entry.date).format('HH') === currentHour.clone().subtract(i, 'hours').format('HH'));
-    dataPoints.push(bacEntry ? bacEntry.value : 0);
+    if (bacEntry && !isNaN(bacEntry.value)) {
+      dataPoints.push(bacEntry ? bacEntry.value : 0);
+    } else {
+      dataPoints.push(0);
+    }
   }
+
+  console.log("Total Firebase queries made:", queryCount);
+  console.log("Total reads made to Firebase directory:", totalReads);
 
   return (
     <View>
