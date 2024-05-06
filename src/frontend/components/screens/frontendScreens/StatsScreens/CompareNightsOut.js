@@ -248,32 +248,41 @@ const CompareNightsOutScreen = ({ route }) => {
                 style={flatListStyles.container}
                 data={availableDates}
                 renderItem={({ item }) => (
-                  <TouchableOpacity style={flatListStyles.dateItem} onPress={() => handleDateSelect(item, 'date1')}>
-                    <Text style={flatListStyles.dateText}>{moment(item, 'YYYY MM DD').format('LL')}</Text>
+                  <TouchableOpacity style={cnoStyles.modalItemContainer} onPress={() => handleDateSelect(item, 'date1')}>
+                    <Text style={cnoStyles.modalItemText}>{moment(item, 'YYYY MM DD').format('LL')}</Text>
                   </TouchableOpacity>
                 )}
                 keyExtractor={(item, index) => index.toString()}
               />
               </ScrollView>
-              <Button title="Confirm" onPress={() => handleDateSelect(selectedDate, 'date1')} />
-              <Button title="Cancel" onPress={hideModals} />
+              <TouchableOpacity
+                      style={cnoStyles.closeButton}
+                      onPress={() => setDate1ModalVisible(false)}
+                      >
+                      <Text style={cnoStyles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
             </View>
           </Modal>
 
           <Modal visible={isDate2ModalVisible} animationType="slide">
-            <View style={cnoStyles.modalContainer}>
+            <View style={cnoStyles.modalItemContainer}>
               <ScrollView>
               <FlatList
-                style={flatListStyles.container}
                 data={availableDates}
                 renderItem={({ item }) => (
-                  <TouchableOpacity style={flatListStyles.dateItem} onPress={() => handleDateSelect(item, 'date2')}>
-                    <Text style={flatListStyles.dateText}>{moment(item, 'YYYY MM DD').format('LL')}</Text>
+                  <TouchableOpacity style={cnoStyles.modalItemContainer} onPress={() => handleDateSelect(item, 'date2')}>
+                    <Text style={cnoStyles.modalItemText}>{moment(item, 'YYYY MM DD').format('LL')}</Text>
                   </TouchableOpacity>
                 )}
                 keyExtractor={(item, index) => index.toString()}
               />
               </ScrollView>
+              <TouchableOpacity
+                      style={cnoStyles.closeButton}
+                      onPress={() => setDate2ModalVisible(false)}
+                      >
+                      <Text style={cnoStyles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
             </View>
           </Modal>
 
@@ -370,15 +379,19 @@ const CompareNightsOutScreen = ({ route }) => {
                 style={flatListStyles.container}
                 data={availableDates}
                 renderItem={({ item }) => (
-                  <TouchableOpacity style={flatListStyles.dateItem} onPress={() => handleDateSelect(item, 'date1')}>
-                    <Text style={flatListStyles.dateText}>{moment(item, 'YYYY MM DD').format('LL')}</Text>
+                  <TouchableOpacity style={cnoStyles.modalItemContainer} onPress={() => handleDateSelect(item, 'date1')}>
+                    <Text style={cnoStyles.modalItemText}>{moment(item, 'YYYY MM DD').format('LL')}</Text>
                   </TouchableOpacity>
                 )}
                 keyExtractor={(item, index) => index.toString()}
               />
               </ScrollView>
-              <Button title="Confirm" onPress={() => handleDateSelect(selectedDate, 'date1')} />
-              <Button title="Cancel" onPress={hideModals} />
+              <TouchableOpacity
+                style={cnoStyles.closeButton}
+                onPress={() => setDate1ModalVisible(false)}
+                >
+                <Text style={cnoStyles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
             </View>
           </Modal>
 
@@ -439,13 +452,19 @@ const CompareNightsOutScreen = ({ route }) => {
                 style={flatListStyles.container}
                 data={availableDates}
                 renderItem={({ item }) => (
-                  <TouchableOpacity style={flatListStyles.dateItem} onPress={() => handleDateSelect(item, 'date2')}>
-                    <Text style={flatListStyles.dateText}>{moment(item, 'YYYY MM DD').format('LL')}</Text>
+                  <TouchableOpacity style={cnoStyles.modalItemContainer} onPress={() => handleDateSelect(item, 'date2')}>
+                    <Text style={cnoStyles.modalItemText}>{moment(item, 'YYYY MM DD').format('LL')}</Text>
                   </TouchableOpacity>
                 )}
                 keyExtractor={(item, index) => index.toString()}
               />
               </ScrollView>
+              <TouchableOpacity
+                style={cnoStyles.closeButton}
+                onPress={() => setDate2ModalVisible(false)}
+                >
+                <Text style={cnoStyles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
             </View>
           </Modal>
 
