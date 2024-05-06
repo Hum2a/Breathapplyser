@@ -177,7 +177,7 @@ const FavouriteList = ({ user, navigation }) => {
         />
       </Dialog.Container>
 
-      <TouchableOpacity onPress={() => fetchAllEntries(true)} style={favouriteStyles.refreshButton}>
+      <TouchableOpacity onPress={() => fetchFavourites(true)} style={favouriteStyles.refreshButton}>
           <Image
               source={require('../../../../assets/images/refresh-icon.png')}
               style={favouriteStyles.updateButtonImage} 

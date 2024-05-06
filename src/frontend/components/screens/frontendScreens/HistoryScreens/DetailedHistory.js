@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, Image } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert, Image, RefreshControl } from 'react-native';
 import { DetailedHistoryStyles as styles } from '../../../styles/HistoryStyles/detailedHistoryStyles';
 import { collection, query, where, getDocs, getFirestore, Timestamp, doc, deleteDoc, getDoc, setDoc } from 'firebase/firestore';
 import moment from 'moment';
@@ -12,6 +12,7 @@ import { BackButton } from '../../../buttons/backButton';
 const DetailedHistoryScreen = ({ route, navigation }) => {
   const { date } = route.params;
   const [entries, setEntries] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState(null); // Track the selected entry for deletion
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
   const [summary, setSummary] = useState({
@@ -25,6 +26,7 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
   const { user } = useContext(UserContext);
 
   const fetchEntries = async (forceUpdate = false) => {
+    setRefreshing(true);
     const firestorePath = `${user.uid}/Alcohol Stuff/Entries/${date}/EntryDocs`;
     const cacheKey = `entries-${user.uid}-${date}`;
     
@@ -67,6 +69,7 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
     setEntries(entriesData);
     const cacheValue = JSON.stringify({ timestamp: new Date().getTime(), entries: entriesData });
     await AsyncStorage.setItem(cacheKey, cacheValue);
+    setRefreshing(false);
   };
 
   useEffect(() => {
@@ -219,7 +222,11 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
   const handleNavigateToNightOut = () => {
     console.log('date passed: ', moment(date).format('YYYY-MM-DD'));
     navigation.navigate('CurrentNight', { date: moment(date).format('YYYY-MM-DD') })
-  }  
+  } 
+
+  const onRefresh = () => {
+    fetchEntries(true); // Always pass true to force refresh
+  };
 
   return (
     <View style={styles.container}>
@@ -288,6 +295,12 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
           </TouchableOpacity>
         )}
         keyExtractor={(item, index) => index.toString()}
+        refreshControl={
+          <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+          />
+      }
       />
 
       <View style={styles.summaryContainer}>

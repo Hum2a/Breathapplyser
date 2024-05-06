@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, Image } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert, RefreshControl } from 'react-native';
 import { getFirestore, collection, query, orderBy, getDocs, doc, setDoc, getDoc } from 'firebase/firestore';
 import moment from 'moment';
 import { UserContext } from '../../../../context/UserContext'; // Update path as needed
@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 const CommonDrinks = () => {
   const [commonDrinks, setCommonDrinks] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
   const [limits, setLimits] = useState({
     spendingLimit: 0,
     drinkingLimit: 0,
@@ -57,6 +58,7 @@ const CommonDrinks = () => {
   };    
 
   const fetchCommonDrinks = async (forceRefresh = false) => {
+    setRefreshing(true);
     if (!user) return;
   
     const cachedData = await AsyncStorage.getItem(`commonDrinksCache_${user.uid}`);
@@ -133,6 +135,7 @@ const CommonDrinks = () => {
     console.log(`Total Firestore Queries: ${totalQueries}`);
     console.log(`Total Firestore Reads: ${totalReads}`);
     console.log(`Total Unique Drink Entries: ${Object.keys(drinkOccurrences).length}`);
+    setRefreshing(false);
   };
 
   const fetchLimits = async () => {
@@ -276,6 +279,9 @@ const CommonDrinks = () => {
     return { totalUnits, totalSpending };
   };
   
+  const onRefresh = () => {
+    fetchCommonDrinks(true); // Always pass true to force refresh
+  };
   
 
   const renderItem = ({ item }) => (
@@ -299,6 +305,12 @@ const CommonDrinks = () => {
         data={commonDrinks}
         renderItem={renderItem}
         keyExtractor={item => `${item.alcohol}-${item.type}`}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
       />
     </View>
   );

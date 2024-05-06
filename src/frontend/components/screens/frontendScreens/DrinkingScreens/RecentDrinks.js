@@ -1,7 +1,7 @@
 // RecentDrinks.js
 
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, Image } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert, RefreshControl } from 'react-native';
 import { getFirestore, collection, query, orderBy, limit, getDocs, setDoc, doc, getDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../context/UserContext'; // Update the path according to your project structure
 import moment from 'moment';
@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const RecentDrinks = ({ navigation }) => {
   const [recentDrinks, setRecentDrinks] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
   const [limits, setLimits] = useState({
     spendingLimit: 0,
     drinkingLimit: 0,
@@ -22,6 +23,10 @@ const RecentDrinks = ({ navigation }) => {
   const { user } = useContext(UserContext);
   const firestore = getFirestore();
 
+  const onRefresh = () => {
+    fetchRecentDrinks(true); // Always pass true to force refresh
+  };
+
   useEffect(() => {
     fetchUserProfile();
     fetchRecentDrinks();
@@ -29,6 +34,7 @@ const RecentDrinks = ({ navigation }) => {
   }, [user]);
 
   const fetchRecentDrinks = async (forceRefresh = false) => {
+    setRefreshing(true);
     if (!user) {
       console.error('User is not authenticated.');
       return;
@@ -83,6 +89,7 @@ const RecentDrinks = ({ navigation }) => {
     // Log the total number of queries and reads
     console.log(`Total Firestore Queries: ${totalQueries}`);
     console.log(`Total Firestore Reads: ${totalReads}`);
+    setRefreshing(false);
   };
   
   const fetchUserProfile = async () => {
@@ -263,6 +270,12 @@ const RecentDrinks = ({ navigation }) => {
         data={recentDrinks}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
       />
     </View>
   );

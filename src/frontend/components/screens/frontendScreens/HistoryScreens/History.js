@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Image, SafeAreaView, RefreshControl } from 'react-native';
 import { HistoryStyles as styles } from '../../../styles/HistoryStyles/historyStyles';
 import { UserContext } from '../../../../context/UserContext';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
@@ -14,6 +14,7 @@ const HistoryScreen = ({ navigation }) => {
   const [dateEntries, setDateEntries] = useState([]); // Entries for the selected date
   const [dateEntryCounts, setDateEntryCounts] = useState({}); // Count of entries for each date
   const [selectedDate, setSelectedDate] = useState(null); // Selected date
+  const [refreshing, setRefreshing] = useState(false);
   const { user } = useContext(UserContext);
   const firestore = getFirestore();
 
@@ -26,6 +27,7 @@ const HistoryScreen = ({ navigation }) => {
 
 
   const fetchData = async (forceRefresh = false) => {
+    setRefreshing(true);
     const cacheKey = `history_dates_with_details_${user.uid}`;
     try {
       // Check the cache unless forceRefresh is true
@@ -77,6 +79,7 @@ const HistoryScreen = ({ navigation }) => {
     } catch (error) {
       console.error('Error fetching dates and their details:', error);
     }
+    setRefreshing(false);
   };
   
   
@@ -100,6 +103,10 @@ const HistoryScreen = ({ navigation }) => {
   };
   const handleCalenderClick = () => {
   navigation.navigate('HistoryCalender')
+  };
+
+  const onRefresh = () => {
+    fetchData(true); // Always pass true to force refresh
   };
 
   return (
@@ -148,6 +155,12 @@ const HistoryScreen = ({ navigation }) => {
             </TouchableOpacity>
           )}
           keyExtractor={(item, index) => index.toString()}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
         />
       </View>
     </SafeAreaView>
