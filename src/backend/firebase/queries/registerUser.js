@@ -1,4 +1,5 @@
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { initialiseUserData } from './initialiseData';
 
 export const registerUser = (username, email, password, confirmPassword, onSuccess, onFailure) => {
     if (password !== confirmPassword) {
