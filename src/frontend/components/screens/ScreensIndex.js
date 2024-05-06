@@ -39,6 +39,7 @@ export { default as BACRefreshRateScreen } from './frontendScreens/UsersAndSetti
 export { default as DrunkParametersScreen } from './frontendScreens/UsersAndSettingsScreens/Alcoholics/DrunkParameters';
 export { default as DisplaySettingsScreen } from './frontendScreens/UsersAndSettingsScreens/DisplayScreen';
 export { default as EmojiCustomisationScreen } from './frontendScreens/UsersAndSettingsScreens/Display/EmojiCustomisation';
+export { default as AnimationsToggleScreen } from './frontendScreens/UsersAndSettingsScreens/Display/AnimationsToggle';
 
 // Charts
 export { default as ChartsScreen } from './frontendScreens/ChartsScreens/OmniChartManager';
