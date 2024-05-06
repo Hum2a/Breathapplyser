@@ -5,12 +5,17 @@ import { UserContext } from '../../../../context/UserContext';
 import { DisplayStyles as styles } from '../../../styles/SettingStyles/displayStyles';
 import DrunkennessDisplayScreen from './Display/DisplayDrunkenness';
 import EmojiSettingsScreen from './Display/EmojiCustomisation';
+import AnimationsToggle from './Display/AnimationsToggle';
 import { BackButton } from '../../../buttons/backButton';
 
 const DisplaySettingsScreen = ({ user, navigation}) => {
   
   const navigateToEmoji = () => {
     navigation.navigate('Emoji');
+  }
+
+  const navigateToAnimations = () => {
+    navigation.navigate('Animations');
   }
 
   return (
@@ -20,6 +25,9 @@ const DisplaySettingsScreen = ({ user, navigation}) => {
       <DrunkennessDisplayScreen />
       <TouchableOpacity onPress={navigateToEmoji} style={styles.button}>
         <Text style={styles.buttonText}>Emoji Customisation</Text> 
+      </TouchableOpacity>
+      <TouchableOpacity onPress={navigateToAnimations} style={styles.button}>
+        <Text style={styles.buttonText}>Animations Toggle</Text> 
       </TouchableOpacity>
     </View>
   );
