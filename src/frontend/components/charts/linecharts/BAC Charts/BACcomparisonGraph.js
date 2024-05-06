@@ -40,6 +40,8 @@ const BACComparisonGraph = () => {
           setSelectedDate1(sortedUniqueDates[0]);
           setSelectedDate2(sortedUniqueDates.length > 1 ? sortedUniqueDates[1] : '');
         }
+
+        setBacData(entries);
   
       } catch (error) {
         console.error('Error fetching BAC data:', error);
@@ -65,7 +67,7 @@ const BACComparisonGraph = () => {
   
     console.log(`Data for chart processed:`, hourlyBAC);
     return {
-      labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
+      labels: Array.from({ length: 24 }, (_, i) => `${i}`),
       values: hourlyBAC.filter(value => !isNaN(value)) // Filter out any NaN values just to be extra safe
     };
   };
