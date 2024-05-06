@@ -6,7 +6,6 @@ export { default as BACPredictionChart } from './linecharts/BAC Charts/BACPredic
 export { default as BACComparisonGraph } from './linecharts/BAC Charts/BACcomparisonGraph';
 export { default as BACEntriesChart } from './linecharts/BAC Charts/BACEntriesGraph';
 export { default as BAC12Hours } from './linecharts/BAC Charts/BAC24Hours';
-export { default as BACTrackingChart } from './linecharts/BAC Charts/BACTrackingChart';
 
 // Drunkenness
 export { default as DrunknessENTRIESChart } from './linecharts/DrunkCharts/DrunknessEntriesChart';
