@@ -34,6 +34,7 @@ import {
   BACChartsScreen,
   UnitsChartsScreen,
   AmountSpentChartsScreen,
+  AnimationsToggleScreen,
   NamesCharts,
   TypesCharts,
   DrunknessCharts,
@@ -89,6 +90,7 @@ const AppNavigation = () => {
         <Stack.Screen name="Alcoholics" component={AlcoholicsScreen} />
         <Stack.Screen name="Display" component={DisplaySettingsScreen} />
         <Stack.Screen name="Emoji" component={EmojiCustomisationScreen} />
+        <Stack.Screen name='Animations' component={AnimationsToggleScreen}/>
         <Stack.Screen name='DrunkParams' component={DrunkParametersScreen} />
         <Stack.Screen name="BACRefreshRate" component={BACRefreshRateScreen} />
         <Stack.Screen name="GetStarted" component={GetStartedScreen} />
