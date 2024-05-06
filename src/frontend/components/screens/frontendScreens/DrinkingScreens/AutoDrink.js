@@ -319,12 +319,6 @@ const AutoEntryScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>Common Drinks</Text> */}
-      {/* <View style={addStyles.statsContainer}>
-          <Text style={addStyles.statText}>Total Drinks: {totalDrinks}</Text>
-          <Text style={addStyles.statText}>Units: {totalUnits}</Text>
-          <Text style={addStyles.statText}>Spending: £{totalSpending}</Text>
-        </View> */}
       <View style={styles.buttonContainer}>
         {drinkTypes.map((type, index) => (
           <TouchableOpacity
@@ -357,6 +351,11 @@ const AutoEntryScreen = ({ navigation }) => {
               <Text style={styles.drinkText}>Type: {item.alcohol}</Text>
               <Text style={styles.drinkText}>Units: {item.units}</Text>
               <Text style={styles.drinkText}>Calories: {item.calories}</Text>
+              <View style={styles.backgroundTextContainer}>
+                <Text style={styles.backgroundText}>
+                  Click Here
+                </Text>
+            </View>
               {selectedDrinkType === 'Spirit' && (
                 <View style={styles.doubleToggleContainer}>
                   <TouchableOpacity
