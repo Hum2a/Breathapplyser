@@ -71,13 +71,6 @@ const BACCharts = ({ navigation }) => {
           </TouchableOpacity>
           {showBACChart && <BACChart />}
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => setShowBACTrackingChart(!showBACTrackingChart)}
-          >
-            <Text style={styles.buttonText}>DELETE</Text>
-          </TouchableOpacity>
-          {showBACTrackingChart && <BACTrackingChart />}
         </View>
       </ScrollView>
     </SafeAreaView>
