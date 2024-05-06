@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { omniStyles as styles } from '../../../styles/ChartStyles/omniStyles';
 import FatManAnimation from '../../../animations/fatman';
@@ -6,12 +6,38 @@ import WalletAnimation from '../../../animations/wallet';
 import PenWritingAnimation from '../../../animations/penWriting';
 import BloodAnimation from '../../../animations/blood';
 import { BackButton } from '../../../buttons/backButton';
+import { UserContext } from '../../../../context/UserContext';
+import { getFirestore, doc, onSnapshot } from '@firebase/firestore';
 
 const ChartsScreen = ({ navigation }) => {
   const [playFatManAnimation, setPlayFatManAnimation] = useState(true);
   const [playWalletAnimation, setPlayWalletAnimation] = useState(true);
   const [playPenWritingAnimation, setPlayPenWritingAnimation] = useState(true);
   const [playBloodAnimation, setPlayBloodAnimation] = useState(true);
+
+  const { user } = useContext(UserContext);
+  const firestore = getFirestore();
+
+  useEffect(() => {
+    if (user) {
+      const settingsRef = doc(firestore, user.uid, "Animations");
+      const unsubscribe = onSnapshot(settingsRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const settingsData = docSnap.data();
+          // Check if the data contains specific animation settings and update state
+          setPlayFatManAnimation(settingsData['Fat Man Animation'] ?? false);
+          setPlayWalletAnimation(settingsData['Beer Animation'] ?? false);
+          setPlayPenWritingAnimation(settingsData['Pen Writing Animation'] ?? false);
+          setPlayBloodAnimation(settingsData['Blood Animation'] ?? false);
+        }
+      }, (error) => {
+        console.error("Failed to listen to animation settings:", error);
+      });
+  
+      return () => unsubscribe(); // Cleanup listener when the component unmounts or user changes
+    }
+  }, [user, firestore]); // Dependencies array includes Firestore instance and user state
+  
 
   const navigateToChart = (chartType) => {
     navigation.navigate(chartType);

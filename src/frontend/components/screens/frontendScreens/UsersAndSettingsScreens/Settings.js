@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, Alert} from 'react-native';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { SettingStyles as styles } from '../../../styles/SettingStyles/settingStyles';
@@ -6,16 +6,38 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ProfileWaveAnimation from '../../../animations/profileWave';
 import MuscleManAnimation from '../../../animations/muscleman';
 import PaintRollerAnimation from '../../../animations/paintRoller';
-import { useUser } from '../../../../context/UserContext';
+import { UserContext, useUser } from '../../../../context/UserContext';
 import { BackButton } from '../../../buttons/backButton';
+import { getFirestore, doc, onSnapshot } from '@firebase/firestore';
 
 const Settings = () => {
   const navigation = useNavigation();
   const { logout } = useUser(); // Use the logout function from UserContext
-  const [ playProfileWaveAnimation, setPlayProfileWaveAnimation ] = useState(true); 
-  const [ playMuscleManAnimation, setPlayMuscleManAnimation] = useState(true);
-  const [ playPaintRollerAnimation, setPlayPaintRollerAnimation ] = useState(true);
+  const [ playProfileWaveAnimation, setPlayProfileWaveAnimation ] = useState(false); 
+  const [ playMuscleManAnimation, setPlayMuscleManAnimation] = useState(false);
+  const [ playPaintRollerAnimation, setPlayPaintRollerAnimation ] = useState(false);
 
+  const { user } = useContext(UserContext);
+  const firestore = getFirestore()
+  useEffect(() => {
+    if (user) {
+      const settingsRef = doc(firestore, user.uid, "Animations");
+      const unsubscribe = onSnapshot(settingsRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const settingsData = docSnap.data();
+          // Check if the data contains specific animation settings and update state
+          setPlayProfileWaveAnimation(settingsData['Profile Wave Animation'] ?? false);
+          setPlayMuscleManAnimation(settingsData['Muscle Man Animation'] ?? false);
+          setPlayPaintRollerAnimation(settingsData['Paint Roller Animation'] ?? false);
+        }
+      }, (error) => {
+        console.error("Failed to listen to animation settings:", error);
+      });
+  
+      return () => unsubscribe(); // Cleanup listener when the component unmounts or user changes
+    }
+  }, [user, firestore]); // Dependencies array includes Firestore instance and user state
+  
   const navigateToProfile = () => {
     navigation.navigate('Profile'); // Replace 'Profile' with your actual profile screen name
   };
