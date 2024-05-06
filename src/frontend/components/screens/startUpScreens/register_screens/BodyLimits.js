@@ -5,6 +5,7 @@ import { limitStyles as styles } from '../../../styles/DrinkingStyles/limitStyle
 import { UserContext } from '../../../../context/UserContext';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { initialiseUserData } from '../../../../../backend/firebase/queries/initialiseData';
 
 const BodyLimitsScreen = ({ navigation }) => {
   const { user } = useContext(UserContext);
@@ -17,6 +18,7 @@ const BodyLimitsScreen = ({ navigation }) => {
 
   useEffect(() => {
     loadLimits();
+    initialiseUserData(user.uid);
   }, [user]);
 
   const loadLimits = async () => {
