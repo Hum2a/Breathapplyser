@@ -1,23 +1,32 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
 
-const SpinningCog = () => {
-  // This animated value will be used to drive the rotation
+const SpinningCog = ({ play }) => {
   const spinValue = useRef(new Animated.Value(0)).current;
 
-  // Set up the animation
   useEffect(() => {
-    Animated.loop(
-      Animated.timing(spinValue, {
-        toValue: 1, // Rotate from 0 to 1 (full rotation)
-        duration: 3000, // Duration of one full rotation
-        easing: Easing.linear, // Linear easing for constant speed
-        useNativeDriver: true, // Use native driver for better performance
-      })
-    ).start();
-  }, [spinValue]);
+    let animation;
+    if (play) {
+      animation = Animated.loop(
+        Animated.timing(spinValue, {
+          toValue: 1,  // Complete a full rotation
+          duration: 3000,  // Duration of one rotation
+          easing: Easing.linear,
+          useNativeDriver: true,
+        })
+      );
+      animation.start();
+    } else {
+      spinValue.stopAnimation();
+    }
 
-  // Interpolate the animated value to map to 0 - 360 degrees rotation
+    return () => {
+      if (animation) {
+        animation.stop();
+      }
+    };
+  }, [play, spinValue]);
+
   const spin = spinValue.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
@@ -26,7 +35,7 @@ const SpinningCog = () => {
   return (
     <View style={styles.container}>
       <Animated.Image
-        source={require('../../assets/images/cog.png')} // Replace with the correct path
+        source={require('../../assets/images/cog.png')}
         style={[styles.cog, { transform: [{ rotate: spin }] }]}
       />
     </View>
@@ -40,8 +49,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cog: {
-    width: 40, // Set the size of the cog
-    height: 40, // Set the size of the cog
+    width: 40,
+    height: 40,
   },
 });
 
