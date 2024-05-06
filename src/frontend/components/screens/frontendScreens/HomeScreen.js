@@ -10,7 +10,7 @@ import BACDecreaseFB from '../../../../backend/app/background/BAC/bacDecreaserFB
 import DrunkennessLevelFb from '../../../../backend/app/background/Drunkness/drunknessCalculatorFb';
 import BacWiper from '../../../../backend/app/background/BAC/bacWiper';
 import BacCleaner from '../../../../backend/app/background/BAC/bacCleaner';
-import { getFirestore, deleteDoc, doc, collection, query, getDocs, getDoc } from 'firebase/firestore';
+import { getFirestore, deleteDoc, doc, collection, query, getDocs, getDoc, onSnapshot } from 'firebase/firestore';
 import { UserContext } from '../../../context/UserContext';
 import RecentDrinks from './DrinkingScreens/RecentDrinks';
 import CommonDrinks from './DrinkingScreens/CommonDrinks';
@@ -21,6 +21,7 @@ import BeerAnimation from '../../animations/beerjug';
 import SpinningCog from '../../animations/settingsCog';
 import MedalShimmerAnimation from '../../animations/medalShimmer';
 import DiscoBallAnimation from '../../animations/discoBall';
+import ScrollAnimation from '../../animations/scroll';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -29,10 +30,35 @@ const HomeScreen = () => {
   const [bacUpdateCount, setBACUpdateCount] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
   const [playStarAnimation, setPlayStarAnimation] = useState(true);
-  const [playBeerAnimation, setPlayBeerAnimation] = useState(false);
-  const [playMedalAnimation, setPlayMedalAnimation] = useState(false);
+  const [playBeerAnimation, setPlayBeerAnimation] = useState(true);
+  const [playMedalAnimation, setPlayMedalAnimation] = useState(true);
   const [playDiscoBallAnimation, setPlayDiscoBallAnimation ] = useState(true);
+  const [playScrollAnimation, setPlayScrollAnimation ] = useState(true);
+  const [playSettingsAnimation, setPlaySettingsAnimation ] = useState(true);
   const firestore = getFirestore();
+
+  useEffect(() => {
+    if (user) {
+      const settingsRef = doc(firestore, user.uid, "Animations");
+      const unsubscribe = onSnapshot(settingsRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const settingsData = docSnap.data();
+          // Check if the data contains specific animation settings and update state
+          setPlayStarAnimation(settingsData['Star Animation'] ?? false);
+          setPlayBeerAnimation(settingsData['Beer Animation'] ?? false);
+          setPlayMedalAnimation(settingsData['Medal Animation'] ?? false);
+          setPlayDiscoBallAnimation(settingsData['Disco Ball Animation'] ?? false);
+          setPlayScrollAnimation(settingsData['Scroll Animation'] ?? false);
+          setPlaySettingsAnimation(settingsData['Settings Animation'] ?? false);
+        }
+      }, (error) => {
+        console.error("Failed to listen to animation settings:", error);
+      });
+  
+      return () => unsubscribe(); // Cleanup listener when the component unmounts or user changes
+    }
+  }, [user, firestore]); // Dependencies array includes Firestore instance and user state
+  
 
   const NavigateToDrinking = () => {
     navigation.navigate('AddEntry');
@@ -164,18 +190,17 @@ const HomeScreen = () => {
       
           
           <TouchableOpacity style={homeStyles.settingsIcon} onPress={NavigateToSettings}>
-            <SpinningCog />
+            <SpinningCog play={playSettingsAnimation} />
           </TouchableOpacity>
 
         </View>
 
       <View style={homeStyles.middleContainer}>
 
-      <TouchableOpacity style={homeStyles.scrollContainer} onPress={NavigateToHistory}>
-          <Image
-            source={require('../../../assets/images/Scroll.png')}
-            style={homeStyles.smallIcon}
-          />
+      <TouchableOpacity onPressIn={() => setPlayScrollAnimation(true)} onPressOut={() => { setPlayScrollAnimation(false); NavigateToHistory(); }}>
+            <View style={homeStyles.scrollContainer}>
+                <ScrollAnimation play={playScrollAnimation} frameRate={24} />
+            </View>
         </TouchableOpacity>
         
 
