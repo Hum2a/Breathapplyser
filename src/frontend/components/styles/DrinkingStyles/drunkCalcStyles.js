@@ -40,7 +40,8 @@ export  const DrunkCalcStyles = StyleSheet.create({
     },
     modalText: {
       marginBottom: 15,
-      textAlign: "center"
+      textAlign: "center",
+      color: 'navy'
     },
     boldText: {
       fontWeight: 'bold',
