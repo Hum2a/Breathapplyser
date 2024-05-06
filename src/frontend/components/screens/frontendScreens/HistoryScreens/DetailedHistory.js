@@ -323,7 +323,7 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
         <Dialog.Description style={dialogStyles.description}>
           What would you like to do?:
         </Dialog.Description>
-        <Dialog.Button style={dialogStyles.editButton}label="Edit" onPress={handleEditEntry} />
+        <Dialog.Button style={dialogStyles.editButton}label="Edit" onPress={() => handleEditEntry(selectedEntry)}  />
         <Dialog.Button style={dialogStyles.deleteButton}label="Delete" onPress={handleDeleteConfirmed} />
         <Dialog.Button style={dialogStyles.cancelButton}label="Cancel" onPress={handleDeleteCancelled} />
       </Dialog.Container>
