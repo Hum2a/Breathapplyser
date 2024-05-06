@@ -62,6 +62,10 @@ const Settings = () => {
     navigation.navigate('Display');
   };
 
+  const navigateToOnlineSettings = () => {
+    navigation.navigate('Online');
+  };
+
   const handleLogout = () => {
     Alert.alert(
       "Logout",
@@ -132,6 +136,10 @@ const Settings = () => {
       <TouchableOpacity onPress={handleLogout} style={styles.item}>
         <Text style={styles.text}>Logout</Text>
         <Image source={require('../../../../assets/images/logout.png')} style={styles.icon} />
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={navigateToOnlineSettings} style={styles.item}>
+        <Text style={styles.text}>Online</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
