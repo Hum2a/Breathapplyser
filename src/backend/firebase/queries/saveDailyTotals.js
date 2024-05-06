@@ -2,6 +2,11 @@
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import moment from 'moment';
 
+const calculateBACDecrease = (currentBAC, hoursElapsed) => {
+  const decreaseRate = 0.015; // BAC decreases at a rate of 0.015 per hour
+  return currentBAC - (hoursElapsed * decreaseRate);
+};
+
 export const saveDailyTotals = async (firestore, user, selectedDate, entryDetailsArray) => {
   if (!user) {
     console.error("User data is not available");
@@ -27,7 +32,15 @@ export const saveDailyTotals = async (firestore, user, selectedDate, entryDetail
     // Calculate new totals
     const newAmountSpent = existingAmountSpent + entryDetailsArray.reduce((total, entry) => total + (entry.amount * entry.price), 0);
     const newUnitsIntake = existingUnitsIntake + entryDetailsArray.reduce((total, entry) => total + parseInt(entry.units), 0);
-    const newBACLevel = existingBACLevel + entryDetailsArray.reduce((total, entry) => total + parseFloat(entry.BACIncrease), 0);
+    
+    // Calculate time elapsed since the last drink to now
+    const lastDrinkEndTime = moment.max(entryDetailsArray.map(entry => moment(entry.selectedEndTime)));
+    const now = moment();
+    const hoursElapsed = now.diff(lastDrinkEndTime, 'hours', true);
+
+    // Calculate the decreased BAC based on the time elapsed
+    const decreasedBAC = calculateBACDecrease(existingBACLevel, hoursElapsed);
+    const newBACLevel = decreasedBAC + entryDetailsArray.reduce((total, entry) => total + parseFloat(entry.BACIncrease), 0);
 
     // Update and save new values
     await setDoc(amountSpentRef, { value: newAmountSpent, lastUpdated: moment().format('YY-MM-DD HH:mm:ss') }, { merge: true });
