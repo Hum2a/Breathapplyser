@@ -10,13 +10,14 @@ import moment from 'moment';
 const EditEntryScreen = ({ route, navigation }) => {
   const { entry } = route.params;
   const [date, setDate] = useState(new Date(entry.date));
-  const [startTime, setStartTime] = useState(new Date(entry.startTime)); // Assuming entry has startTime
-  const [endTime, setEndTime] = useState(new Date(entry.endTime)); // Assuming entry has endTime
-  const [amount, setAmount] = useState(entry.amount.toString()); // Assuming entry has amount
-  const [alcohol, setAlcohol] = useState(entry.alcohol); // Assuming entry has alcohol
-  const [units, setUnits] = useState(entry.units.toString()); // Assuming entry has units
-  const [price, setPrice] = useState(entry.price.toString()); // Assuming entry has price
-  const [type, setType] = useState(entry.type); // Assuming entry has type
+  const [startTime, setStartTime] = useState(new Date(entry.startTime));
+  const [endTime, setEndTime] = useState(new Date(entry.endTime));
+  const [amount, setAmount] = useState(entry.amount.toString());
+  const [calories, setCalories] = useState(entry.calories.toString());
+  const [alcohol, setAlcohol] = useState(entry.alcohol);
+  const [units, setUnits] = useState(entry.units.toString());
+  const [price, setPrice] = useState(entry.price.toString());
+  const [type, setType] = useState(entry.type);
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -33,10 +34,10 @@ const EditEntryScreen = ({ route, navigation }) => {
       endTime,
       amount: parseFloat(amount),
       alcohol,
+      calories,
       units: parseFloat(units),
       price: parseFloat(price),
       type,
-      // You may need to add more fields or conversions depending on your data model
     };
     try {
       await updateDoc(entryRef, updatedEntry);
@@ -135,6 +136,7 @@ const EditEntryScreen = ({ route, navigation }) => {
           value={alcohol}
           onChangeText={setAlcohol}
           placeholder="Drink"
+          placeholderTextColor='black'
         />
         </View>
         <View style={styles.inputContainer}>
@@ -144,6 +146,7 @@ const EditEntryScreen = ({ route, navigation }) => {
             value={units}
             onChangeText={setUnits}
             placeholder="Units"
+            placeholderTextColor='black'
             />
         </View>
         <View style={styles.inputContainer}>
@@ -153,6 +156,7 @@ const EditEntryScreen = ({ route, navigation }) => {
             value={price}
             onChangeText={setPrice}
             placeholder="Price"
+            placeholderTextColor='black'
             />
         </View>
         <View style={styles.inputContainer}>
@@ -162,6 +166,17 @@ const EditEntryScreen = ({ route, navigation }) => {
             value={type}
             onChangeText={setType}
             placeholder="Type"
+            placeholderTextColor='black'
+            />
+        </View>
+        <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Calories</Text>
+            <TextInput
+            style={styles.input}
+            value={calories}
+            onChangeText={setCalories}
+            placeholder="Calories"
+            placeholderTextColor='black'
             />
         </View>
       <TouchableOpacity style={styles.button} onPress={handleUpdateEntry}>
