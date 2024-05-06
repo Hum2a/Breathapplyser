@@ -68,17 +68,15 @@ const BodyStats = ({ route, navigation }) => {
     setBMI('');
   };
 
-  const navigateToHome = () => {
-    navigation.navigate('Home');
-  };
-
   const navigateToLimits = () => {
     navigation.navigate('BodyLimits');
   }
 
   return (
     <View style={profStyles.container}>
-      {/* Inputs for height, weight, age, and sex */}
+
+      <Text style={profStyles.inputLabel}>Height</Text>
+
       <View style={profStyles.unitPickerContainer}>
         {heightUnit === 'cm' ? (
           <TextInput
@@ -133,6 +131,8 @@ const BodyStats = ({ route, navigation }) => {
         </Picker>
       </View>
 
+      <Text style={profStyles.inputLabel}>Weight</Text>
+      
       <View style={profStyles.unitPickerContainer}>
         <TextInput
           style={profStyles.input}
@@ -152,6 +152,8 @@ const BodyStats = ({ route, navigation }) => {
           <Picker.Item label="lbs" value="lbs" />
         </Picker>
       </View>
+
+      <Text style={profStyles.inputLabel}>Age</Text>
       <View style={profStyles.unitPickerContainer}>
         <TextInput
           style={profStyles.input}
@@ -161,16 +163,20 @@ const BodyStats = ({ route, navigation }) => {
           onChangeText={setAge}
           keyboardType="numeric"
         />
-        <Picker
-          style={profStyles.unitPicker}
-          selectedValue={sex}
-          onValueChange={setSex}
-          mode="dropdown"
-        >
-          <Picker.Item label="Male" value="male" />
-          <Picker.Item label="Female" value="female" />
-        </Picker>
       </View>
+
+      <Text style={profStyles.inputLabel}>Sex</Text>
+        <View style={profStyles.unitPickerContainer}>
+          <Picker
+            style={profStyles.sexUnitPicker}
+            selectedValue={sex}
+            onValueChange={setSex}
+            mode="dropdown"
+          >
+            <Picker.Item label="Male" value="male" />
+            <Picker.Item label="Female" value="female" />
+          </Picker>
+        </View>
       
       <Text style={profStyles.bmiLabel}>BMI: {bmi}</Text>
       {/* Action Buttons */}

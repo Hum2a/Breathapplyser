@@ -37,7 +37,15 @@ export const profStyles = StyleSheet.create({
     color: '#003366',
   },
   unitPicker: {
-    width: 100, // Set a fixed width for the picker
+    width: 110, // Set a fixed width for the picker
+    height: 40,
+    backgroundColor: '#E7F2F8',
+    borderTopRightRadius: 5, // Only round the right corners
+    borderBottomRightRadius: 5,
+    color: '#003366',
+  },
+  sexUnitPicker: {
+    width: '100%',
     height: 40,
     backgroundColor: '#E7F2F8',
     borderTopRightRadius: 5, // Only round the right corners

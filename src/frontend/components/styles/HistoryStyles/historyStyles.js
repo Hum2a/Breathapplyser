@@ -74,16 +74,14 @@ export const HistoryStyles = StyleSheet.create({
     justifyContent: 'flex-start', // Center vertically
     alignItems: 'flex-start', // Align text to the start (left)
 },
-
   backgroundText: {
     fontSize: 68, // Large text size
     color: 'rgba(0, 0, 255, 0.2)', // Semi-transparent white
-    transform: [{ rotate: '-40deg' }], // Rotate the container
+    transform: [{ rotate: '-20deg' }], // Rotate the container
     fontWeight: 'bold',
     textAlign: 'center',
     zIndex: 1,
     overflow: 'hidden', // Hide any part of the text that overflows the container
-
   },
   itemContent: {
     flex: 1, // Take available space

@@ -331,8 +331,22 @@ export const autoStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    // padding: 20,
-    // backgroundColor: 'lightgrey' // Temporarily set a background color to debug visibility
-},
+  },
+  backgroundTextContainer: {
+    ...StyleSheet.absoluteFillObject, // Make the text overlay the entire item
+    position: 'absolute',
+    left: -10, // Align to the left side
+    justifyContent: 'flex-start', // Center vertically
+    alignItems: 'flex-end', // Align text to the start (left)
+  },
+  backgroundText: {
+    fontSize: 68, // Large text size
+    color: 'rgba(0, 0, 255, 0.2)', // Semi-transparent white
+    transform: [{ rotate: '10deg' }], // Rotate the container
+    fontWeight: 'bold',
+    textAlign: 'center',
+    zIndex: 1,
+    overflow: 'hidden', // Hide any part of the text that overflows the container
+  },
 
 });

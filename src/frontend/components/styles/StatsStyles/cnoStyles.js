@@ -262,25 +262,48 @@ export const cnoStyles = StyleSheet.create({
     width: 40, // Set a fixed width for your icon
     height: 40, // Set a fixed height for your icon
     resizeMode: 'contain' // Ensure the icon scales properly
-}
+},
+modalContainer: {
+  flex: 1,
+  backgroundColor: '#ffffff', // Bright background for the modal
+  borderRadius: 20, // Rounded corners
+  padding: 20, // Padding around the inner content
+  alignItems: 'center', // Center content horizontally
+  justifyContent: 'center', // Center content vertically
+  shadowColor: '#000', // Black shadow for depth
+  shadowOffset: { width: 0, height: 2 }, // Shadow position
+  shadowOpacity: 0.25, // Shadow opacity
+  shadowRadius: 3.84, // Shadow blur radius
+  elevation: 5, // Elevation for Android
+},
 });
 
 // Styles for the FlatList and available dates
 export const flatListStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingHorizontal: 10, // Padding for the list's horizontal sides
+    paddingVertical: 10, // Padding for the list's vertical sides
   },
   dateItem: {
-    paddingVertical: 10,
+    paddingVertical: 15, // Vertical padding for each item
+    paddingHorizontal: 10, // Horizontal padding for each item
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#0077B6', // A darker shade of blue for the underline
+    backgroundColor: '#ffffff', // White background for each item
+    marginBottom: 5, // Space between items
+    borderRadius: 10, // Rounded corners for each item
+    shadowColor: '#000', // Black shadow for depth
+    shadowOffset: { width: 0, height: 1 }, // Shadow position
+    shadowOpacity: 0.22, // Shadow opacity
+    shadowRadius: 2.22, // Shadow blur radius
+    elevation: 3, // Elevation for Android
   },
   dateText: {
     fontSize: 18,
-    color: '#333',
+    fontWeight: 'bold',
+    color: '#003366', // Dark blue for readability
+    textAlign: 'center', // Center text
   },
 });
 

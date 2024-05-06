@@ -222,7 +222,7 @@ const ProfileScreen = () => {
         <Text style={profStyles.inputLabel}>Sex</Text>
         <View style={profStyles.unitPickerContainer}>
           <Picker
-            style={profStyles.unitPicker}
+            style={profStyles.sexUnitPicker}
             selectedValue={sex}
             onValueChange={setSex}
             mode="dropdown"

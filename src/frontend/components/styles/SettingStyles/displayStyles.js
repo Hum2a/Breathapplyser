@@ -17,6 +17,18 @@ export const DisplayStyles = StyleSheet.create({
     },
     option: {
       marginBottom: 20,
+      alignItems: 'center',
+    },
+    title: {
+      fontSize: 24,
+      color: '#010100',
+      padding: 10,
+      marginBottom: 20,
+      alignSelf: 'center',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderBottomWidth: 1,
+      borderBottomColor: '#CCCCCC', // Border color for separation between settings items
     },
     label: {
       fontSize: 16,
@@ -28,6 +40,15 @@ export const DisplayStyles = StyleSheet.create({
       justifyContent: 'center',
       borderBottomWidth: 1,
       borderBottomColor: '#CCCCCC', // Border color for separation between settings items
+    },
+    warning: {
+      fontSize: 16,
+      color: 'rgba(207,76,36,0.4)',
+      padding: 10,
+      marginBottom: 10,
+      alignSelf: 'center',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     toggleContainer: {
       flexDirection: 'row',
