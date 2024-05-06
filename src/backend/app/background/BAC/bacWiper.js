@@ -25,9 +25,15 @@ const BacWiper = () => {
             await deleteDocuments(where("value", "==", 0));
             console.log("Completed wiping documents with value 0");
 
+            await deleteDocuments(where("currentBAC", "==", 0));
+            console.log("Completed wiping documents with currentBAC 0");
+
             // If using a marker value for NaN, delete those documents as well
             await deleteDocuments(where("value", "==", "NaN"));
             console.log("Completed wiping documents with value 'NaN'");
+
+            await deleteDocuments(where("currentBAC", "==", "NaN"));
+            console.log("Completed wiping documents with currentBAC NaN");
 
         } catch (error) {
             console.error("Error wiping invalid documents:", error);
@@ -40,7 +46,7 @@ const BacWiper = () => {
 
             const intervalId = setInterval(() => {
                 wipeInvalidValueBACDocuments(user.uid);
-            }, 7200000); // 7200000 milliseconds = 2 hours
+            }, 10000); // 7200000 milliseconds = 2 hours
 
             return () => clearInterval(intervalId);
         }
