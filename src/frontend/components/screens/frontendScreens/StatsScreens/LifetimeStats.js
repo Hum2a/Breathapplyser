@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, SafeAreaView, ScrollView, RefreshControl, TouchableOpacity, TextInput } from 'react-native';
 import { getFirestore, collection, getDocs, query, orderBy, doc } from 'firebase/firestore';
 import { auth } from '../../../../../backend/firebase/database/firebase';
 import moment from 'moment';
@@ -19,6 +19,7 @@ const LifetimeStats = () => {
     const [showDetailedSpent, setShowDetailedSpent] = useState(false);
     const [detailedSpentData, setDetailedSpentData] = useState([]);
     const [accountCreationDate, setAccountCreationDate] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
 
     const { user } = useContext(UserContext);
     const firestore = getFirestore();
@@ -39,6 +40,12 @@ const LifetimeStats = () => {
             setAccountCreationDate(creationTime);
         }
     }, []);
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await fetchLifetimeStats(true); // Pass true to force refresh
+        setRefreshing(false);
+    };
     
 
     const fetchLifetimeStats = async (forceRefresh = false) => {
@@ -209,7 +216,15 @@ const LifetimeStats = () => {
     
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView style={styles.scrollView}>
+            <ScrollView 
+                style={styles.scrollView}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
+                >
                 <BackButton />
                 <Text style={styles.title}>Lifetime Stats</Text>
 
