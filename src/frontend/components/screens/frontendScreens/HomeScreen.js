@@ -22,6 +22,7 @@ import SpinningCog from '../../animations/settingsCog';
 import MedalShimmerAnimation from '../../animations/medalShimmer';
 import DiscoBallAnimation from '../../animations/discoBall';
 import ScrollAnimation from '../../animations/scroll';
+import ChartAnimation from '../../animations/chart';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -35,6 +36,7 @@ const HomeScreen = () => {
   const [playDiscoBallAnimation, setPlayDiscoBallAnimation ] = useState(true);
   const [playScrollAnimation, setPlayScrollAnimation ] = useState(true);
   const [playSettingsAnimation, setPlaySettingsAnimation ] = useState(true);
+  const [playChartAnimation, setPlayChartAnimation ] = useState(true);
   const firestore = getFirestore();
 
   useEffect(() => {
@@ -50,6 +52,7 @@ const HomeScreen = () => {
           setPlayDiscoBallAnimation(settingsData['Disco Ball Animation'] ?? false);
           setPlayScrollAnimation(settingsData['Scroll Animation'] ?? false);
           setPlaySettingsAnimation(settingsData['Settings Animation'] ?? false);
+          setPlayChartAnimation(settingsData['Chart Animation'] ?? false);
         }
       }, (error) => {
         console.error("Failed to listen to animation settings:", error);
@@ -217,11 +220,10 @@ const HomeScreen = () => {
           <BacWiper />
         </TouchableOpacity>
 
-        <TouchableOpacity style={homeStyles.chartContainer} onPress={NavigateToCharts}>
-          <Image
-            source={require('../../../assets/images/chart.png')}
-            style={homeStyles.smallIcon}
-          />
+        <TouchableOpacity onPressIn={() => setPlayChartAnimation(true)} onPressOut={() => { setPlayChartAnimation(false); NavigateToCharts(); }}>
+          <View style={homeStyles.chartContainer}>
+            <ChartAnimation play={playChartAnimation} frameRate={24} />
+          </View>
         </TouchableOpacity>
 
         <TouchableOpacity onPressIn={() => setPlayDiscoBallAnimation(true)} onPressOut={() => { setPlayDiscoBallAnimation(false); NavigateToCurrentNight(); }}>

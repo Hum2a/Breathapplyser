@@ -16,6 +16,8 @@ import ProfileWaveAnimation from '../../../../animations/profileWave';
 import SettingsCogAnimation from '../../../../animations/settingsCog';
 import WalletAnimation from '../../../../animations/wallet';
 import ScrollAnimation from '../../../../animations/scroll';
+import BottleAnimation from '../../../../animations/bottle';
+import ChartAnimation from '../../../../animations/chart';
 
 const animationComponents = {
   'Star Animation': StarAnimation,
@@ -30,7 +32,9 @@ const animationComponents = {
   'Muscle Man Animation': MuscleManAnimation,
   'Pen Writing Animation': PenWritingAnimation,
   'Profile Wave Animation': ProfileWaveAnimation,
-  'Wallet Animation': WalletAnimation
+  'Wallet Animation': WalletAnimation,
+  'Bottle Animation': BottleAnimation,
+  'Chart Animation': ChartAnimation
 };
 
 const AnimationsToggle = () => {
