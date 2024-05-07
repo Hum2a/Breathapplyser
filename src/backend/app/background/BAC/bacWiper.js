@@ -46,7 +46,7 @@ const BacWiper = () => {
 
             const intervalId = setInterval(() => {
                 wipeInvalidValueBACDocuments(user.uid);
-            }, 10000); // 7200000 milliseconds = 2 hours
+            }, 3600000); // 7200000 milliseconds = 2 hours
 
             return () => clearInterval(intervalId);
         }
