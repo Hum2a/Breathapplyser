@@ -107,18 +107,18 @@ const HomeScreen = () => {
   
     try {
       const docSnap = await getDoc(userDocRef);
-      if (docSnap.exists()) {
-        // Document exists, navigate to the rankings screen
+      if (docSnap.exists() && docSnap.data().optIn) {
+        // Document exists and user has opted in
         navigation.navigate('Rankings');
       } else {
-        // No document found, navigate to AcceptOnlineRankings screen
+        // No document found or user has not opted in
         navigation.navigate('AcceptRankings');
       }
     } catch (error) {
       console.error('Error checking user document:', error);
-      // Handle any errors, such as showing an error message or defaulting to a specific screen
     }
-  }  
+  }
+  
 
   const handleClearBAC = async () => {
     const firestore = getFirestore();

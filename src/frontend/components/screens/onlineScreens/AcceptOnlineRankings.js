@@ -12,23 +12,24 @@ const AcceptOnlineRankings = ({ navigation }) => {
 
   const handleOptInResponse = async (response) => {
     setOptIn(response);
-    if (response) {
-      // The user opted in, add their UID to the Firestore collection
-      try {
-        await setDoc(doc(firestore, 'Users', user.uid), {
-          // Add any initial data here. For example, optIn: true to mark their preference
-          optIn: true,
-        });
+    try {
+      // Update the user's opt-in status in Firestore, whether they opt in or out
+      await setDoc(doc(firestore, 'Users', user.uid), {
+        optIn: response,  // This will set optIn to true or false based on the user's choice
+      }, { merge: true });  // Ensure that only the optIn field is updated, preserving other user data
+  
+      if (response) {
         Alert.alert("Success", "You've opted into online rankings!");
-        navigation.navigate('Home');
-      } catch (error) {
-        console.error("Error adding user to rankings:", error);
-        Alert.alert("Error", "An error occurred while opting into rankings.");
+      } else {
+        Alert.alert("Opt-out", "You've opted out of online rankings.");
       }
-    } else {
-      Alert.alert("Opt-out", "You've opted out of online rankings.");
+      navigation.navigate('Home');
+    } catch (error) {
+      console.error("Error updating opt-in status:", error);
+      Alert.alert("Error", "An error occurred while updating your opt-in status.");
     }
   };
+  
 
   return (
     <View style={styles.container}>
