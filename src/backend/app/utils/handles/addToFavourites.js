@@ -40,9 +40,16 @@ export const addNewFavourite = async (user, favoriteData) => {
     return;
   }
 
+  // Ensure a venue is selected
+  if (!favoriteData.VenueId) {
+    console.error("No venue selected for the favorite.");
+    return;
+  }
+
   try {
     const firestore = getFirestore();
-    const favoritesCollection = collection(firestore, user.uid, "Alcohol Stuff", 'Favourites');
+    // Update the path to include the VenueId
+    const favoritesCollection = collection(firestore, user.uid, "Alcohol Stuff", "Venues", favoriteData.VenueId, "Favourites");
 
     // Generate a new document name following the desired structure
     const currentDate = new Date();
@@ -50,13 +57,13 @@ export const addNewFavourite = async (user, favoriteData) => {
       .toString()
       .padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')} ${currentDate.getHours().toString().padStart(2, '0')}:${currentDate.getMinutes().toString().padStart(2, '0')}:${currentDate.getSeconds().toString().padStart(2, '0')}`;
     const documentString = `Favourite ${formattedDate}`;
-    
 
-    // Create a reference to the new document
-    const newFavouriteDoc = doc(firestore, user.uid, "Alcohol Stuff", 'Favourites', documentString);
+    // Create a reference to the new document under the specified venue
+    const newFavouriteDoc = doc(favoritesCollection, documentString);
 
-    // Set the favorite data for the new document
-    await setDoc(newFavouriteDoc, { ...favoriteData });
+    // Set the favorite data for the new document, excluding the VenueId from being saved in the document
+    const { VenueId, ...restFavoriteData } = favoriteData;
+    await setDoc(newFavouriteDoc, restFavoriteData);
 
     // Handle success or any other necessary actions
     console.log('New favorite added successfully.');

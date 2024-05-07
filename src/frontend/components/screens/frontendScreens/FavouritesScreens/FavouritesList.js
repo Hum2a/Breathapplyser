@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Alert, Dimensions, Image, ScrollView } from 'react-native';
 import { favouriteStyles, dialogStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
+import { Picker } from '@react-native-picker/picker';
 import { getFirestore, collection, getDocs, doc, deleteDoc, setDoc } from 'firebase/firestore';
 import moment from 'moment';
 import Svg, { Polygon } from 'react-native-svg';
@@ -13,13 +14,19 @@ const FavouriteList = ({ user, navigation }) => {
   const { width, height } = Dimensions.get('window');
   const [dialogVisible, setDialogVisible] = useState(false);
   const [selectedFavouriteId, setSelectedFavouriteId] = useState(null);
+  const [venues, setVenues] = useState([]);
+  const [selectedVenue, setSelectedVenue] = useState(null);
+  const [addVenueDialogVisible, setAddVenueDialogVisible] = useState(false);
+  const [newVenueName, setNewVenueName] = useState('');
 
   useEffect(() => {
     fetchFavourites();
   }, [user]);
 
   const fetchFavourites = async (ignoreCache = false) => {
-    const cacheKey = `favourites_${user.uid}`;
+    if (!selectedVenue) return;
+  
+    const cacheKey = `favourites_${user.uid}_${selectedVenue}`;
     if (!ignoreCache) {
       const cachedData = await getCachedData(cacheKey);
       if (cachedData) {
@@ -27,9 +34,9 @@ const FavouriteList = ({ user, navigation }) => {
         return;
       }
     }
-
+  
     try {
-      const querySnapshot = await getDocs(collection(firestore, user.uid, "Alcohol Stuff", "Favourites"));
+      const querySnapshot = await getDocs(collection(firestore, user.uid, 'Alcohol Stuff', "Venues", selectedVenue, "Favourites"));
       const FavouritesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setFavourites(FavouritesData);
       await AsyncStorage.setItem(cacheKey, JSON.stringify(FavouritesData));
@@ -37,6 +44,25 @@ const FavouriteList = ({ user, navigation }) => {
       console.error('Error fetching Favourites:', error);
     }
   };
+  
+
+  const fetchVenues = async () => {
+    try {
+      const venueSnapshot = await getDocs(collection(firestore, user.uid, 'Alcohol Stuff', "Venues"));
+      const venuesData = venueSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setVenues(venuesData);
+      if (venuesData.length > 0) {
+        setSelectedVenue(venuesData[0].id);  // Automatically select the first venue
+      }
+    } catch (error) {
+      console.error('Error fetching venues:', error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchVenues();
+  }, [user]);  // Fetch venues when user changes
+  
 
   const getCachedData = async (key) => {
     try {
@@ -58,19 +84,24 @@ const FavouriteList = ({ user, navigation }) => {
   };
 
   const handleConfirmDelete = async () => {
-    if (selectedFavouriteId) {
+    if (selectedFavouriteId && selectedVenue) {
       try {
-        await deleteDoc(doc(firestore, user.uid, "Alcohol Stuff", "Favourites", selectedFavouriteId));
-        setFavourites(Favourites.filter(favourite => favourite.id !== selectedFavouriteId));
+        // Updated path to include the selected venue
+        const favouriteDocRef = doc(firestore, user.uid, "Alcohol Stuff", "Venues", selectedVenue, "Favourites", selectedFavouriteId);
+        await deleteDoc(favouriteDocRef);
+        setFavourites(prevFavourites => prevFavourites.filter(favourite => favourite.id !== selectedFavouriteId));
         Alert.alert('Deleted', 'The favourite has been successfully deleted.');
       } catch (error) {
         console.error('Error deleting favourite:', error);
         Alert.alert('Error', 'Could not delete favourite.');
       }
+    } else {
+      Alert.alert('Error', 'Invalid venue or favourite ID.');
     }
     setDialogVisible(false);
     setSelectedFavouriteId(null);
   };
+  
   
 
   // const renderSquareItem = ({ item }) => (
@@ -144,10 +175,53 @@ const FavouriteList = ({ user, navigation }) => {
       </View>
     </TouchableOpacity>
   );
+
+  const addVenue = async () => {
+    if (newVenueName.trim() === '') {
+      Alert.alert('Validation', 'Please enter a valid venue name.');
+      return;
+    }
+    try {
+      const newVenueRef = doc(firestore, user.uid, 'Alcohol Stuff', "Venues", `${newVenueName}`);
+      await setDoc(newVenueRef, { name: newVenueName });
+      fetchVenues();  // Refresh the venues list
+      setNewVenueName(''); // Reset the input field
+      toggleAddVenueDialog(); // Close the dialog
+    } catch (error) {
+      console.error('Error adding new venue:', error);
+      Alert.alert('Error', 'Could not add new venue.');
+    }
+  };
+  
+
+  const toggleAddVenueDialog = () => {
+    setAddVenueDialogVisible(!addVenueDialogVisible);
+  };
+  
   
 
   return (
     <ScrollView style={favouriteStyles.fullscreen}>
+      <View style={favouriteStyles.venueContainer}>
+        <TouchableOpacity style={favouriteStyles.venueButton} onPress={toggleAddVenueDialog}>
+          <Text style={favouriteStyles.venueButtonText}>
+            Add New Venue
+          </Text>
+        </TouchableOpacity>
+        <View style={favouriteStyles.pickerContainer}>
+          <Picker
+            selectedValue={selectedVenue}
+            onValueChange={(itemValue, itemIndex) => {
+              setSelectedVenue(itemValue);
+              fetchFavourites(true);
+            }}
+            style={favouriteStyles.picker}>
+            {venues.map((venue) => (
+              <Picker.Item key={venue.id} label={venue.name} value={venue.id} />
+            ))}
+          </Picker>
+        </View>
+      </View>
       <FlatList
         data={Favourites}
         renderItem={({ item }) => renderItem({ item, navigation })}
@@ -183,6 +257,19 @@ const FavouriteList = ({ user, navigation }) => {
               style={favouriteStyles.updateButtonImage} 
           />
       </TouchableOpacity>
+
+      <Dialog.Container visible={addVenueDialogVisible}>
+        <Dialog.Title>Add New Venue</Dialog.Title>
+        <Dialog.Input 
+          placeholder="Enter venue name"
+          value={newVenueName}
+          onChangeText={setNewVenueName}
+          style={dialogStyles.input} // Make sure to define this style in your stylesheets
+        />
+        <Dialog.Button label="Cancel" onPress={toggleAddVenueDialog} />
+        <Dialog.Button label="Add" onPress={addVenue} />
+      </Dialog.Container>
+
     </ScrollView>
   );
 };

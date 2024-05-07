@@ -95,6 +95,54 @@ export const favouriteStyles = StyleSheet.create({
     width: 30,
     height: 30,
   },
+  pickerContainer: {
+    backgroundColor: '#f0f4f8', // Light greyish background for the picker container
+    padding: 10,
+    marginHorizontal: 20,
+    borderRadius: 10,
+    borderColor: '#ccc', // Light grey border
+    borderWidth: 1,
+    width: '50%',
+  },
+  picker: {
+    height: 50, // Fixed height for picker
+    width: '100%', // Full width within the container
+    color: '#005f73', // Text color to match category text
+  },
+  pickerContainer2: {
+    backgroundColor: '#f0f4f8', // Light greyish background for the picker container
+    padding: 10,
+    borderRadius: 10,
+    borderColor: '#ccc', // Light grey border
+    borderWidth: 1,
+    width: '100%',
+  },
+  pickerText: {
+    textAlign: 'center',
+    color: '#005f73',
+    fontSize: 14,
+    fontWeight: 'bold'
+  },
+  venueButton: {
+    backgroundColor: '#0077B6', // A consistent blue theme for action buttons
+    paddingVertical: 12,
+    borderRadius: 50,
+    borderColor: '#005f73', // A slightly darker blue for border, adding depth
+    borderWidth: 2,
+    marginBottom: 10,
+    marginTop: 5,
+    width: '40%',
+  },
+  venueButtonText: {
+    color: 'white', // White text for clarity and contrast
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  venueContainer: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+  }
 });
 
 export const dialogStyles = StyleSheet.create({

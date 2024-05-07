@@ -3,18 +3,25 @@ import { View, Text, FlatList, TouchableOpacity, Alert, ScrollView, Dimensions, 
 import { favouriteStyles, dialogStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
 import { getFirestore, collection, getDocs, doc, deleteDoc, setDoc, getDoc, Timestamp } from 'firebase/firestore';
 import moment from 'moment';
+import { Picker } from '@react-native-picker/picker';
 import calculateBACIncrease from '../../../../utils/calculations/calculateBAC'; // Import the calculateBACIncrease function
 import Svg, { Polygon } from 'react-native-svg';
 import Dialog from 'react-native-dialog';
 import { saveEntry } from '../../../../../backend/firebase/queries/saveEntry';
 import { saveBACLevel } from '../../../../../backend/firebase/queries/saveBACLevel';
 import { saveDailyTotals } from '../../../../../backend/firebase/queries/saveDailyTotals';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FavouriteList = ({ user, navigation }) => {
   const [Favourites, setFavourites] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [selectedFavouriteId, setSelectedFavouriteId] = useState(null);
+  const [venues, setVenues] = useState([]);
+  const [selectedVenue, setSelectedVenue] = useState(null);
+  const [addVenueDialogVisible, setAddVenueDialogVisible] = useState(false);
+  const [newVenueName, setNewVenueName] = useState('');
+  const [date, setDate] = useState(new Date());
   const [limits, setLimits] = useState({
     spendingLimit: 0,
     drinkingLimit: 0,
@@ -23,45 +30,72 @@ const FavouriteList = ({ user, navigation }) => {
   });
   const firestore = getFirestore();
 
-  useEffect(() => {
-    const fetchFavourites = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(firestore, user.uid, "Alcohol Stuff", "Favourites"));
-        const FavouritesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setFavourites(FavouritesData);
-      } catch (error) {
-        console.error('Error fetching Favourites:', error);
+  const fetchFavourites = async (ignoreCache = false) => {
+    if (!selectedVenue) return;
+  
+    const cacheKey = `favourites_${user.uid}_${selectedVenue}`;
+    if (!ignoreCache) {
+      const cachedData = await getCachedData(cacheKey);
+      if (cachedData) {
+        setFavourites(cachedData);
+        return;
       }
-    };
-    const fetchUserProfile = async () => {
-      console.log("fetchUserProfile called");
-      if (user) {
-        console.log('User found');
-        const docRef = doc(firestore, user.uid, "Profile");
-        console.log('docRef initialised');
-    
-        try {
-          const promise = getDoc(docRef);
-          const timeout = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Request timed out')), 5000) // 5 seconds timeout
-          );
-          const docSnap = await Promise.race([promise, timeout]);
-          console.log('docSnap initialised');
-    
-          if (docSnap.exists()) {
-            setUserProfile(docSnap.data());
-            console.log('userProfile retrieved');
-          } else {
-            console.log("No such profile document!");
-          }
-        } catch (error) {
-          console.error('Error fetching user profile:', error.message);
-        }
-      }
-    };    
+    }
+  
+    try {
+      const querySnapshot = await getDocs(collection(firestore, user.uid, 'Alcohol Stuff', "Venues", selectedVenue, "Favourites"));
+      const FavouritesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setFavourites(FavouritesData);
+      await AsyncStorage.setItem(cacheKey, JSON.stringify(FavouritesData));
+    } catch (error) {
+      console.error('Error fetching Favourites:', error);
+    }
+  };
 
+  const fetchVenues = async () => {
+    try {
+      const venueSnapshot = await getDocs(collection(firestore, user.uid, 'Alcohol Stuff', "Venues"));
+      const venuesData = venueSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setVenues(venuesData);
+      if (venuesData.length > 0) {
+        setSelectedVenue(venuesData[0].id);  // Automatically select the first venue
+      }
+    } catch (error) {
+      console.error('Error fetching venues:', error);
+    }
+  };
+
+  const fetchUserProfile = async () => {
+    console.log("fetchUserProfile called");
+    if (user) {
+      console.log('User found');
+      const docRef = doc(firestore, user.uid, "Profile");
+      console.log('docRef initialised');
+  
+      try {
+        const promise = getDoc(docRef);
+        const timeout = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Request timed out')), 5000) // 5 seconds timeout
+        );
+        const docSnap = await Promise.race([promise, timeout]);
+        console.log('docSnap initialised');
+  
+        if (docSnap.exists()) {
+          setUserProfile(docSnap.data());
+          console.log('userProfile retrieved');
+        } else {
+          console.log("No such profile document!");
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error.message);
+      }
+    }
+  };    
+
+  useEffect(() => {
     if (user) {
       fetchFavourites();
+      fetchVenues();
       fetchUserProfile();
     } else {
       console.error('User is not authenticated.');
@@ -88,26 +122,31 @@ const FavouriteList = ({ user, navigation }) => {
     }
   };
 
-  // const handleDeleteFavourite = async (FavouriteId) => {
-  //   try {
-  //     await deleteDoc(doc(firestore, user.uid, "Alcohol Stuff", "Favourites", FavouriteId));
-  //     setFavourites(Favourites.filter(favourite => favourite.id !== FavouriteId));
-  //   } catch (error) {
-  //     console.error('Error deleting favourite:', error);
-  //     Alert.alert('Error', 'Could not delete favourite.');
-  //   }
-  // };
+  const getCachedData = async (key) => {
+    try {
+      const jsonString = await AsyncStorage.getItem(key);
+      return jsonString != null ? JSON.parse(jsonString) : null;
+    } catch (error) {
+      console.error('Error retrieving data from cache:', error);
+      return null;
+    }
+  };
 
   const handleConfirmDelete = async () => {
-    if (selectedFavouriteId) {
-      try {
-        await deleteDoc(doc(firestore, user.uid, "Alcohol Stuff", "Favourites", selectedFavouriteId));
-        setFavourites(Favourites.filter(favourite => favourite.id !== selectedFavouriteId));
-        Alert.alert('Deleted', 'The favourite has been successfully deleted.');
-      } catch (error) {
-        console.error('Error deleting favourite:', error);
-        Alert.alert('Error', 'Could not delete favourite.');
-      }
+    if (!selectedFavouriteId || !selectedVenue) {
+      Alert.alert('Error', 'Invalid venue or favourite ID.');
+      setDialogVisible(false);
+      return;
+    }
+  
+    try {
+      const favouriteDocRef = doc(firestore, user.uid, "Alcohol Stuff", "Venues", selectedVenue, "Favourites", selectedFavouriteId);
+      await deleteDoc(favouriteDocRef);
+      setFavourites(prevFavourites => prevFavourites.filter(favourite => favourite.id !== selectedFavouriteId));
+      Alert.alert('Deleted', 'The favourite has been successfully deleted.');
+    } catch (error) {
+      console.error('Error deleting favourite:', error);
+      Alert.alert('Error', 'Could not delete favourite.');
     }
     setDialogVisible(false);
     setSelectedFavouriteId(null);
@@ -130,9 +169,10 @@ const FavouriteList = ({ user, navigation }) => {
         units: favourite.Units,
         price: favourite.Price,
         type: favourite.Type,
+        calories: favourite.Calories,
         selectedStartTime: favourite.StartTime || moment().format('HH:mm'),
         selectedEndTime: favourite.EndTime || moment().format('HH:mm'),
-        selectedDate: moment().format('YYYY-MM-DD'), // Use today's date or modify as needed
+        selectedDate: date,
         selectedCurrency: favourite.Currency || 'GBP', // Use a default currency if not specified
       };
   
@@ -242,6 +282,19 @@ const FavouriteList = ({ user, navigation }) => {
 
   return (
     <View style={favouriteStyles.fullscreen}>
+      <View style={favouriteStyles.pickerContainer2}>
+        <Picker
+          selectedValue={selectedVenue}
+          onValueChange={(itemValue, itemIndex) => {
+            setSelectedVenue(itemValue);
+            fetchFavourites(true);
+          }}
+          style={favouriteStyles.picker}>
+          {venues.map((venue) => (
+            <Picker.Item key={venue.id} label={venue.name} value={venue.id} />
+          ))}
+        </Picker>
+      </View>
       <FlatList
           data={Favourites}
           renderItem={({ item }) => renderItem({ item, navigation })}
@@ -270,6 +323,13 @@ const FavouriteList = ({ user, navigation }) => {
           style={[dialogStyles.buttonLabel, dialogStyles.deleteButton]}
         />
       </Dialog.Container>
+
+      <TouchableOpacity onPress={() => fetchFavourites(true)} style={favouriteStyles.refreshButton}>
+          <Image
+              source={require('../../../../assets/images/refresh-icon.png')}
+              style={favouriteStyles.updateButtonImage} 
+          />
+      </TouchableOpacity>
       </View>
   );
 };
