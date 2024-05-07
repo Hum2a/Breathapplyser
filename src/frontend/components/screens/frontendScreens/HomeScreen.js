@@ -30,13 +30,13 @@ const HomeScreen = () => {
   const [statUpdateCount, setStatUpdateCount] = useState(0);
   const [bacUpdateCount, setBACUpdateCount] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [playStarAnimation, setPlayStarAnimation] = useState(true);
-  const [playBeerAnimation, setPlayBeerAnimation] = useState(true);
-  const [playMedalAnimation, setPlayMedalAnimation] = useState(true);
-  const [playDiscoBallAnimation, setPlayDiscoBallAnimation ] = useState(true);
-  const [playScrollAnimation, setPlayScrollAnimation ] = useState(true);
-  const [playSettingsAnimation, setPlaySettingsAnimation ] = useState(true);
-  const [playChartAnimation, setPlayChartAnimation ] = useState(true);
+  const [playStarAnimation, setPlayStarAnimation] = useState(false);
+  const [playBeerAnimation, setPlayBeerAnimation] = useState(false);
+  const [playMedalAnimation, setPlayMedalAnimation] = useState(false);
+  const [playDiscoBallAnimation, setPlayDiscoBallAnimation ] = useState(false);
+  const [playScrollAnimation, setPlayScrollAnimation ] = useState(false);
+  const [playSettingsAnimation, setPlaySettingsAnimation ] = useState(false);
+  const [playChartAnimation, setPlayChartAnimation ] = useState(false);
   const firestore = getFirestore();
 
   useEffect(() => {
