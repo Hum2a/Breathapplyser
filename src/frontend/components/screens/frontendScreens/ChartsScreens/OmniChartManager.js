@@ -78,7 +78,7 @@ const ChartsScreen = ({ navigation }) => {
       </TouchableOpacity>
 
       <TouchableOpacity onPressIn={() => setPlayBottleAnimation(true)} onPressOut={() => { setPlayBottleAnimation(false); navigateToChart('TypesCharts'); }}>
-        <View style={style.button}>
+        <View style={styles.button}>
           <Text style={styles.buttonText}>Types Charts</Text>
           <BottleAnimation play={playBottleAnimation} frameRate={24} />
         </View>
