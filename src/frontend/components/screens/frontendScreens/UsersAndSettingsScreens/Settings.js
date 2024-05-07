@@ -63,7 +63,7 @@ const Settings = () => {
   };
 
   const navigateToOnlineSettings = () => {
-    navigation.navigate('Online');
+    navigation.navigate('AcceptRankings');
   };
 
   const handleLogout = () => {
@@ -140,6 +140,7 @@ const Settings = () => {
 
       <TouchableOpacity onPress={navigateToOnlineSettings} style={styles.item}>
         <Text style={styles.text}>Online</Text>
+        <Image source={require('../../../../assets/images/world.png')} style={styles.icon} />
       </TouchableOpacity>
     </SafeAreaView>
   );
