@@ -7,6 +7,7 @@ import moment from 'moment';
 import Svg, { Polygon } from 'react-native-svg';
 import Dialog from 'react-native-dialog';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LinearGradient from 'react-native-linear-gradient';
 
 const FavouriteList = ({ user, navigation }) => {
   const [Favourites, setFavourites] = useState([]);
@@ -116,77 +117,90 @@ const FavouriteList = ({ user, navigation }) => {
   
   
 
-  // const renderSquareItem = ({ item }) => (
-  //   <TouchableOpacity
-  //     style={favouriteStyles.container}
-  //     onPress={() => navigation.navigate('EditFavourite', { favorite: item })}
-  //   >
-  //     <View style={favouriteStyles.infoContainer}>
-  //       <Text style={favouriteStyles.categoryText}>Drink: </Text>
-  //       <Text style={favouriteStyles.detailsText}>{item.Alcohol}</Text>
-  //     </View>
+  const renderSquareItem = ({ item, navigation }) => (
+    <TouchableOpacity
+      style={favouriteStyles.favouriteItem}
+      onPress={() => navigation.navigate('EditFavourite', { favorite: item })}
+    >
+      <LinearGradient
+        colors={['#92DDFE', '#BAEAFF']} // Start and end colors
+        style={favouriteStyles.gradient}>
+        <View>
+          <View style={favouriteStyles.infoContainer}>
+            <Text style={favouriteStyles.categoryText}>Drink: </Text>
+            <Text style={favouriteStyles.detailsText}>{item.Alcohol}</Text>
+          </View>
 
-  //     <View style={favouriteStyles.infoContainer}>
-  //       <Text style={favouriteStyles.categoryText}>Amount: </Text>
-  //       <Text style={favouriteStyles.detailsText}>{item.Amount}</Text>
-  //     </View>
+          <View style={favouriteStyles.infoContainer}>
+            <Text style={favouriteStyles.categoryText}>Amount: </Text>
+            <Text style={favouriteStyles.detailsText}>{item.Amount}</Text>
+          </View>
 
-  //     <View style={favouriteStyles.infoContainer}>
-  //       <Text style={favouriteStyles.categoryText}>Price: </Text>
-  //       <Text style={favouriteStyles.detailsText}>{item.Price}</Text>
-  //     </View>
+          <View style={favouriteStyles.infoContainer}>
+            <Text style={favouriteStyles.categoryText}>Price: </Text>
+            <Text style={favouriteStyles.detailsText}>{item.Price}</Text>
+          </View>
 
-  //     <View style={favouriteStyles.infoContainer}>
-  //       <Text style={favouriteStyles.categoryText}>Type: </Text>
-  //       <Text style={favouriteStyles.detailsText}>{item.Type}</Text>
-  //     </View>
+          <View style={favouriteStyles.infoContainer}>
+            <Text style={favouriteStyles.categoryText}>Type: </Text>
+            <Text style={favouriteStyles.detailsText}>{item.Type}</Text>
+          </View>
 
-  //     <View style={favouriteStyles.infoContainer}>
-  //       <Text style={favouriteStyles.categoryText}>Units: </Text>
-  //       <Text style={favouriteStyles.detailsText}>{item.Units}</Text>
-  //     </View>
-
-  //     <TouchableOpacity
-  //       style={favouriteStyles.deleteButton}
-  //       onPress={() => handleDeleteFavourite(item.id)}
-  //     >
-  //       <Text style={favouriteStyles.deleteButtonText}>Delete</Text>
-  //     </TouchableOpacity>
-  //   </TouchableOpacity>
-    
-  // );
-
-  const renderItem = ({ item, navigation }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('EditFavourite', { favorite: item })} style={ favouriteStyles.flatlistContainer }>
-      <View style={ favouriteStyles.starView }>
-        <Svg height='350' width='350' viewBox="0 0 100 100">
-          <Polygon
-            points="50,0 61,35 98,35 67,57 76,91 50,70 24,91 33,57 2,35 39,35"
-            fill="#65C5F9" // Light blue fill color for the star
-            stroke="#003366" // Dark blue for the border color to contrast with the fill
-            strokeWidth="1" // Thickness of the border
-          />
-        </Svg>
-        <View style={[favouriteStyles.starContent, { position: 'absolute', top: '34%', left: '10%', right: '10%' }]}>
-          <Text style={favouriteStyles.categoryText}>{item.Alcohol}</Text>
-          <Text style={favouriteStyles.detailsText}>Amount: {item.Amount}</Text>
-          <Text style={favouriteStyles.detailsText}>Price: {item.Price}</Text>
-          <Text style={favouriteStyles.detailsText}>Type: {item.Type}</Text>
-          <Text style={favouriteStyles.detailsText}>Units: {item.Units}</Text>
-          <TouchableOpacity
-            style={favouriteStyles.deleteButton}
-            onPress={() => showDeleteDialog(item.id)}
-          >
-            {/* <Text style={favouriteStyles.deleteButtonText}>Delete</Text> */}
-            <Image
-              source={require('../../../../assets/images/bin.png')}
-              style={favouriteStyles.binIcon}
-              />
-          </TouchableOpacity>
+          <View style={favouriteStyles.infoContainer}>
+            <Text style={favouriteStyles.categoryText}>Units: </Text>
+            <Text style={favouriteStyles.detailsText}>{item.Units}</Text>
+          </View>
         </View>
-      </View>
+        <TouchableOpacity
+          style={favouriteStyles.deleteButton}
+          onPress={() => showDeleteDialog(item.id)}
+        >
+          {/* <Text style={favouriteStyles.deleteButtonText}>Delete</Text> */}
+          <Image
+            source={require('../../../../assets/images/bin.png')}
+            style={favouriteStyles.binIcon}
+            />
+        </TouchableOpacity>
+        <View style={favouriteStyles.backgroundTextContainer}>
+          <Text style={favouriteStyles.backgroundText}>
+            {selectedVenue}
+          </Text>
+        </View>
+      </LinearGradient>
     </TouchableOpacity>
   );
+
+  // const renderStarItem = ({ item, navigation }) => (
+  //   <TouchableOpacity onPress={() => navigation.navigate('EditFavourite', { favorite: item })} style={ favouriteStyles.flatlistContainer }>
+  //     <View style={ favouriteStyles.starView }>
+  //       <Svg height='350' width='350' viewBox="0 0 100 100">
+  //         <Polygon
+  //           points="50,0 61,35 98,35 67,57 76,91 50,70 24,91 33,57 2,35 39,35"
+  //           fill="#65C5F9" // Light blue fill color for the star
+  //           stroke="#003366" // Dark blue for the border color to contrast with the fill
+  //           strokeWidth="1" // Thickness of the border
+  //         />
+  //       </Svg>
+  //       <View style={[favouriteStyles.starContent, { position: 'absolute', top: '34%', left: '10%', right: '10%' }]}>
+  //         <Text style={favouriteStyles.categoryText}>{item.Alcohol}</Text>
+  //         <Text style={favouriteStyles.detailsText}>Amount: {item.Amount}</Text>
+  //         <Text style={favouriteStyles.detailsText}>Price: {item.Price}</Text>
+  //         <Text style={favouriteStyles.detailsText}>Type: {item.Type}</Text>
+  //         <Text style={favouriteStyles.detailsText}>Units: {item.Units}</Text>
+  //         <TouchableOpacity
+  //           style={favouriteStyles.deleteButton}
+  //           onPress={() => showDeleteDialog(item.id)}
+  //         >
+  //           {/* <Text style={favouriteStyles.deleteButtonText}>Delete</Text> */}
+  //           <Image
+  //             source={require('../../../../assets/images/bin.png')}
+  //             style={favouriteStyles.binIcon}
+  //             />
+  //         </TouchableOpacity>
+  //       </View>
+  //     </View>
+  //   </TouchableOpacity>
+  // );
 
   const addVenue = async () => {
     if (newVenueName.trim() === '') {
@@ -236,7 +250,7 @@ const FavouriteList = ({ user, navigation }) => {
       </View>
       <FlatList
         data={Favourites}
-        renderItem={({ item }) => renderItem({ item, navigation })}
+        renderItem={({ item }) => renderSquareItem({ item, navigation })}
         keyExtractor={(item) => item.id}
       />
 

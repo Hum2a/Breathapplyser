@@ -242,9 +242,61 @@ const FavouriteList = ({ user, navigation }) => {
   
     return { totalUnits, totalSpending };
   };
-  
-    
 
+  const renderSquareItem = ({ item, navigation }) => (
+    <TouchableOpacity
+      style={favouriteStyles.favouriteItem}
+      onPress={() => handleAddFavoriteAsEntry(item)}
+    >
+      <LinearGradient
+        colors={['#92DDFE', '#BAEAFF']} // Start and end colors
+        style={favouriteStyles.gradient}>
+        <View>
+          <View style={favouriteStyles.infoContainer}>
+            <Text style={favouriteStyles.categoryText}>Drink: </Text>
+            <Text style={favouriteStyles.detailsText}>{item.Alcohol}</Text>
+          </View>
+
+          <View style={favouriteStyles.infoContainer}>
+            <Text style={favouriteStyles.categoryText}>Amount: </Text>
+            <Text style={favouriteStyles.detailsText}>{item.Amount}</Text>
+          </View>
+
+          <View style={favouriteStyles.infoContainer}>
+            <Text style={favouriteStyles.categoryText}>Price: </Text>
+            <Text style={favouriteStyles.detailsText}>{item.Price}</Text>
+          </View>
+
+          <View style={favouriteStyles.infoContainer}>
+            <Text style={favouriteStyles.categoryText}>Type: </Text>
+            <Text style={favouriteStyles.detailsText}>{item.Type}</Text>
+          </View>
+
+          <View style={favouriteStyles.infoContainer}>
+            <Text style={favouriteStyles.categoryText}>Units: </Text>
+            <Text style={favouriteStyles.detailsText}>{item.Units}</Text>
+          </View>
+        </View>
+        <TouchableOpacity
+          style={favouriteStyles.deleteButton}
+          onPress={() => showDeleteDialog(item.id)}
+        >
+          {/* <Text style={favouriteStyles.deleteButtonText}>Delete</Text> */}
+          <Image
+            source={require('../../../../assets/images/bin.png')}
+            style={favouriteStyles.binIcon}
+            />
+        </TouchableOpacity>
+        <View style={favouriteStyles.backgroundTextContainer}>
+          <Text style={favouriteStyles.backgroundText}>
+            {selectedVenue}
+          </Text>
+        </View>
+      </LinearGradient>
+    </TouchableOpacity>
+  );
+  
+  
   const renderItem = ({ item }) => (
     <TouchableOpacity 
       onPress={() => handleAddFavoriteAsEntry(item)}
@@ -297,7 +349,7 @@ const FavouriteList = ({ user, navigation }) => {
       </View>
       <FlatList
           data={Favourites}
-          renderItem={({ item }) => renderItem({ item, navigation })}
+          renderItem={({ item }) => renderSquareItem({ item, navigation })}
           keyExtractor={(item) => item.id}
         />
 

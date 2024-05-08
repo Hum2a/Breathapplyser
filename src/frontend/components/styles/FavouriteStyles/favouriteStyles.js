@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 export const favouriteStyles = StyleSheet.create({
   fullscreen: {
-    backgroundColor: '#BAEAFF',
+    backgroundColor: '#00797B',
   },
   flatlistContainer: {
     backgroundColor: '#BAEAFF',
@@ -13,11 +13,26 @@ export const favouriteStyles = StyleSheet.create({
     position: 'relative',
   },
   container: {
-    backgroundColor: '#BAEAFF', // A lighter shade of blue for background
+    backgroundColor: '#00797B', // A lighter shade of blue for background
     flex: 1,
   },
+  favouriteItem: {
+    margin: 10,
+    borderWidth: 1.5,
+    borderColor: '#E9FAA6',
+    borderRadius: 10,
+    overflow: 'hidden',
+    // iOS shadow properties
+    shadowColor: '#000', // Black color for the shadow
+    shadowOffset: { width: 0, height: 2 }, // Shadow position
+    shadowOpacity: 0.25, // Shadow opacity
+    shadowRadius: 3.84, // Shadow blur radius
+    // Android elevation
+    elevation: 5, // Depth effect for Android
+  },
   infoContainer: {
-    marginBottom: 5,
+    flexDirection: 'row',
+    textAlign: 'flex-start',
   },
   categoryText: {
     fontWeight: 'bold',
@@ -31,13 +46,8 @@ export const favouriteStyles = StyleSheet.create({
     marginBottom: 5,
   },
   deleteButton: {
-    backgroundColor: 'transparent', // Red color for delete button to stand out for caution
-    paddingHorizontal: 5,
-    paddingVertical: 5,
+    backgroundColor: 'transparent',
     borderRadius: 5,
-    // borderColor: 'red',
-    // borderWidth: 1,
-    left: 18,
     alignSelf: 'flex-end',
   },
   deleteButtonText: {
@@ -142,7 +152,30 @@ export const favouriteStyles = StyleSheet.create({
   venueContainer: {
     flexDirection: 'row',
     alignSelf: 'center',
-  }
+  },
+  gradient: {
+    flex: 1,
+    borderRadius: 8,
+    padding: 20,
+    flexDirection: 'row',
+  },
+  backgroundTextContainer: {
+    ...StyleSheet.absoluteFillObject, // Make the text overlay the entire item
+    position: 'absolute',
+    right: -8,
+    top: -30,
+    justifyContent: 'center', // Center vertically
+    alignItems: 'flex-end', // Align text to the start (left)
+},
+  backgroundText: {
+    fontSize: 68, // Large text size
+    color: 'rgba(0, 0, 255, 0.2)', // Semi-transparent white
+    transform: [{ rotate: '20deg' }], // Rotate the container
+    fontWeight: 'bold',
+    textAlign: 'center',
+    zIndex: 1,
+    overflow: 'hidden', // Hide any part of the text that overflows the container
+  },
 });
 
 export const dialogStyles = StyleSheet.create({
