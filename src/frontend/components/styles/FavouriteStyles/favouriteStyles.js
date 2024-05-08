@@ -167,5 +167,15 @@ export const dialogStyles = StyleSheet.create({
   deleteButton: {
     color: '#F44336', // Red for the delete button
   },
+  input: {
+    height: 45, // Consistent height for inputs
+    backgroundColor: '#FFFFFF', // White background
+    color: '#0277BD', // Light blue text to match the theme
+    borderWidth: 1, // Border to enhance visibility
+    borderColor: '#004C8C', // Border color matching description
+    borderRadius: 8, // Rounded corners
+    paddingHorizontal: 10, // Horizontal padding
+    fontSize: 16, // Font size that matches the description
+  }
 });
 

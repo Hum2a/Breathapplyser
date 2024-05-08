@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, RefreshControl } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { getFirestore, collection, query, orderBy, getDocs, doc, setDoc, getDoc } from 'firebase/firestore';
 import moment from 'moment';
 import { UserContext } from '../../../../context/UserContext'; // Update path as needed
 import { CommonStyles as styles } from '../../../styles/DrinkingStyles/commonStyles';
 import { saveBACLevel } from '../../../../../backend/firebase/queries/saveBACLevel';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Dialog from 'react-native-dialog';
 
 const CommonDrinks = () => {
   const [commonDrinks, setCommonDrinks] = useState([]);
@@ -17,6 +18,10 @@ const CommonDrinks = () => {
     spendingLimitStrictness: 'soft',
     drinkingLimitStrictness: 'soft',
   });
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogMessage, setDialogMessage] = useState('');
+
   
   const { user } = useContext(UserContext);
   const firestore = getFirestore();
@@ -216,10 +221,10 @@ const CommonDrinks = () => {
        await setDoc(bacLevelRef, { value: newBACLevel, lastUpdated: moment().format('YY-MM-DD HH:mm:ss') }, { merge: true });
    
 
-      Alert.alert('Success', 'Drink re-entered successfully.');
+       showDialog('Success', 'Drink re-entered successfully.');
     } catch (error) {
       console.error('Error re-entering drink:', error);
-      Alert.alert('Error', 'Could not re-enter the drink.');
+      showDialog('Error', 'Could not re-enter the drink.');
     }
   };
 
@@ -230,18 +235,18 @@ const CommonDrinks = () => {
   
     // Spending limit checks
     if (limits.spendingLimitStrictness === "hard" && newTotalSpending > limits.spendingLimit) {
-      Alert.alert('Limit Reached', 'You have reached your hard spending limit.');
+      showDialog('Limit Reached', 'You have reached your hard spending limit.');
       return false;
     } else if (limits.spendingLimitStrictness === "soft" && newTotalSpending > limits.spendingLimit) {
-      Alert.alert('Warning', 'Approaching soft spending limit.');
+      showDialog('Warning', 'Approaching soft spending limit.');
     }
   
     // Drinking limit checks
     if (limits.drinkingLimitStrictness === "hard" && newTotalUnits > limits.drinkingLimit) {
-      Alert.alert('Limit Reached', 'You have reached your hard drinking limit.');
+      showDialog('Limit Reached', 'You have reached your hard spending limit.');
       return false;
     } else if (limits.drinkingLimitStrictness === "soft" && newTotalUnits > limits.drinkingLimit) {
-      Alert.alert('Warning', 'Approaching soft drinking limit.');
+      showDialog('Warning', 'Approaching soft spending limit.');
     }
   
     return true;
@@ -282,6 +287,13 @@ const CommonDrinks = () => {
   const onRefresh = () => {
     fetchCommonDrinks(true); // Always pass true to force refresh
   };
+
+  const showDialog = (title, message) => {
+    setDialogTitle(title);
+    setDialogMessage(message);
+    setDialogVisible(true);
+  };
+  
   
 
   const renderItem = ({ item }) => (
@@ -312,6 +324,24 @@ const CommonDrinks = () => {
           />
         }
       />
+
+      <Dialog.Container
+        visible={dialogVisible}
+        contentStyle={styles.dialogContainer}
+        style={styles.dialogContainer} // If needed to apply additional styling on the dialog wrapper
+      >
+        <Dialog.Title style={styles.dialogTitle}>{dialogTitle}</Dialog.Title>
+        <Dialog.Description style={styles.dialogDescription}>
+          {dialogMessage}
+        </Dialog.Description>
+        <Dialog.Button
+          label="OK"
+          onPress={() => setDialogVisible(false)}
+          style={styles.dialogButton}
+          textStyle={styles.dialogButtonText}
+        />
+      </Dialog.Container>
+
     </View>
   );
 };

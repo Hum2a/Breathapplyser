@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, Alert} from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import Dialog from 'react-native-dialog';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { SettingStyles as styles } from '../../../styles/SettingStyles/settingStyles';
+import { dialogStyles } from '../../../styles/AppStyles/dialogueStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProfileWaveAnimation from '../../../animations/profileWave';
 import MuscleManAnimation from '../../../animations/muscleman';
@@ -16,6 +18,7 @@ const Settings = () => {
   const [ playProfileWaveAnimation, setPlayProfileWaveAnimation ] = useState(false); 
   const [ playMuscleManAnimation, setPlayMuscleManAnimation] = useState(false);
   const [ playPaintRollerAnimation, setPlayPaintRollerAnimation ] = useState(false);
+  const [logoutDialogVisible, setLogoutDialogVisible] = useState(false);
 
   const { user } = useContext(UserContext);
   const firestore = getFirestore()
@@ -66,27 +69,26 @@ const Settings = () => {
     navigation.navigate('AcceptRankings');
   };
 
-  const handleLogout = () => {
-    Alert.alert(
-      "Logout",
-      "Are you sure you want to log out?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Logout", onPress: () => {
-            logout(); // Call your logout function from the UserContext
-            // Use CommonActions.reset to clear the navigation stack and navigate to the initial screen
-            navigation.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [{ name: 'Start' }], // Replace 'InitialScreenName' with the name of your initial screen
-              })
-            );
-          }
-        }
-      ]
-    );
+  const showLogoutDialog = () => {
+    setLogoutDialogVisible(true);
   };
+  
+  const handleConfirmLogout = () => {
+    logout(); // Call your logout function from UserContext
+    // Use CommonActions.reset to clear the navigation stack and navigate to the initial screen
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'Start' }], // Replace 'Start' with the name of your initial screen
+      })
+    );
+    setLogoutDialogVisible(false);
+  };
+  
+  const handleCancelLogout = () => {
+    setLogoutDialogVisible(false);
+  };
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -133,7 +135,7 @@ const Settings = () => {
         <Image source={require('../../../../assets/images/file.png')} style={styles.fileManagerIcon} />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={handleLogout} style={styles.item}>
+      <TouchableOpacity onPress={showLogoutDialog} style={styles.item}>
         <Text style={styles.text}>Logout</Text>
         <Image source={require('../../../../assets/images/logout.png')} style={styles.icon} />
       </TouchableOpacity>
@@ -142,6 +144,16 @@ const Settings = () => {
         <Text style={styles.text}>Online</Text>
         <Image source={require('../../../../assets/images/world.png')} style={styles.icon} />
       </TouchableOpacity>
+
+      <Dialog.Container visible={logoutDialogVisible} contentStyle={dialogStyles.container}>
+        <Dialog.Title style={dialogStyles.title}>Logout</Dialog.Title>
+        <Dialog.Description style={dialogStyles.description}>
+          Are you sure you want to log out?
+        </Dialog.Description>
+        <Dialog.Button label="Cancel" style={dialogStyles.cancelButton} onPress={handleCancelLogout} />
+        <Dialog.Button label="Logout" style={dialogStyles.logoutButton} onPress={handleConfirmLogout} />
+      </Dialog.Container>
+
     </SafeAreaView>
   );
 };

@@ -1,13 +1,12 @@
-// RecentDrinks.js
-
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, RefreshControl } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { getFirestore, collection, query, orderBy, limit, getDocs, setDoc, doc, getDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../context/UserContext'; // Update the path according to your project structure
 import moment from 'moment';
 import { RecentStyles as styles } from '../../../styles/DrinkingStyles/recentStyles';
 import { saveBACLevel } from '../../../../../backend/firebase/queries/saveBACLevel';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Dialog from 'react-native-dialog';
 
 const RecentDrinks = ({ navigation }) => {
   const [recentDrinks, setRecentDrinks] = useState([]);
@@ -19,6 +18,10 @@ const RecentDrinks = ({ navigation }) => {
     spendingLimitStrictness: 'soft',
     drinkingLimitStrictness: 'soft',
   });
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogMessage, setDialogMessage] = useState('');
+
   
   const { user } = useContext(UserContext);
   const firestore = getFirestore();
@@ -83,7 +86,7 @@ const RecentDrinks = ({ navigation }) => {
       await AsyncStorage.setItem(cacheKey, JSON.stringify({ date: moment().format('YYYY-MM-DD'), drinks: fetchedRecentDrinks }));
     } catch (error) {
       console.error('Error fetching recent drinks:', error);
-      Alert.alert('Error', 'Could not fetch recent drinks.');
+      showDialog('Error', 'Could not fetch recent drinks.');
     }
   
     // Log the total number of queries and reads
@@ -142,18 +145,18 @@ const RecentDrinks = ({ navigation }) => {
 
     // Check against limits
     if (limits.spendingLimitStrictness === "hard" && newTotalSpending > limits.spendingLimit) {
-      Alert.alert('Limit Reached', 'You have reached your hard spending limit.');
+      showDialog('Limit Reached', 'You have reached your hard spending limit.');
       return;
     } else if (limits.drinkingLimitStrictness === "hard" && newTotalUnits > limits.drinkingLimit) {
-      Alert.alert('Limit Reached', 'You have reached your hard drinking limit.');
+      showDialog('Limit Reached', 'You have reached your hard drinking limit.');
       return;
     }
 
     if (limits.spendingLimitStrictness === "soft" && newTotalSpending > limits.spendingLimit) {
-      Alert.alert('Warning', 'You are approaching your soft spending limit.');
+      showDialog('Warning', 'You are approaching your soft spending limit.');
     }
     if (limits.drinkingLimitStrictness === "soft" && newTotalUnits > limits.drinkingLimit) {
-      Alert.alert('Warning', 'You are approaching your soft drinking limit.');
+      showDialog('Warning', 'You are approaching your soft drinking limit.');
     }
     try {
       const { id, ...drinkDetails } = drink; // Destructure to exclude the 'id'
@@ -205,13 +208,13 @@ const RecentDrinks = ({ navigation }) => {
       await setDoc(bacLevelRef, { value: newBACLevel, lastUpdated: moment().format('YY-MM-DD HH:mm:ss') }, { merge: true });
   
   
-      Alert.alert('Success', 'Drink re-entered successfully and DailyTotals updated.');
+      showDialog('Success', 'Drink re-entered successfully and DailyTotals updated.');
   
       // Optionally, refresh the UI or navigate as needed
       navigation.navigate('Home');
     } catch (error) {
       console.error('Error re-entering drink and updating DailyTotals:', error);
-      Alert.alert('Error', 'Could not re-enter the drink and update DailyTotals.');
+      showDialog('Error', 'Could not re-enter the drink and update DailyTotals.');
     }
   };
 
@@ -243,6 +246,11 @@ const RecentDrinks = ({ navigation }) => {
     return { totalUnits, totalSpending };
   };
   
+  const showDialog = (title, message) => {
+    setDialogTitle(title);
+    setDialogMessage(message);
+    setDialogVisible(true);
+  };
   
 
   const renderItem = ({ item }) => (
@@ -277,6 +285,24 @@ const RecentDrinks = ({ navigation }) => {
           />
         }
       />
+
+      <Dialog.Container
+        visible={dialogVisible}
+        contentStyle={styles.dialogContainer}
+        style={styles.dialogContainer} // If needed to apply additional styling on the dialog wrapper
+      >
+        <Dialog.Title style={styles.dialogTitle}>{dialogTitle}</Dialog.Title>
+        <Dialog.Description style={styles.dialogDescription}>
+          {dialogMessage}
+        </Dialog.Description>
+        <Dialog.Button
+          label="OK"
+          onPress={() => setDialogVisible(false)}
+          style={styles.dialogButton}
+          textStyle={styles.dialogButtonText}
+        />
+      </Dialog.Container>
+
     </View>
   );
 };

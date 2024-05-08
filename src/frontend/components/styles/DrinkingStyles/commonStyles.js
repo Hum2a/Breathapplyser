@@ -57,5 +57,41 @@ export const CommonStyles = StyleSheet.create({
         padding: 8,
         borderRadius: 5,
         marginVertical: 8,
-    }
+    },
+    dialogContainer: {
+      padding: 20,
+      borderRadius: 8,
+      backgroundColor: '#ffffff', // clean white background
+      shadowColor: '#000000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 3,
+      elevation: 5,
+    },
+    dialogTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333', // dark grey for strong visibility
+        marginBottom: 10,
+    },
+    dialogDescription: {
+        fontSize: 16,
+        color: '#666', // slightly lighter grey for the description
+        marginBottom: 20,
+    },
+    dialogButton: {
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        backgroundColor: '#007bff', // consistent blue with other buttons
+        borderRadius: 5,
+        elevation: 2,
+    },
+    dialogButtonText: {
+        color: 'white', // white text for clarity and contrast
+        fontSize: 16,
+        textAlign: 'center',
+    },
+    dialogButtonCancel: {
+        backgroundColor: '#6c757d', // a muted grey for the cancel button
+    },
 });

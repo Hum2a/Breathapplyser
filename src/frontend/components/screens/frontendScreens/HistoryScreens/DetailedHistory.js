@@ -15,6 +15,8 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState(null); // Track the selected entry for deletion
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+  const [successDialogVisible, setSuccessDialogVisible] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const [summary, setSummary] = useState({
     totalDrinks: 0,
     amountSpent: 0,
@@ -190,11 +192,19 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
   
       // Update the UI
       setEntries(previousEntries => previousEntries.filter(e => e.id !== entry.id));
-      Alert.alert("Entry Deleted", "The entry and its impact on daily totals have been successfully removed.");
+      setDeleteDialogVisible(false); // Hide the delete confirmation dialog
+      setSuccessMessage('Entry deleted successfully.');
+      setSuccessDialogVisible(true); // Show the success dialog
     } catch (error) {
       console.error("Error deleting entry or updating totals: ", error);
-      Alert.alert("Error", "Could not delete the entry or update the daily totals.");
+      setDeleteDialogVisible(false); // Hide the delete confirmation dialog
+      setSuccessMessage("Error", "Could not delete the entry or update the daily totals.");
+      setSuccessDialogVisible(true); // Show the success dialog
     }
+  };
+
+  const handleSuccessDialogClose = () => {
+    setSuccessDialogVisible(false); // Hide the success dialog
   };
 
   const handleLongPressEntry = (entry) => {
@@ -327,6 +337,21 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
         <Dialog.Button style={dialogStyles.deleteButton}label="Delete" onPress={handleDeleteConfirmed} />
         <Dialog.Button style={dialogStyles.cancelButton}label="Cancel" onPress={handleDeleteCancelled} />
       </Dialog.Container>
+
+      <Dialog.Container 
+        visible={successDialogVisible}
+        contentStyle={{
+          backgroundColor: 'black', // Light Blue background; solid color as gradient is not directly supported
+          borderRadius: 10,
+        }}
+        >
+        <Dialog.Title style={dialogStyles.title}>Deletion Successful</Dialog.Title>
+        <Dialog.Description style={dialogStyles.description}>
+          {successMessage}
+        </Dialog.Description>
+        <Dialog.Button  style={dialogStyles.deleteButton} label="OK" onPress={handleSuccessDialogClose} />
+      </Dialog.Container>
+
 
     </View>
   );

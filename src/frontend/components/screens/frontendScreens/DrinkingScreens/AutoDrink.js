@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, FlatList } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, FlatList, RefreshControl } from 'react-native';
 import { getFirestore, doc, collection, getDoc, getDocs } from 'firebase/firestore';
 import moment from 'moment';
 import calculateBACIncrease from '../../../../utils/calculations/calculateBAC';
@@ -12,161 +12,167 @@ import { saveDailyTotals } from '../../../../../backend/firebase/queries/saveDai
 import CommonDrinks from './CommonDrinks';
 import RecentDrinks from './RecentDrinks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Dialog from 'react-native-dialog';
 
 const AutoEntryScreen = ({ navigation }) => {
-    const drinkTypes = ['Spirit', 'Beer', 'Lager', 'Wine', 'Liquers', 'Cocktails'];
+  const drinkTypes = ['Spirit', 'Beer', 'Lager', 'Wine', 'Liquers', 'Cocktails'];
+
+  const [commonDrinks, setCommonDrinks] = useState([]);
+  const [selectedDrinkType, setSelectedDrinkType] = useState(null);
+  const [prices, setPrices] = useState({});
+  const [userProfile, setUserProfile] = useState(null);
+  const [totalDrinks, setTotalDrinks] = useState(0);
+  const [totalUnits, setTotalUnits] = useState(0);
+  const [totalSpending, setTotalSpending] = useState(0);
+  const [selectedStartTime, setSelectedStartTime] = useState(moment().format('HH:mm'));
+  const [selectedEndTime, setSelectedEndTime] = useState(moment().format('HH:mm'));
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [limits, setLimits] = useState({
+    spendingLimit: 0,
+    drinkingLimit: 0,
+    spendingLimitStrictness: 'soft',
+    drinkingLimitStrictness: 'soft'
+});
+  const [limitDialogVisible, setLimitDialogVisible] = useState(false);
+  const [addDialogVisible, setAddDialogVisible] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogMessage, setDialogMessage] = useState('');
+  const [dialogAction, setDialogAction] = useState(() => () => {});
+  const [refreshing, setRefreshing] = useState(false);
   
-    const [commonDrinks, setCommonDrinks] = useState([]);
-    const [selectedDrinkType, setSelectedDrinkType] = useState(null);
-    const [prices, setPrices] = useState({});
-    const [userProfile, setUserProfile] = useState(null);
-    const [totalDrinks, setTotalDrinks] = useState(0);
-    const [totalUnits, setTotalUnits] = useState(0);
-    const [totalSpending, setTotalSpending] = useState(0);
-    const [selectedStartTime, setSelectedStartTime] = useState(moment().format('HH:mm'));
-    const [selectedEndTime, setSelectedEndTime] = useState(moment().format('HH:mm'));
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [limits, setLimits] = useState({
-      spendingLimit: 0,
-      drinkingLimit: 0,
-      spendingLimitStrictness: 'soft',
-      drinkingLimitStrictness: 'soft'
-  });
-    
-    const { user } = useContext(UserContext);
-    const firestore = getFirestore();;
+  const { user } = useContext(UserContext);
+  const firestore = getFirestore();;
 
-    useEffect(() => {
-        // Filter common drinks based on selected drink type
-        if (selectedDrinkType) {
-          const filteredDrinks = CommonDrinksList[selectedDrinkType];
-          setCommonDrinks(filteredDrinks);
-        }
-      }, [selectedDrinkType]);
+  useEffect(() => {
+      // Filter common drinks based on selected drink type
+      if (selectedDrinkType) {
+        const filteredDrinks = CommonDrinksList[selectedDrinkType];
+        setCommonDrinks(filteredDrinks);
+      }
+    }, [selectedDrinkType]);
 
-    useEffect(() => {
-      fetchLimits(); // Fetch the limits when the component mounts
-    }, [user]);
+  useEffect(() => {
+    fetchLimits(); // Fetch the limits when the component mounts
+  }, [user]);
 
-    const fetchCommonDrinks = async (type) => {
-    // You can fetch common drinks for each type from your database
-    // For now, we'll just use a static array
-    const drinks = CommonDrinksList[type];
-    setCommonDrinks(drinks);
-    };
+  const fetchCommonDrinks = async (type) => {
+  // You can fetch common drinks for each type from your database
+  // For now, we'll just use a static array
+  const drinks = CommonDrinksList[type];
+  setCommonDrinks(drinks);
+  };
 
-    const fetchLimits = async () => {
-      if (user) {
-        const cacheKey = `limits_${user.uid}`;
-        try {
-          // Try to get the cached limits
+  const fetchLimits = async (forceRefresh = false) => {
+    if (user) {
+      const cacheKey = `limits_${user.uid}`;
+      try {
+        if (!forceRefresh) {
+          // Try to get the cached limits first
           const cachedLimits = await AsyncStorage.getItem(cacheKey);
           if (cachedLimits) {
             const limits = JSON.parse(cachedLimits);
-            setLimits({
-              spendingLimit: limits.spendingLimit,
-              drinkingLimit: limits.drinkingLimit,
-              spendingLimitStrictness: limits.spendingLimitStrictness,
-              drinkingLimitStrictness: limits.drinkingLimitStrictness,
-            });
+            setLimits(limits);
             console.log('Loaded limits from cache');
-            return; // Exit the function as we've loaded the data
+            return;
           }
-    
-          // Fetch limits from Firestore if not in cache
-          const docRef = doc(getFirestore(), user.uid, "Limits");
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            setLimits({
-              spendingLimit: data.spendingLimit || 0,
-              drinkingLimit: data.drinkingLimit || 0,
-              spendingLimitStrictness: data.spendingLimitStrictness || 'soft',
-              drinkingLimitStrictness: data.drinkingLimitStrictness || 'soft',
-            });
-            // Cache the fetched limits
-            await AsyncStorage.setItem(cacheKey, JSON.stringify(data));
-            console.log('Limits fetched from Firestore and cached');
-          } else {
-            console.log("No limits document found");
-          }
-        } catch (error) {
-          console.error('Error fetching or caching limits:', error);
         }
+    
+        // Fetch limits from Firestore
+        const docRef = doc(getFirestore(), user.uid, "Limits");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setLimits({
+            spendingLimit: data.spendingLimit || 0,
+            drinkingLimit: data.drinkingLimit || 0,
+            spendingLimitStrictness: data.spendingLimitStrictness || 'soft',
+            drinkingLimitStrictness: data.drinkingLimitStrictness || 'soft',
+          });
+          // Cache the fetched limits
+          await AsyncStorage.setItem(cacheKey, JSON.stringify(data));
+          console.log('Limits fetched from Firestore and cached');
+        } else {
+          console.log("No limits document found");
+        }
+      } catch (error) {
+        console.error('Error fetching or caching limits:', error);
       }
-    };
+    }
+  };
     
 
-    const handleDrinkTypeSelection = (type) => {
-      if (selectedDrinkType === type) {
-          // If the same type is clicked again, reset the selection
-          setSelectedDrinkType(null);
-          setCommonDrinks([]); // Clear the list of drinks
-      } else {
-          // Otherwise, update the selection and fetch the drinks
-          setSelectedDrinkType(type);
-          fetchCommonDrinks(type);
-      }
-  };  
+  const handleDrinkTypeSelection = (type) => {
+    if (selectedDrinkType === type) {
+        // If the same type is clicked again, reset the selection
+        setSelectedDrinkType(null);
+        setCommonDrinks([]); // Clear the list of drinks
+    } else {
+        // Otherwise, update the selection and fetch the drinks
+        setSelectedDrinkType(type);
+        fetchCommonDrinks(type);
+    }
+};  
 
   const handleDrinkSelection = async (drink) => {
-    const unitsToAdd = drink.units; // Your logic for units
-    const priceToAdd = parseFloat(prices[drink.name]); // Your logic for price
-    const caloriesToAdd = drink.calories; // Adding calories information
-    
-    const canAddDrink = await handleCheckLimits(unitsToAdd, priceToAdd);
-    if (!canAddDrink) return; // Stop if limits are exceeded
-  
     const price = prices[drink.name];
-    
     if (!price) {
-        Alert.alert('Error', 'Please enter the price.');
-        return;
+      showAlertDialog('Error', 'Please enter the price.', () => {});
+      return;
     }
     
+    const unitsToAdd = drink.units; // Logic for units
+    const priceToAdd = parseFloat(price); // Logic for price
+    const caloriesToAdd = drink.calories; // Adding calories information
+
+    // First, check limits before proceeding
+    const canAddDrink = await handleCheckLimits(unitsToAdd, priceToAdd, true);
+    if (!canAddDrink) {
+        // If the limits are exceeded, exit the function without saving anything
+        return;
+    }
+
+    // If checks pass, proceed to add the drink
     try {
         let units = drink.units;
-        if (selectedDrinkType === 'Spirit') {
-            // If it's a double, double the units
-            units = drink.double ? drink.units * 2 : drink.units;
+        if (selectedDrinkType === 'Spirit' && drink.double) {
+            units *= 2; // If it's a double, double the units
         }
-        
+
         const entryData = {
-            alcohol: drink.name, // Assuming drink.name contains the name of the drink
+            alcohol: drink.name,
             amount: 1,
             units: units,
-            price: parseFloat(price),
-            type: selectedDrinkType, // Use the selectedDrinkType for the drink type
-            calories: caloriesToAdd, // Include calories in entry data
+            price: priceToAdd,
+            type: selectedDrinkType,
+            calories: caloriesToAdd,
             selectedStartTime: moment(selectedStartTime, 'HH:mm').toISOString(),
             selectedEndTime: moment(selectedEndTime, 'HH:mm').toISOString(),
             selectedDate: selectedDate,
             selectedCurrency: "GBP",
         };
-    
+
+        // Save the entry in the database
         await saveEntry(user, userProfile, entryData);
         await saveBACLevel(user, entryData.units, userProfile, entryData);
-        
-        // Assuming BACIncrease needs to be calculated for daily totals
+
+        // Calculate BAC increase and update daily totals only after ensuring limits are not exceeded
         const BACIncrease = calculateBACIncrease(units, userProfile);
-        
-        // Prepare the entry details array for the daily totals
         const entryDetailsArray = [{
             ...entryData,
-            BACIncrease, // Add BACIncrease to the entry details if necessary for daily totals
+            BACIncrease
         }];
-        
+
         // Update daily totals
         await saveDailyTotals(firestore, user, selectedDate, entryDetailsArray);
         
-        Alert.alert('Success', 'Drink entry added successfully!');
-        navigation.navigate('Home');
+        showAlertDialog('Success', 'Drink entry added successfully!', () => {
+          navigation.navigate('Home');
+      });
     } catch (error) {
         console.error('Error adding drink entry:', error);
-        Alert.alert('Error', 'Failed to add drink entry. Please try again.');
+        showAlertDialog('Error', 'Failed to add drink entry. Please try again.', () => {});
     }
-  };
-  
+};
 
     const handlePriceChange = (drinkName, price) => {
         setPrices(prevPrices => ({
@@ -175,51 +181,54 @@ const AutoEntryScreen = ({ navigation }) => {
         }));
       };
 
-      const handleCheckLimits = async (unitsToAdd, priceToAdd) => {
-        // Fetch the current totals for units and spending
-        const currentTotals = await getCurrentTotals(selectedDate);
+    const handleCheckLimits = async (unitsToAdd, priceToAdd, forceRefresh = false) => {
+      if (forceRefresh) {
+        await fetchLimits(true); // Force fetching new limits from the server
+      }
+      
+      // Fetch the current totals for units and spending
+      const currentTotals = await getCurrentTotals(selectedDate);
+      const newTotalUnits = currentTotals.totalUnits + unitsToAdd;
+      const newTotalSpending = currentTotals.totalSpending + priceToAdd;
+    
+      // Perform the limit checks
+      if (limits.drinkingLimitStrictness === "hard" && newTotalUnits > limits.drinkingLimit) {
+        setDialogTitle('Limit Exceeded');
+        setDialogMessage('You have exceeded your hard drinking limit.');
+        setLimitDialogVisible(true);
+        return false;
+      }
+      if (limits.spendingLimitStrictness === "hard" && newTotalSpending > limits.spendingLimit) {
+        setDialogTitle('Limit Exceeded');
+        setDialogMessage('You have exceeded your hard spending limit.');
+        setLimitDialogVisible(true);
+        return false;
+      }
+    
+      // Check soft limits using Dialog
+      if (limits.drinkingLimitStrictness === "soft" && newTotalUnits > limits.drinkingLimit) {
+        setDialogTitle('Soft Limit Warning');
+        setDialogMessage('You are about to exceed your soft drinking limit. Proceed anyway?');
+        setDialogAction(() => () => resolveProceedWithAddition(true));
+        setLimitDialogVisible(true);
+        return await new Promise(resolve => {
+          resolveProceedWithAddition = resolve;
+        });
+      }
 
-        const newTotalUnits = currentTotals.totalUnits + unitsToAdd;
-        const newTotalSpending = currentTotals.totalSpending + priceToAdd;
+      if (limits.spendingLimitStrictness === "soft" && newTotalSpending > limits.spendingLimit) {
+        setDialogTitle('Soft Limit Warning');
+        setDialogMessage('You are about to exceed your soft spending limit. Proceed anyway?');
+        setDialogAction(() => () => resolveProceedWithAddition(true));
+        seLimitDialogVisible(true);
+        return await new Promise(resolve => {
+          resolveProceedWithAddition = resolve;
+        });
+      }
 
-        // Check hard limits first
-        if (limits.drinkingLimitStrictness === "hard" && newTotalUnits > limits.drinkingLimit) {
-            Alert.alert('Limit Exceeded', 'You have exceeded your hard drinking limit.');
-            return false;
-        }
-        if (limits.spendingLimitStrictness === "hard" && newTotalSpending > limits.spendingLimit) {
-            Alert.alert('Limit Exceeded', 'You have exceeded your hard spending limit.');
-            return false;
-        }
-
-        // Check soft limits
-        let proceedWithAddition = true;
-        if (limits.drinkingLimitStrictness=== "soft" && newTotalUnits > limits.drinkingLimit) {
-            proceedWithAddition = await new Promise(resolve => Alert.alert(
-                'Soft Limit Warning', 
-                'You are about to exceed your soft drinking limit. Proceed anyway?', 
-                [
-                    { text: 'Cancel', onPress: () => resolve(false) },
-                    { text: 'Proceed', onPress: () => resolve(true) }
-                ]
-            ));
-        }
-
-        if (!proceedWithAddition) return false;
-
-        if (limits.spendingLimitStrictness === "soft" && newTotalSpending > limits.spendingLimit) {
-            proceedWithAddition = await new Promise(resolve => Alert.alert(
-                'Soft Limit Warning', 
-                'You are about to exceed your soft spending limit. Proceed anyway?', 
-                [
-                    { text: 'Cancel', onPress: () => resolve(false) },
-                    { text: 'Proceed', onPress: () => resolve(true) }
-                ]
-            ));
-        }
-
-        return proceedWithAddition;
+      return true;
     };
+      
     const getCurrentTotals = async (selectedDate) => {
 
       const dateStr = moment(selectedDate).format('YYYY-MM-DD');
@@ -315,6 +324,26 @@ const AutoEntryScreen = ({ navigation }) => {
     );
     setCommonDrinks(updatedDrinks);
   };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await fetchLimits(true); // Refresh your limits
+      // You can also call any other data fetching functions here
+      console.log("Data refreshed!");
+    } catch (error) {
+      console.error("Failed to refresh data:", error);
+    }
+    setRefreshing(false);
+  };
+
+  const showAlertDialog = (title, message, onDismiss) => {
+    setDialogTitle(title);
+    setDialogMessage(message);
+    setDialogAction(() => onDismiss);
+    setAddDialogVisible(true);
+}
+  
   
 
   return (
@@ -382,8 +411,61 @@ const AutoEntryScreen = ({ navigation }) => {
             />
           </View>
         )}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["#9Bd35A", "#689F38"]} // Optional: customize the colors of the spinner
+          />
+        }
       />      
     )}
+      <Dialog.Container
+        visible={limitDialogVisible}
+        contentStyle={styles.dialogContainer}
+      >
+        <Dialog.Title style={styles.dialogTitle}>{dialogTitle}</Dialog.Title>
+        <Dialog.Description style={styles.dialogDescription}>
+          {dialogMessage}
+        </Dialog.Description>
+        <Dialog.Button
+          label="Cancel"
+          onPress={() => {
+            setLimitDialogVisible(false);
+            resolveProceedWithAddition(false); // this function should be defined to handle the promise resolution
+          }}
+          style={[styles.dialogButton, styles.dialogButtonCancel]} // specific style for cancel button
+          textStyle={styles.dialogButtonText}
+        />
+        <Dialog.Button
+          label="OK"
+          onPress={() => {
+            setLimitDialogVisible(false);
+            dialogAction(); // make sure this function appropriately handles what happens after OK is pressed
+          }}
+          style={styles.dialogButton}
+          textStyle={styles.dialogButtonText}
+        />
+      </Dialog.Container>
+
+      <Dialog.Container 
+        visible={addDialogVisible}
+        contentStyle={styles.dialogContainer}
+          >
+        <Dialog.Title style={styles.dialogTitle}>{dialogTitle}</Dialog.Title>
+        <Dialog.Description style={styles.dialogDescription}>
+          {dialogMessage}
+        </Dialog.Description>
+        <Dialog.Button 
+          label="OK" 
+          onPress={() => {
+          setAddDialogVisible(false);
+          dialogAction(); // This will handle navigation or any cleanup
+        }} 
+          style={styles.dialogButton}
+          textStyle={styles.dialogButtonText}
+          />
+      </Dialog.Container>
     </View>
   );
 };

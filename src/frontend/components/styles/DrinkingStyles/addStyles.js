@@ -348,5 +348,41 @@ export const autoStyles = StyleSheet.create({
     zIndex: 1,
     overflow: 'hidden', // Hide any part of the text that overflows the container
   },
-
+  dialogContainer: {
+    padding: 20,
+    backgroundColor: '#ffffff', // white background for the dialog
+    borderRadius: 8,
+    elevation: 5, // for shadow on Android
+    shadowColor: '#000000', // shadow for iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  dialogTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#03396c', // consistent deep blue color
+    marginBottom: 10, // space between title and content
+  },
+  dialogDescription: {
+    fontSize: 16,
+    color: '#333333', // dark gray for text
+    marginBottom: 20, // space before buttons
+  },
+  dialogButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginVertical: 5,
+    backgroundColor: '#0275d8', // blue color for buttons
+    borderRadius: 5,
+    minWidth: 100, // ensure buttons have enough space
+  },
+  dialogButtonText: {
+    textAlign: 'center',
+    color: '#FFFFFF', // white text for buttons
+    fontSize: 16,
+  },
+  dialogButtonCancel: {
+    backgroundColor: '#cccccc', // grey color for cancel button
+  },
 });

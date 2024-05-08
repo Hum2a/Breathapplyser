@@ -1,15 +1,17 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, TouchableOpacity, Alert, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { auth, firestore } from '../../../../../backend/firebase/database/firebase';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { useUser } from '../../../../context/UserContext';
 import { CommonActions } from '@react-navigation/native';
 import moment from 'moment';
 import { BackButton } from '../../../buttons/backButton';
+import Dialog from 'react-native-dialog';
 
 const DataManagerScreen = ({ navigation }) => {
   const { logout } = useUser();
   const [userData, setUserData] = useState(null);
+  const [dialogVisible, setDialogVisible] = useState(false);
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -23,23 +25,15 @@ const DataManagerScreen = ({ navigation }) => {
   }, []);
 
   const handleDeleteAccount = () => {
-    Alert.alert(
-      "Delete Account",
-      "Are you sure you want to delete your account? This cannot be undone.",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Delete", onPress: () => deleteAccount(), style: "destructive" }
-      ]
-    );
+    setDialogVisible(true);
   };
 
-  const deleteAccount = async () => {
+  const confirmDeleteAccount = async () => {
     const user = auth.currentUser;
     const userProfileRef = doc(firestore, "Profile", user.uid);
     await deleteDoc(userProfileRef);
 
     user.delete().then(() => {
-      Alert.alert("Account Deleted", "Your account has been successfully deleted.");
       logout();
       navigation.dispatch(
         CommonActions.reset({
@@ -48,8 +42,13 @@ const DataManagerScreen = ({ navigation }) => {
         })
       );
     }).catch((error) => {
-      Alert.alert("Error", "Failed to delete account: " + error.message);
+      console.error("Failed to delete account: " + error.message);
     });
+    setDialogVisible(false);
+  };
+
+  const cancelDeleteAccount = () => {
+    setDialogVisible(false);
   };
 
   return (
@@ -74,12 +73,24 @@ const DataManagerScreen = ({ navigation }) => {
             <Image
               source={require('../../../../assets/images/bin.png')}
               style={styles.binIcon}
-              />
+            />
           </TouchableOpacity>
         </View>
       ) : (
         <Text style={styles.noDataText}>No user data available.</Text>
       )}
+      <Dialog.Container 
+        visible={dialogVisible}
+        contentStyle={dialogStyles.container}
+      >
+        <Dialog.Title style={dialogStyles.title}>Delete Account</Dialog.Title>
+        <Dialog.Description style={dialogStyles.description}>
+          Are you sure you want to delete your account? This cannot be undone.
+        </Dialog.Description>
+        <Dialog.Button label="Cancel" onPress={cancelDeleteAccount} style={dialogStyles.cancelButton} />
+        <Dialog.Button label="Delete" onPress={confirmDeleteAccount} style={dialogStyles.deleteButton} />
+      </Dialog.Container>
+
     </View>
   );
 };
@@ -142,5 +153,51 @@ const styles = StyleSheet.create({
     margin: 5,
   }
 });
+
+export const dialogStyles = StyleSheet.create({
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#0277BD', // Light blue
+    marginBottom: 15,
+  },
+  description: {
+    fontSize: 16,
+    color: '#004C8C', // Slightly darker blue for contrast
+    marginBottom: 20,
+  },
+  buttonLabel: {
+    fontSize: 18,
+    fontWeight: '500',
+  },
+  cancelButton: {
+    color: '#CDDC39', // Yellowish-green for the cancel button
+  },
+  deleteButton: {
+    color: '#F44336', // Red for the delete button
+  },
+  container: {
+    backgroundColor: 'white', // White background for the dialog
+    borderRadius: 8, // Rounded corners
+    padding: 20, // Padding inside the dialog
+    shadowColor: '#000', // Shadow for elevation effect
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 10, // Android elevation
+    borderWidth: 1, // Optional: if you want a border
+    borderColor: '#DDDDDD', // Light gray border
+  },
+  input: {
+    borderColor: '#CCCCCC', // Light gray border for input fields
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 10,
+    marginBottom: 10, // Space between input field and next element
+    color: '#333333', // Dark gray color for text input
+    backgroundColor: '#F7F7F7', // Very light gray background for input
+  }
+});
+
 
 export default DataManagerScreen;

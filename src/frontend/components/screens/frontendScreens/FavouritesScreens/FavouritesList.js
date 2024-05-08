@@ -17,6 +17,8 @@ const FavouriteList = ({ user, navigation }) => {
   const [venues, setVenues] = useState([]);
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [addVenueDialogVisible, setAddVenueDialogVisible] = useState(false);
+  const [deleteSuccessDialogVisible, setDeleteSuccessDialogVisible] = useState(false);
+  const [deleteSuccessMessage, setDeleteSuccessMessage] = useState('');
   const [newVenueName, setNewVenueName] = useState('');
 
   useEffect(() => {
@@ -90,16 +92,26 @@ const FavouriteList = ({ user, navigation }) => {
         const favouriteDocRef = doc(firestore, user.uid, "Alcohol Stuff", "Venues", selectedVenue, "Favourites", selectedFavouriteId);
         await deleteDoc(favouriteDocRef);
         setFavourites(prevFavourites => prevFavourites.filter(favourite => favourite.id !== selectedFavouriteId));
-        Alert.alert('Deleted', 'The favourite has been successfully deleted.');
+        setDialogVisible(false); // Close the confirmation dialog
+        setDeleteSuccessMessage('The favourite has been successfully deleted.');
+        setDeleteSuccessDialogVisible(true);
       } catch (error) {
         console.error('Error deleting favourite:', error);
-        Alert.alert('Error', 'Could not delete favourite.');
+        setDialogVisible(false); // Close the confirmation dialog
+        setDeleteSuccessMessage('The favourite could not be deleted.');
+        setDeleteSuccessDialogVisible(true); // Show success message dialog
       }
     } else {
-      Alert.alert('Error', 'Invalid venue or favourite ID.');
+      setDialogVisible(false);
+      setDeleteSuccessMessage('Error', 'Invalid venue or favourite ID.');
+      setDeleteSuccessDialogVisible(true);
     }
     setDialogVisible(false);
     setSelectedFavouriteId(null);
+  };
+
+  const handleCloseDeleteSuccessDialog = () => {
+    setDeleteSuccessDialogVisible(false);
   };
   
   
@@ -258,17 +270,41 @@ const FavouriteList = ({ user, navigation }) => {
           />
       </TouchableOpacity>
 
-      <Dialog.Container visible={addVenueDialogVisible}>
-        <Dialog.Title>Add New Venue</Dialog.Title>
+      <Dialog.Container 
+        visible={addVenueDialogVisible} 
+        contentStyle={{
+          backgroundColor: 'black',
+          borderRadius: 10,
+        }}>
+        <Dialog.Title style={dialogStyles.title}>Add New Venue</Dialog.Title>
         <Dialog.Input 
           placeholder="Enter venue name"
           value={newVenueName}
           onChangeText={setNewVenueName}
           style={dialogStyles.input} // Make sure to define this style in your stylesheets
         />
-        <Dialog.Button label="Cancel" onPress={toggleAddVenueDialog} />
-        <Dialog.Button label="Add" onPress={addVenue} />
+        <Dialog.Button style={[dialogStyles.buttonLabel, dialogStyles.cancelButton]} label="Cancel" onPress={toggleAddVenueDialog} />
+        <Dialog.Button style={[dialogStyles.buttonLabel, dialogStyles.addButton]} label="Add" onPress={addVenue} />
       </Dialog.Container>
+
+      <Dialog.Container 
+        visible={deleteSuccessDialogVisible}
+        contentStyle={{
+          backgroundColor: 'black',
+          borderRadius: 10,
+        }}
+        >
+        <Dialog.Title style={dialogStyles.title}>Deletion Successful</Dialog.Title>
+        <Dialog.Description style={dialogStyles.description}>
+          {deleteSuccessMessage}
+        </Dialog.Description>
+        <Dialog.Button
+          label="OK"
+          onPress={handleCloseDeleteSuccessDialog}
+          style={dialogStyles.button} // Apply button styles
+        />
+      </Dialog.Container>
+
 
     </ScrollView>
   );

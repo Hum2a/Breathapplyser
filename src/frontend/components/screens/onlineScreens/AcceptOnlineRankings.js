@@ -1,33 +1,37 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
-// Import Firestore and your Firebase config as necessary
+import Dialog from 'react-native-dialog';
+import { dialogStyles } from '../../styles/AppStyles/dialogueStyles';
 import { collection, doc, getFirestore, setDoc } from 'firebase/firestore';
 import { UserContext } from '../../../context/UserContext';
 import { BackButton } from '../../buttons/backButton';
 
 const AcceptOnlineRankings = ({ navigation }) => {
   const [optIn, setOptIn] = useState(null);
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState('');
   const firestore = getFirestore();
   const { user } = useContext(UserContext);
 
   const handleOptInResponse = async (response) => {
     setOptIn(response);
     try {
-      // Update the user's opt-in status in Firestore, whether they opt in or out
       await setDoc(doc(firestore, 'Users', user.uid), {
-        optIn: response,  // This will set optIn to true or false based on the user's choice
-      }, { merge: true });  // Ensure that only the optIn field is updated, preserving other user data
-  
-      if (response) {
-        Alert.alert("Success", "You've opted into online rankings!");
-      } else {
-        Alert.alert("Opt-out", "You've opted out of online rankings.");
-      }
-      navigation.navigate('Home');
+        optIn: response,
+      }, { merge: true });
+
+      setDialogMessage(response ? "You've opted into online rankings!" : "You've opted out of online rankings.");
+      setDialogVisible(true);
     } catch (error) {
       console.error("Error updating opt-in status:", error);
-      Alert.alert("Error", "An error occurred while updating your opt-in status.");
+      setDialogMessage("An error occurred while updating your opt-in status.");
+      setDialogVisible(true);
     }
+  };
+
+  const handleCloseDialog = () => {
+    setDialogVisible(false);
+    navigation.navigate('Home');
   };
   
 
@@ -45,6 +49,14 @@ const AcceptOnlineRankings = ({ navigation }) => {
           </TouchableOpacity>
         </>
       )}
+
+      <Dialog.Container visible={dialogVisible} contentStyle={dialogStyles.container}>
+        <Dialog.Title style={dialogStyles.title}>{optIn ? "Success" : "Opt-out"}</Dialog.Title>
+        <Dialog.Description style={dialogStyles.description}>
+          {dialogMessage}
+        </Dialog.Description>
+        <Dialog.Button style={dialogStyles.cancelButton}label="OK" onPress={handleCloseDialog} />
+      </Dialog.Container>
     </View>
   );
 };
