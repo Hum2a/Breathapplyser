@@ -18,6 +18,14 @@ const DisplaySettingsScreen = ({ user, navigation}) => {
     navigation.navigate('Animations');
   }
 
+  const navigateToRecentControls = () => {
+    navigation.navigate('RecentControls');
+  }
+
+  const navigateToCommonControls = () => {
+    navigation.navigate('CommonControls');
+  }
+
   return (
     <View style={styles.container}>
       <BackButton/>
@@ -28,6 +36,12 @@ const DisplaySettingsScreen = ({ user, navigation}) => {
       </TouchableOpacity>
       <TouchableOpacity onPress={navigateToAnimations} style={styles.button}>
         <Text style={styles.buttonText}>Animations Toggle</Text> 
+      </TouchableOpacity>
+      <TouchableOpacity onPress={navigateToRecentControls} style={styles.button}>
+        <Text style={styles.buttonText}>Recent Drinks Controls</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={navigateToCommonControls} style={styles.button}>
+        <Text style={styles.buttonText}>Common Drinks Controls</Text>
       </TouchableOpacity>
     </View>
   );

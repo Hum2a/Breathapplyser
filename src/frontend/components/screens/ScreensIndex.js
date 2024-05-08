@@ -40,6 +40,8 @@ export { default as DrunkParametersScreen } from './frontendScreens/UsersAndSett
 export { default as DisplaySettingsScreen } from './frontendScreens/UsersAndSettingsScreens/DisplayScreen';
 export { default as EmojiCustomisationScreen } from './frontendScreens/UsersAndSettingsScreens/Display/EmojiCustomisation';
 export { default as AnimationsToggleScreen } from './frontendScreens/UsersAndSettingsScreens/Display/AnimationsToggle';
+export { default as RecentControlsScreen } from './frontendScreens/UsersAndSettingsScreens/Display/RecentDrinksControls';
+export { default as CommonControlsScreen } from './frontendScreens/UsersAndSettingsScreens/Display/CommonDrinksControls';
 
 // Charts
 export { default as ChartsScreen } from './frontendScreens/ChartsScreens/OmniChartManager';

@@ -50,6 +50,8 @@ import {
   LifeTimeStatsScreen,
   VisualDetailedHistoryScreen,
   NightOutCalendarScreen,
+  RecentControlsScreen,
+  CommonControlsScreen,
 } from '../screens/ScreensIndex';
 
 const Stack = createNativeStackNavigator();
@@ -114,6 +116,8 @@ const AppNavigation = () => {
         <Stack.Screen name="SpentRankings" component={SpentRankingsScreen} />
         <Stack.Screen name="AcceptRankings" component={AcceptRankingsScreen} />
         <Stack.Screen name="NightOutCalendar" component={NightOutCalendarScreen} />
+        <Stack.Screen name="RecentControls" component={RecentControlsScreen} />
+        <Stack.Screen name="CommonControls" component={CommonControlsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

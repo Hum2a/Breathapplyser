@@ -10,6 +10,7 @@ import Dialog from 'react-native-dialog';
 
 const CommonDrinks = () => {
   const [commonDrinks, setCommonDrinks] = useState([]);
+  const [commonDrinksLimit, setCommonDrinksLimit] = useState(3);
   const [userProfile, setUserProfile] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [limits, setLimits] = useState({
@@ -29,10 +30,24 @@ const CommonDrinks = () => {
   useEffect(() => {
     fetchUserProfile()
     if (user) {
+      fetchCommonDrinksControls();
       fetchCommonDrinks();
       fetchLimits();
     }
   }, [user]);
+
+  const fetchCommonDrinksControls = async () => {
+    userDocRef = doc(firestore, user.uid, "Common Drinks Controls");
+    try {
+      const docSnap = await getDoc(userDocRef);
+      const comDrinksLimit = docSnap.exists() ? docSnap.data().number : 3;
+      setCommonDrinksLimit(comDrinksLimit);
+      console.log(`Common Drinks number: ${comDrinksLimit}`)
+    } catch (error) {
+      console.error("Error fetching Common drink controls");
+      showDialog("Error", "Failed to fetch Common drinks.");
+    }
+  };
 
   const fetchUserProfile = async () => {
     console.log("fetchUserProfile called");
@@ -129,7 +144,7 @@ const CommonDrinks = () => {
   
     const sortedCommonDrinks = Object.values(drinkOccurrences)
       .sort((a, b) => b.count - a.count)
-      .slice(0, 3); // Take top 3 most common drinks
+      .slice(0, commonDrinksLimit); // Take top 3 most common drinks
   
     setCommonDrinks(sortedCommonDrinks);
     await AsyncStorage.setItem(`commonDrinksCache_${user.uid}`, JSON.stringify({
@@ -194,11 +209,8 @@ const CommonDrinks = () => {
 
     try {
       await setDoc(doc(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs", entryDocId), newEntry);
-
-      // Assuming you have userProfile in context to calculate BACIncrease
       await saveBACLevel(user, drink.units, userProfile, entryDetails);
 
-      // Update daily totals similarly to how it's done in RecentDrinks
        // Define references for daily totals
        const selectedDateStr = moment().format('YYYY-MM-DD');
        const amountSpentRef = doc(firestore, user.uid, "Daily Totals", "Amount Spent", selectedDateStr);
@@ -285,6 +297,7 @@ const CommonDrinks = () => {
   };
   
   const onRefresh = () => {
+    fetchCommonDrinksControls();
     fetchCommonDrinks(true); // Always pass true to force refresh
   };
 
@@ -311,7 +324,7 @@ const CommonDrinks = () => {
         style={styles.title} // Define this style to align with your design
         onPress={() => fetchCommonDrinks(true)}  // Pass true to force a refresh
       >
-        <Text style={styles.title}>Top 3 Common Drinks</Text>
+        <Text style={styles.title}>Top {commonDrinksLimit} Common Drinks</Text>
       </TouchableOpacity>
       <FlatList
         data={commonDrinks}

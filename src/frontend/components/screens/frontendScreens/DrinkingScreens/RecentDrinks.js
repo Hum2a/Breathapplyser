@@ -10,6 +10,7 @@ import Dialog from 'react-native-dialog';
 
 const RecentDrinks = ({ navigation }) => {
   const [recentDrinks, setRecentDrinks] = useState([]);
+  const [recentDrinksLimit, setRecentDrinksLimit] = useState(3);
   const [userProfile, setUserProfile] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [limits, setLimits] = useState({
@@ -27,14 +28,29 @@ const RecentDrinks = ({ navigation }) => {
   const firestore = getFirestore();
 
   const onRefresh = () => {
+    fetchRecentDrinksControls();
     fetchRecentDrinks(true); // Always pass true to force refresh
   };
 
   useEffect(() => {
+    fetchRecentDrinksControls();
     fetchUserProfile();
     fetchRecentDrinks();
     fetchLimits();
   }, [user]);
+
+  const fetchRecentDrinksControls = async () => {
+    userDocRef = doc(firestore, user.uid, "Recent Drinks Controls");
+    try {
+      const docSnap = await getDoc(userDocRef);
+      const recDrinksLimit = docSnap.exists() ? docSnap.data().number : 3;
+      setRecentDrinksLimit(recDrinksLimit);
+      console.log(`Recent Drinks number: ${recDrinksLimit}`)
+    } catch (error) {
+      console.error("Error fetching recent drink controls");
+      showDialog("Error", "Failed to fetch recent drinks.");
+    }
+  };
 
   const fetchRecentDrinks = async (forceRefresh = false) => {
     setRefreshing(true);
@@ -45,7 +61,6 @@ const RecentDrinks = ({ navigation }) => {
   
     const cacheKey = `recentDrinks_${user.uid}`;
     const maxDaysToLookBack = 30; // Define how many days back you want to search
-    const recentDrinksLimit = 3; // How many recent drinks you want to fetch
     let fetchedRecentDrinks = [];
     let currentDate = moment();
     let totalQueries = 0;
