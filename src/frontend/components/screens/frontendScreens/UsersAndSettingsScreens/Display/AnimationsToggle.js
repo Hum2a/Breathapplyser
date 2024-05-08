@@ -69,10 +69,40 @@ const AnimationsToggle = () => {
     }
   };
 
+  const toggleAllAnimations = async (enable) => {
+    const newSettings = Object.keys(animationSettings).reduce((acc, anim) => {
+      acc[anim] = enable;
+      return acc;
+    }, {});
+  
+    setAnimationSettings(newSettings);
+  
+    if (user) {
+      const userDocRef = doc(firestore, user.uid, 'Animations');
+      await setDoc(userDocRef, newSettings, { merge: true });
+      console.log(`All animations settings updated to ${enable}`);
+    }
+  };
+  
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Animations:</Text>
-      <Text style={styles.warning}> Device may lag if all are turned on</Text>
+      <Text style={styles.warning}>Device may lag if all are turned on</Text>
+      <View style={styles.toggleAllContainer}>
+        <TouchableOpacity
+          style={styles.toggleAllButton}
+          onPress={() => toggleAllAnimations(true)}
+        >
+          <Text style={styles.toggleAllButtonText}>Enable All</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.toggleAllButton}
+          onPress={() => toggleAllAnimations(false)}
+        >
+          <Text style={styles.toggleAllButtonText}>Disable All</Text>
+        </TouchableOpacity>
+      </View>
       {Object.keys(animationComponents).map(anim => {
         const AnimationComponent = animationComponents[anim];
         return (
@@ -98,6 +128,7 @@ const AnimationsToggle = () => {
       })}
     </ScrollView>
   );
+  
 };
 
 export default AnimationsToggle;

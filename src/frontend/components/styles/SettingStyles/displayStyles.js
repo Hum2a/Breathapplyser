@@ -81,4 +81,22 @@ export const DisplayStyles = StyleSheet.create({
         fontSize: 16,
         color: '#333333', // Dark gray text color
       },
+      toggleAllButton: {
+        backgroundColor: '#4fc3f7',
+        borderColor: '#000',
+        padding: 10,
+        borderRadius: 5,
+        borderWidth: 1,
+        alignItems: 'center',
+        marginVertical: 10,
+        marginHorizontal: 10,
+      },
+      toggleAllButtonText: {
+        color: '#FFFFFF',
+        fontWeight: 'bold',
+      },
+      toggleAllContainer: {
+        flexDirection: 'row',
+        alignSelf:'center',
+      }
   });
