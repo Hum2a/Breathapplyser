@@ -67,6 +67,7 @@ const AddNewFavouriteScreen = ({ navigation }) => {
       <TextInput
         style={addStyles.input}
         placeholder="Name"
+        placeholderTextColor={'navy'}
         value={alcohol}
         onChangeText={setAlcohol}
       />
@@ -74,6 +75,7 @@ const AddNewFavouriteScreen = ({ navigation }) => {
       <TextInput
         style={addStyles.input}
         placeholder="Type of Alcohol"
+        placeholderTextColor={'navy'}
         value={type}
         onChangeText={setType}
       />
@@ -81,6 +83,7 @@ const AddNewFavouriteScreen = ({ navigation }) => {
       <TextInput
         style={addStyles.input}
         placeholder="Amount"
+        placeholderTextColor={'navy'}
         keyboardType="numeric"
         value={amount}
         onChangeText={setAmount}
@@ -89,6 +92,7 @@ const AddNewFavouriteScreen = ({ navigation }) => {
       <TextInput
         style={addStyles.input}
         placeholder="Units"
+        placeholderTextColor={'navy'}
         keyboardType="numeric"
         value={units}
         onChangeText={setUnits}
@@ -97,6 +101,7 @@ const AddNewFavouriteScreen = ({ navigation }) => {
       <TextInput
         style={addStyles.input}
         placeholder="Price"
+        placeholderTextColor={'navy'}
         keyboardType="numeric"
         value={price}
         onChangeText={setPrice}
@@ -105,6 +110,7 @@ const AddNewFavouriteScreen = ({ navigation }) => {
       <TextInput
         style={addStyles.input}
         placeholder="Calories"
+        placeholderTextColor={'navy'}
         keyboardType="numeric"
         value={calories}
         onChangeText={setCalories}
