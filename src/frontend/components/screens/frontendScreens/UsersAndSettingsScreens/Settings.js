@@ -69,6 +69,10 @@ const Settings = () => {
     navigation.navigate('AcceptRankings');
   };
 
+  const navigateToDeveloperSettings = () => {
+    navigation.navigate('DeveloperSettings');
+  }
+
   const showLogoutDialog = () => {
     setLogoutDialogVisible(true);
   };
@@ -130,6 +134,11 @@ const Settings = () => {
         <Image source={require('../../../../assets/images/notification.png')} style={styles.icon} />
       </TouchableOpacity>
 
+      <TouchableOpacity onPress={navigateToOnlineSettings} style={styles.item}>
+        <Text style={styles.text}>Online</Text>
+        <Image source={require('../../../../assets/images/world.png')} style={styles.icon} />
+      </TouchableOpacity>
+
       <TouchableOpacity onPress={navigateToData} style={styles.item}>
         <Text style={styles.text}>Data</Text>
         <Image source={require('../../../../assets/images/file.png')} style={styles.fileManagerIcon} />
@@ -140,9 +149,9 @@ const Settings = () => {
         <Image source={require('../../../../assets/images/logout.png')} style={styles.icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={navigateToOnlineSettings} style={styles.item}>
-        <Text style={styles.text}>Online</Text>
-        <Image source={require('../../../../assets/images/world.png')} style={styles.icon} />
+      <TouchableOpacity onPress={navigateToDeveloperSettings} style={styles.item}>
+        <Text style={styles.text}>Developer Settings</Text>
+        <Image source={require('../../../../assets/images/Developer.png')} style={styles.icon} />
       </TouchableOpacity>
 
       <Dialog.Container visible={logoutDialogVisible} contentStyle={dialogStyles.container}>

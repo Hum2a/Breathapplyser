@@ -52,6 +52,16 @@ import {
   NightOutCalendarScreen,
   RecentControlsScreen,
   CommonControlsScreen,
+  DeveloperSettingsScreen,
+  AlcoholStuffDevScreen,
+  EntriesDevScreen,
+  BACLevelDevScreen,
+  VenueDevScreen,
+  EntriesEditDevScreen,
+  FavouritesEditDevScreen,
+  AnimationsDevScreen,
+  BACRefreshRateDevScreen,
+  DailyTotalsDevScreen,
 } from '../screens/ScreensIndex';
 
 const Stack = createNativeStackNavigator();
@@ -118,6 +128,16 @@ const AppNavigation = () => {
         <Stack.Screen name="NightOutCalendar" component={NightOutCalendarScreen} />
         <Stack.Screen name="RecentControls" component={RecentControlsScreen} />
         <Stack.Screen name="CommonControls" component={CommonControlsScreen} />
+        <Stack.Screen name="DeveloperSettings" component={DeveloperSettingsScreen} />
+        <Stack.Screen name="Developer Alcohol Stuff" component={AlcoholStuffDevScreen} />
+        <Stack.Screen name="Developer Entries" component={EntriesDevScreen} />
+        <Stack.Screen name="Developer BAC Level" component={BACLevelDevScreen} />
+        <Stack.Screen name='Developer Venues' component={VenueDevScreen} />
+        <Stack.Screen name='Developer Entries Edit' component={EntriesEditDevScreen} />
+        <Stack.Screen name='Developer Favourites Edit' component={FavouritesEditDevScreen} />
+        <Stack.Screen name='Developer Animations' component={AnimationsDevScreen} />
+        <Stack.Screen name='Developer BAC Refresh Rate' component={BACRefreshRateDevScreen} />
+        <Stack.Screen name='Developer Daily Totals' component={DailyTotalsDevScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

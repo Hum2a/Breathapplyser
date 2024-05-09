@@ -42,6 +42,7 @@ export { default as EmojiCustomisationScreen } from './frontendScreens/UsersAndS
 export { default as AnimationsToggleScreen } from './frontendScreens/UsersAndSettingsScreens/Display/AnimationsToggle';
 export { default as RecentControlsScreen } from './frontendScreens/UsersAndSettingsScreens/Display/RecentDrinksControls';
 export { default as CommonControlsScreen } from './frontendScreens/UsersAndSettingsScreens/Display/CommonDrinksControls';
+export { default as DeveloperSettingsScreen } from './frontendScreens/UsersAndSettingsScreens/Developer';
 
 // Charts
 export { default as ChartsScreen } from './frontendScreens/ChartsScreens/OmniChartManager';
@@ -68,3 +69,16 @@ export { default as Rankings } from './onlineScreens/Rankings';
 export { default as AcceptRankingsScreen } from './onlineScreens/AcceptOnlineRankings';
 export { default as SpentRankingsScreen } from './onlineScreens/SpentRankings';
 export { default as UnitRankingsScreen } from './onlineScreens/UnitRankings';
+
+// Developer
+    // Alcohol Stuff
+export { default as AlcoholStuffDevScreen } from './frontendScreens/UsersAndSettingsScreens/Developer/AlcoholStuff';
+export { default as EntriesDevScreen } from './frontendScreens/UsersAndSettingsScreens/Developer/AlcoholStuffScreens/Entries';
+export { default as EntriesEditDevScreen } from './frontendScreens/UsersAndSettingsScreens/Developer/AlcoholStuffScreens/EntriesEdit';
+export { default as BACLevelDevScreen } from './frontendScreens/UsersAndSettingsScreens/Developer/AlcoholStuffScreens/BACLevel';
+export { default as VenueDevScreen } from './frontendScreens/UsersAndSettingsScreens/Developer/AlcoholStuffScreens/Venues';
+export { default as FavouritesEditDevScreen } from './frontendScreens/UsersAndSettingsScreens/Developer/AlcoholStuffScreens/FavouritesEdit';
+
+export { default as AnimationsDevScreen } from './frontendScreens/UsersAndSettingsScreens/Developer/Animations';
+export { default as BACRefreshRateDevScreen } from './frontendScreens/UsersAndSettingsScreens/Developer/BACRefreshRate';
+export { default as DailyTotalsDevScreen } from  './frontendScreens/UsersAndSettingsScreens/Developer/DailyTotals';
