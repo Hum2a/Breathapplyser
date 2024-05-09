@@ -38,4 +38,9 @@ export const LoginStyles = StyleSheet.create({
       fontSize: 18,
       fontWeight: 'bold',
     },
+    logo: {
+      width: 300,
+      height: 150,
+      marginBottom: 30,
+    }
 });

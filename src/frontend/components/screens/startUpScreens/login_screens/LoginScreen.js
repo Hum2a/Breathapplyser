@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { LoginStyles } from '../../../styles/StartUpStyles/loginStyles';
 import { StartStyles as styles } from '../../../styles/StartUpStyles/startStyles';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
@@ -29,7 +29,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={LoginStyles.container}>
-      <Text style={styles.title}>Breathapplyser</Text>
+      <Image style={LoginStyles.logo}source={require('../../../../assets/images/breathapplyser.png')} />
       <TextInput 
         style={LoginStyles.input} 
         placeholder="Email" 
