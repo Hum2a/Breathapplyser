@@ -1,18 +1,34 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Switch } from 'react-native';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../../context/UserContext';
 import Dialog from 'react-native-dialog';
 import { dialogStyles } from '../../../../styles/AppStyles/dialogueStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RecentDrinksControls = () => {
   const [number, setNumber] = useState('');
   const [loading, setLoading] = useState(false);
+  const [repeatDrinks, setRepeatDrinks] = useState(false);
   const { user } = useContext(UserContext);
   const firestore = getFirestore();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
   const [dialogTitle, setDialogTitle] = useState('');
+
+  useEffect(() => {
+    // Load settings from AsyncStorage on component mount
+    loadSettings();
+  }, []);
+
+  const loadSettings = async () => {
+    const settings = await AsyncStorage.getItem('recentDrinksSettings');
+    if (settings) {
+      const parsedSettings = JSON.parse(settings);
+      setNumber(parsedSettings.number.toString()); // Ensure the number is a string for the TextInput
+      setRepeatDrinks(parsedSettings.ignoreRepeatDrinks);
+    }
+  };
 
   const handleNumberChange = (newNumber) => {
     setNumber(newNumber);
@@ -33,8 +49,14 @@ const RecentDrinksControls = () => {
     }
     try {
       setLoading(true);
+      const settings = {
+        number: parseInt(number, 10),
+        ignoreRepeatDrinks: repeatDrinks
+      };
       const userDocRef = doc(firestore, user.uid, "Recent Drinks Controls");
-      await setDoc(userDocRef, { number: parseInt(number, 10) }, { merge: true });
+      await setDoc(userDocRef, settings, { merge: true });
+      // Also save to AsyncStorage
+      await AsyncStorage.setItem('recentDrinksSettings', JSON.stringify(settings));
       setDialogTitle("Success");
       setDialogMessage("Settings updated successfully!");
       setDialogVisible(true);
@@ -51,19 +73,31 @@ const RecentDrinksControls = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Recent Drinks Settings</Text>
-      <Text style={styles.descriptionText}>
-        Adjust how many recent drink entries the app should display. This setting allows you to
-        customize the scope of drink history you want to review.
-      </Text>
-      <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        value={number}
-        onChangeText={handleNumberChange}
-        placeholder="Enter number of entries..."
-        placeholderTextColor={'#A7BBC7'}
-        editable={!loading}
-      />
+      <View style={styles.settingContainer}>
+        <Text style={styles.descriptionText}>
+          Adjust how many recent drink entries the app should display.
+        </Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={number}
+          onChangeText={handleNumberChange}
+          placeholder="Enter number of entries..."
+          placeholderTextColor={'#A7BBC7'}
+          editable={!loading}
+        />
+      </View>
+
+      <View style={styles.settingContainer}>
+        <Text style={styles.switchLabel}>Ignore Repeat Drinks:</Text>
+        <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={repeatDrinks ? "#f5dd4b" : "#f4f3f4"}
+          onValueChange={() => setRepeatDrinks(previousState => !previousState)}
+          value={repeatDrinks}
+        />
+      </View>
+
       {loading ? (
         <ActivityIndicator size="large" color="#007BFF" />
       ) : (
@@ -71,6 +105,7 @@ const RecentDrinksControls = () => {
           <Text style={styles.buttonText}>Save Settings</Text>
         </TouchableOpacity>
       )}
+
       <Dialog.Container 
         visible={dialogVisible} 
         onDismiss={() => setDialogVisible(false)}
@@ -102,20 +137,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#4F5D75',
     textAlign: 'center',
-    marginBottom: 25,
     lineHeight: 24,
+    marginBottom: 10,
   },
   input: {
     color: 'red',
-    width: '90%',
+    width: '100%',
     height: 50,
     borderWidth: 1,
     borderColor: '#BCCCDC',
     padding: 10,
     borderRadius: 10,
-    marginBottom: 20,
     fontSize: 18,
     backgroundColor: 'white',
+    textAlign: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -139,6 +174,24 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: '500',
+  },
+  settingContainer: {
+    width: '100%',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#BCCCDC',
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  switchLabel: {
+    fontSize: 16,
+    color: '#4F5D75',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 10,
+  },
+  switch: {
+    justifyContent: 'flex-end',
   }
 });
 
