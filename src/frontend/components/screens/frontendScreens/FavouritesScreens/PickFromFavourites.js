@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { UserContext } from '../../../../context/UserContext';
-import { pickFavsStyles } from '../../../styles/FavouriteStyles/pickFavsStyles';
+import { pickFavsStyles  } from '../../../styles/FavouriteStyles/pickFavsStyles';
+import { favouriteStyles } from '../../../styles/FavouriteStyles/favouriteStyles';
 import FavouriteList from './AddFavouriteAsEntry';
+import { BackButton } from '../../../buttons/backButton';
 
 const PickFavouritesScreen = ({ navigation }) => {
   const { user } = useContext(UserContext);
@@ -14,10 +16,9 @@ const PickFavouritesScreen = ({ navigation }) => {
   
 
   return (
-    <View style={pickFavsStyles.container}>
-      <Text style={pickFavsStyles.title}>
-        Pick a Favourite
-      </Text>
+    <View style={favouriteStyles.container}>
+      <BackButton />
+      <Text style={pickFavsStyles.title}>Pick a Favourite</Text>
       <FavouriteList user={user} onPress={handleSelectFavourite} navigation={navigation}/>
     </View>
   );
