@@ -61,6 +61,19 @@ const BACLevel = () => {
         }
     };
 
+    const handleDeleteNoBACData = async () => {
+        const docsToDelete = BACLevel.filter(doc => doc.BAC === 'No BAC data').map(doc => doc.id);
+        try {
+            await Promise.all(docsToDelete.map(id => {
+                const docRef = doc(firestore, `${user.uid}/Alcohol Stuff/BAC Level`, id);
+                return deleteDoc(docRef);
+            }));
+            fetchBACLevel(); // Refresh the list after deletion
+        } catch (err) {
+            console.error("Error deleting documents with no BAC data: ", err);
+        }
+    };
+
     const onRefresh = () => {
         setRefreshing(true);
         fetchBACLevel().then(() => setRefreshing(false));
@@ -77,6 +90,7 @@ const BACLevel = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.header}>BAC Level</Text>
+            <Button title="Delete Docs with No BAC Data" onPress={handleDeleteNoBACData} color="red" />
             {selectedIds.length > 0 && (
                 <Button title="Delete Selected" onPress={handleDeleteSelected} color="red" />
             )}
