@@ -22,8 +22,8 @@ const RecentDrinks = ({ navigation }) => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
+  const [ignoreRepeatDrinks, setIgnoreRepeatDrinks] = useState(false);
 
-  
   const { user } = useContext(UserContext);
   const firestore = getFirestore();
 
@@ -44,7 +44,9 @@ const RecentDrinks = ({ navigation }) => {
     try {
       const docSnap = await getDoc(userDocRef);
       const recDrinksLimit = docSnap.exists() ? docSnap.data().number : 3;
+      const IgnRepeatDrinks = docSnap.exists() ? docSnap.data().ignoreRepeatDrinks : false;
       setRecentDrinksLimit(recDrinksLimit);
+      setIgnoreRepeatDrinks(IgnRepeatDrinks);
       console.log(`Recent Drinks number: ${recDrinksLimit}`)
     } catch (error) {
       console.error("Error fetching recent drink controls");
@@ -60,12 +62,10 @@ const RecentDrinks = ({ navigation }) => {
     }
   
     const cacheKey = `recentDrinks_${user.uid}`;
-    const maxDaysToLookBack = 30; // Define how many days back you want to search
     let fetchedRecentDrinks = [];
     let currentDate = moment();
-    let totalQueries = 0;
-    let totalReads = 0;
-  
+    let drinkTypes = new Set(); // To track drink types if ignoreRepeatDrinks is true
+
     // Try to load the cached data first
     const cachedData = await AsyncStorage.getItem(cacheKey);
     if (cachedData && !forceRefresh) {
@@ -74,41 +74,46 @@ const RecentDrinks = ({ navigation }) => {
       if (cacheDate.isSame(moment(), 'day')) {
         console.log('Loading drinks from cache');
         setRecentDrinks(parsedCache.drinks);
+        setRefreshing(false);
         return;
       }
     }
-  
+
     try {
-      for (let i = 0; i < maxDaysToLookBack && fetchedRecentDrinks.length < recentDrinksLimit; i++) {
+      while (currentDate.isAfter(moment().subtract(30, 'days')) && fetchedRecentDrinks.length < recentDrinksLimit) {
         const dateStr = currentDate.format('YYYY-MM-DD');
         const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs");
-        const q = query(entriesRef, orderBy("date", "desc"), limit(recentDrinksLimit));
+        const q = query(entriesRef, orderBy("date", "desc"), limit(50)); // Fetch up to 50 documents per day
         const querySnapshot = await getDocs(q);
-        totalQueries++; // Count this query
-        totalReads += querySnapshot.docs.length; // Add the number of documents read
   
-        querySnapshot.docs.forEach(doc => {
+        querySnapshot.forEach(doc => {
           if (fetchedRecentDrinks.length < recentDrinksLimit) {
-            fetchedRecentDrinks.push({ id: doc.id, ...doc.data() });
+            const docData = doc.data();
+            // Check for repeat drinks if ignoreRepeatDrinks is enabled
+            if (ignoreRepeatDrinks) {
+              if (!drinkTypes.has(docData.type)) {
+                drinkTypes.add(docData.type);
+                fetchedRecentDrinks.push({ id: doc.id, ...docData });
+              }
+            } else {
+              fetchedRecentDrinks.push({ id: doc.id, ...docData });
+            }
           }
         });
-  
-        currentDate = currentDate.subtract(1, 'days'); // Move to the previous day
+
+        currentDate.subtract(1, 'day'); // Decrement the day
       }
-  
-      setRecentDrinks(fetchedRecentDrinks);
+
       // Update the cache with new data
       await AsyncStorage.setItem(cacheKey, JSON.stringify({ date: moment().format('YYYY-MM-DD'), drinks: fetchedRecentDrinks }));
+      setRecentDrinks(fetchedRecentDrinks);
     } catch (error) {
       console.error('Error fetching recent drinks:', error);
       showDialog('Error', 'Could not fetch recent drinks.');
     }
-  
-    // Log the total number of queries and reads
-    console.log(`Total Firestore Queries: ${totalQueries}`);
-    console.log(`Total Firestore Reads: ${totalReads}`);
     setRefreshing(false);
-  };
+};
+
   
   const fetchUserProfile = async () => {
     if (!user) return;
