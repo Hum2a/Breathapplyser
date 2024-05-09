@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../../context/UserContext';
+import Dialog from 'react-native-dialog';
 
 const VenueManagement = () => {
     const [venues, setVenues] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [dialogVisible, setDialogVisible] = useState(false);
+    const [selectedVenueId, setSelectedVenueId] = useState(null);
     const { user } = useContext(UserContext);
     const firestore = getFirestore();
 
@@ -37,6 +40,41 @@ const VenueManagement = () => {
         setLoading(false);
     };
 
+    const handleLongPress = (venueId) => {
+        setSelectedVenueId(venueId);
+        setDialogVisible(true);
+    };
+
+    const handleDelete = async () => {
+        if (selectedVenueId) {
+            const venueRef = doc(firestore, `${user.uid}/Alcohol Stuff/Venues`, selectedVenueId);
+            const favouritesRef = collection(firestore, `${user.uid}/Alcohol Stuff/Venues/${selectedVenueId}/Favourites`);
+    
+            setLoading(true);
+            try {
+                // First, fetch all favourites for the venue
+                const snapshot = await getDocs(favouritesRef);
+                // Then, delete all favourites documents
+                const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
+                // Await all deletions to complete
+                await Promise.all(deletePromises);
+                // Finally, delete the venue document
+                await deleteDoc(venueRef);
+                // Update UI
+                setVenues(prevVenues => prevVenues.filter(venue => venue.id !== selectedVenueId));
+                setDialogVisible(false);
+            } catch (error) {
+                console.error('Error deleting venue and its favourites:', error);
+            }
+            setLoading(false);
+        }
+    };
+    
+
+    const closeDialog = () => {
+        setDialogVisible(false);
+    };
+
     const renderFavourite = ({ item }) => (
         <View style={styles.favouriteItem}>
             <Text style={styles.favouriteText}>Favourite: {item.Alcohol} - {item.Amount} units</Text>
@@ -44,7 +82,10 @@ const VenueManagement = () => {
     );
 
     const renderVenue = ({ item }) => (
-        <View style={styles.venueItem}>
+        <TouchableOpacity
+            style={styles.venueItem}
+            onLongPress={() => handleLongPress(item.id)}
+        >
             <Text style={styles.venueHeader}>{item.name}</Text>
             <FlatList
                 data={item.favourites}
@@ -52,7 +93,7 @@ const VenueManagement = () => {
                 keyExtractor={fav => fav.id}
                 style={styles.favouritesList}
             />
-        </View>
+        </TouchableOpacity>
     );
 
     return (
@@ -66,6 +107,14 @@ const VenueManagement = () => {
                     keyExtractor={item => item.id}
                 />
             )}
+            <Dialog.Container visible={dialogVisible}>
+                <Dialog.Title>Delete Venue</Dialog.Title>
+                <Dialog.Description>
+                    Are you sure you want to delete this venue? This will remove all associated favourites.
+                </Dialog.Description>
+                <Dialog.Button label="Cancel" onPress={closeDialog} />
+                <Dialog.Button label="Delete" onPress={handleDelete} />
+            </Dialog.Container>
         </View>
     );
 };
