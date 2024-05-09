@@ -168,8 +168,8 @@ export const favouriteStyles = StyleSheet.create({
     alignItems: 'flex-end', // Align text to the start (left)
 },
   backgroundText: {
-    fontSize: 68, // Large text size
-    color: 'rgba(0, 0, 255, 0.2)', // Semi-transparent white
+    fontSize: 72, // Large text size
+    color: 'rgba(99, 21, 0, 0.2)', // Semi-transparent white
     transform: [{ rotate: '20deg' }], // Rotate the container
     fontWeight: 'bold',
     textAlign: 'center',
