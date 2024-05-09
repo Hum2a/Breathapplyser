@@ -52,8 +52,7 @@ const CommonDrinksControls = () => {
     <View style={styles.container}>
       <Text style={styles.headerText}>Common Drinks Settings</Text>
       <Text style={styles.descriptionText}>
-        Adjust how many Common drink entries the app should display. This setting allows you to
-        customize the scope of drink history you want to review.
+        Adjust how many Common drink entries the app should display.
       </Text>
       <TextInput
         style={styles.input}
@@ -116,6 +115,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 18,
     backgroundColor: 'white',
+    textAlign: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
