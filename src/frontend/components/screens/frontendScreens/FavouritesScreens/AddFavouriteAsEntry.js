@@ -7,6 +7,7 @@ import { Picker } from '@react-native-picker/picker';
 import calculateBACIncrease from '../../../../utils/calculations/calculateBAC'; // Import the calculateBACIncrease function
 import Svg, { Polygon } from 'react-native-svg';
 import Dialog from 'react-native-dialog';
+import LinearGradient from 'react-native-linear-gradient';
 import { saveEntry } from '../../../../../backend/firebase/queries/saveEntry';
 import { saveBACLevel } from '../../../../../backend/firebase/queries/saveBACLevel';
 import { saveDailyTotals } from '../../../../../backend/firebase/queries/saveDailyTotals';
@@ -94,13 +95,16 @@ const FavouriteList = ({ user, navigation }) => {
 
   useEffect(() => {
     if (user) {
-      fetchFavourites();
       fetchVenues();
       fetchUserProfile();
     } else {
       console.error('User is not authenticated.');
     }
   }, [user]);
+
+  useEffect(() => {
+    fetchFavourites();
+  }, [selectedVenue]);
 
   useEffect(() => {
     if (user) {
@@ -295,57 +299,86 @@ const FavouriteList = ({ user, navigation }) => {
       </LinearGradient>
     </TouchableOpacity>
   );
-  
-  
-  const renderItem = ({ item }) => (
-    <TouchableOpacity 
-      onPress={() => handleAddFavoriteAsEntry(item)}
-      style={ favouriteStyles.flatlistContainer }>
-      <View style={ favouriteStyles.starView }>
-        <Svg height='350' width='350' viewBox="0 0 100 100">
-          <Polygon
-            points="50,0 61,35 98,35 67,57 76,91 50,70 24,91 33,57 2,35 39,35"
-            fill="#65C5F9" // Light blue fill color for the star
-            stroke="#003366" // Dark blue for the border color to contrast with the fill
-            strokeWidth="1" // Thickness of the border
-          />
-        </Svg>
-        <View style={[favouriteStyles.starContent, { position: 'absolute', top: '34%', left: '10%', right: '10%' }]}>
-          <Text style={favouriteStyles.categoryText}>{item.Alcohol}</Text>
-          <Text style={favouriteStyles.detailsText}>Amount: {item.Amount}</Text>
-          <Text style={favouriteStyles.detailsText}>Price: {item.Price}</Text>
-          <Text style={favouriteStyles.detailsText}>Type: {item.Type}</Text>
-          <Text style={favouriteStyles.detailsText}>Units: {item.Units}</Text>
-          <TouchableOpacity
-            style={favouriteStyles.deleteButton}
-            onPress={() => showDeleteDialog(item.id)}
-          >
 
-            <Image
-              source={require('../../../../assets/images/bin.png')}
-              style={favouriteStyles.binIcon}
-              />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
+  const addVenue = async () => {
+    if (newVenueName.trim() === '') {
+      Alert.alert('Validation', 'Please enter a valid venue name.');
+      return;
+    }
+    try {
+      const newVenueRef = doc(firestore, user.uid, 'Alcohol Stuff', "Venues", `${newVenueName}`);
+      await setDoc(newVenueRef, { name: newVenueName });
+      fetchVenues();  // Refresh the venues list
+      setNewVenueName(''); // Reset the input field
+      toggleAddVenueDialog(); // Close the dialog
+    } catch (error) {
+      console.error('Error adding new venue:', error);
+      Alert.alert('Error', 'Could not add new venue.');
+    }
+  };
+  
+
+  const toggleAddVenueDialog = () => {
+    setAddVenueDialogVisible(!addVenueDialogVisible);
+  };
+  
+  // const renderItem = ({ item }) => (
+  //   <TouchableOpacity 
+  //     onPress={() => handleAddFavoriteAsEntry(item)}
+  //     style={ favouriteStyles.flatlistContainer }>
+  //     <View style={ favouriteStyles.starView }>
+  //       <Svg height='350' width='350' viewBox="0 0 100 100">
+  //         <Polygon
+  //           points="50,0 61,35 98,35 67,57 76,91 50,70 24,91 33,57 2,35 39,35"
+  //           fill="#65C5F9" // Light blue fill color for the star
+  //           stroke="#003366" // Dark blue for the border color to contrast with the fill
+  //           strokeWidth="1" // Thickness of the border
+  //         />
+  //       </Svg>
+  //       <View style={[favouriteStyles.starContent, { position: 'absolute', top: '34%', left: '10%', right: '10%' }]}>
+  //         <Text style={favouriteStyles.categoryText}>{item.Alcohol}</Text>
+  //         <Text style={favouriteStyles.detailsText}>Amount: {item.Amount}</Text>
+  //         <Text style={favouriteStyles.detailsText}>Price: {item.Price}</Text>
+  //         <Text style={favouriteStyles.detailsText}>Type: {item.Type}</Text>
+  //         <Text style={favouriteStyles.detailsText}>Units: {item.Units}</Text>
+  //         <TouchableOpacity
+  //           style={favouriteStyles.deleteButton}
+  //           onPress={() => showDeleteDialog(item.id)}
+  //         >
+
+  //           <Image
+  //             source={require('../../../../assets/images/bin.png')}
+  //             style={favouriteStyles.binIcon}
+  //             />
+  //         </TouchableOpacity>
+  //       </View>
+  //     </View>
+  //   </TouchableOpacity>
+  // );
 
 
   return (
     <View style={favouriteStyles.fullscreen}>
-      <View style={favouriteStyles.pickerContainer2}>
-        <Picker
-          selectedValue={selectedVenue}
-          onValueChange={(itemValue, itemIndex) => {
-            setSelectedVenue(itemValue);
-            fetchFavourites(true);
-          }}
-          style={favouriteStyles.picker}>
-          {venues.map((venue) => (
-            <Picker.Item key={venue.id} label={venue.name} value={venue.id} />
-          ))}
-        </Picker>
+      <View style={favouriteStyles.venueContainer}>
+        <TouchableOpacity style={favouriteStyles.venueButton} onPress={toggleAddVenueDialog}>
+          <Text style={favouriteStyles.venueButtonText}>
+            Add New Venue
+          </Text>
+        </TouchableOpacity>
+        <View style={favouriteStyles.pickerContainer}>
+          <Picker
+            selectedValue={selectedVenue}
+            onValueChange={(itemValue, itemIndex) => {
+              setSelectedVenue(itemValue);
+              refreshFavourites();
+            }}
+            mode='dropdown'
+            style={favouriteStyles.picker}>
+            {venues.map((venue) => (
+              <Picker.Item key={venue.id} label={venue.name} value={venue.id} />
+            ))}
+          </Picker>
+        </View>
       </View>
       <FlatList
           data={Favourites}
@@ -374,6 +407,23 @@ const FavouriteList = ({ user, navigation }) => {
           onPress={handleConfirmDelete}
           style={[dialogStyles.buttonLabel, dialogStyles.deleteButton]}
         />
+      </Dialog.Container>
+
+      <Dialog.Container 
+        visible={addVenueDialogVisible} 
+        contentStyle={{
+          backgroundColor: 'black',
+          borderRadius: 10,
+        }}>
+        <Dialog.Title style={dialogStyles.title}>Add New Venue</Dialog.Title>
+        <Dialog.Input 
+          placeholder="Enter venue name"
+          value={newVenueName}
+          onChangeText={setNewVenueName}
+          style={dialogStyles.input} // Make sure to define this style in your stylesheets
+        />
+        <Dialog.Button style={[dialogStyles.buttonLabel, dialogStyles.cancelButton]} label="Cancel" onPress={toggleAddVenueDialog} />
+        <Dialog.Button style={[dialogStyles.buttonLabel, dialogStyles.addButton]} label="Add" onPress={addVenue} />
       </Dialog.Container>
 
       <TouchableOpacity onPress={() => fetchFavourites(true)} style={favouriteStyles.refreshButton}>

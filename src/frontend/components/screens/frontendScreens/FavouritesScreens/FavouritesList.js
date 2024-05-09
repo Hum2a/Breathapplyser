@@ -17,55 +17,59 @@ const FavouriteList = ({ user, navigation }) => {
   const [selectedFavouriteId, setSelectedFavouriteId] = useState(null);
   const [venues, setVenues] = useState([]);
   const [selectedVenue, setSelectedVenue] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [addVenueDialogVisible, setAddVenueDialogVisible] = useState(false);
   const [deleteSuccessDialogVisible, setDeleteSuccessDialogVisible] = useState(false);
   const [deleteSuccessMessage, setDeleteSuccessMessage] = useState('');
   const [newVenueName, setNewVenueName] = useState('');
 
   useEffect(() => {
-    fetchFavourites();
-  }, [user]);
+    fetchVenues();
+  }, [user.uid]);
 
-  const fetchFavourites = async (ignoreCache = false) => {
+  useEffect(() => {
+    fetchFavourites();
+  }, [selectedVenue]);
+
+  const fetchFavourites = async () => {
     if (!selectedVenue) return;
+    setIsLoading(true);
   
-    const cacheKey = `favourites_${user.uid}_${selectedVenue}`;
-    if (!ignoreCache) {
-      const cachedData = await getCachedData(cacheKey);
-      if (cachedData) {
-        setFavourites(cachedData);
-        return;
-      }
-    }
-  
+    // const cacheKey = `favourites_${user.uid}_${selectedVenue}`;
+    // if (ignoreCache) {
+    //   const cachedData = await getCachedData(cacheKey);
+    //   if (cachedData) {
+    //     setFavourites(cachedData);
+    //     return;
+    //   }
+    // }
+    
     try {
       const querySnapshot = await getDocs(collection(firestore, user.uid, 'Alcohol Stuff', "Venues", selectedVenue, "Favourites"));
       const FavouritesData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setFavourites(FavouritesData);
-      await AsyncStorage.setItem(cacheKey, JSON.stringify(FavouritesData));
+      // await AsyncStorage.setItem(cacheKey, JSON.stringify(FavouritesData));
     } catch (error) {
       console.error('Error fetching Favourites:', error);
     }
+    setIsLoading(false);
   };
   
-
   const fetchVenues = async () => {
+    setIsLoading(true);
     try {
-      const venueSnapshot = await getDocs(collection(firestore, user.uid, 'Alcohol Stuff', "Venues"));
-      const venuesData = venueSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const venueSnapshot = await getDocs(collection(firestore, user.uid, 'Alcohol Stuff', 'Venues'));
+      const venuesData = venueSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
       setVenues(venuesData);
-      if (venuesData.length > 0) {
-        setSelectedVenue(venuesData[0].id);  // Automatically select the first venue
-      }
+      setSelectedVenue(venuesData[0]?.id || null);
     } catch (error) {
       console.error('Error fetching venues:', error);
     }
+    setIsLoading(false);
   };
-  
-  useEffect(() => {
-    fetchVenues();
-  }, [user]);  // Fetch venues when user changes
-  
 
   const getCachedData = async (key) => {
     try {
@@ -219,13 +223,10 @@ const FavouriteList = ({ user, navigation }) => {
     }
   };
   
-
   const toggleAddVenueDialog = () => {
     setAddVenueDialogVisible(!addVenueDialogVisible);
   };
   
-  
-
   return (
     <ScrollView style={favouriteStyles.fullscreen}>
       <View style={favouriteStyles.venueContainer}>
@@ -239,8 +240,9 @@ const FavouriteList = ({ user, navigation }) => {
             selectedValue={selectedVenue}
             onValueChange={(itemValue, itemIndex) => {
               setSelectedVenue(itemValue);
-              fetchFavourites(true);
+              refreshFavourites();
             }}
+            mode='dropdown'
             style={favouriteStyles.picker}>
             {venues.map((venue) => (
               <Picker.Item key={venue.id} label={venue.name} value={venue.id} />
