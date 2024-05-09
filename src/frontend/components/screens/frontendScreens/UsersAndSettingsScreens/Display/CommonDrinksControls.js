@@ -1,21 +1,41 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../../context/UserContext';
 import Dialog from 'react-native-dialog';
 import { dialogStyles } from '../../../../styles/AppStyles/dialogueStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CommonDrinksControls = () => {
   const [number, setNumber] = useState('');
   const [loading, setLoading] = useState(false);
+  const [maxDays, setMaxDays] = useState(false);
   const { user } = useContext(UserContext);
   const firestore = getFirestore();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
   const [dialogTitle, setDialogTitle] = useState('');
 
+  useEffect(() => {
+    // Load settings from AsyncStorage on component mount
+    loadSettings();
+  }, []);
+
+  const loadSettings = async () => {
+    const settings = await AsyncStorage.getItem('commonDrinksSettings');
+    if (settings) {
+      const parsedSettings = JSON.parse(settings);
+      setNumber(parsedSettings.number.toString()); // Ensure the number is a string for the TextInput
+      setMaxDays(parsedSettings.maxDaysLookBack.toString());
+    }
+  };
+
   const handleNumberChange = (newNumber) => {
     setNumber(newNumber);
+  };
+
+  const handleDaysChange = (newNumber) => {
+    setMaxDays(newNumber);
   };
 
   const handleSave = async () => {
@@ -33,8 +53,13 @@ const CommonDrinksControls = () => {
     }
     try {
       setLoading(true);
+      const settings = {
+        number: parseInt(number, 10),
+        maxDaysLookBack: parseInt(maxDays),
+      };
       const userDocRef = doc(firestore, user.uid, "Common Drinks Controls");
-      await setDoc(userDocRef, { number: parseInt(number, 10) }, { merge: true });
+      await setDoc(userDocRef, settings, { merge: true });
+      await AsyncStorage.setItem('commonDrinksSettings', JSON.stringify(settings));
       setDialogTitle("Success");
       setDialogMessage("Settings updated successfully!");
       setDialogVisible(true);
@@ -63,6 +88,19 @@ const CommonDrinksControls = () => {
         placeholderTextColor={'#A7BBC7'}
         editable={!loading}
       />
+
+      {/* <Text style={styles.descriptionText}>
+        Adjust how far back to look for common Drinks.
+      </Text>
+      <TextInput
+        style={styles.input}
+        keyboardType="numeric"
+        value={maxDays}
+        onChangeText={handleDaysChange}
+        placeholder="Enter Max Number of days to look back..."
+        placeholderTextColor={'#A7BBC7'}
+        editable={!loading}
+      /> */}
       {loading ? (
         <ActivityIndicator size="large" color="#007BFF" />
       ) : (
