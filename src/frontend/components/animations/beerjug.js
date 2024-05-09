@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Image } from 'react-native';
-import { homeStyles } from '../styles/StartUpStyles/homeStyles';
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import { getFirestore, doc, onSnapshot } from 'firebase/firestore';
 import FastImage from 'react-native-fast-image';
+import { homeStyles } from '../styles/StartUpStyles/homeStyles';
+import { UserContext } from '../../context/UserContext';
+import moment from 'moment';
 
 // Pre-filled array with the required frame images
 const frames = [
@@ -34,25 +36,69 @@ const frames = [
 
 const BeerAnimation = ({ frameRate, play, onComplete }) => {
   const [currentFrame, setCurrentFrame] = useState(0);
+  const [standbyFrame, setStandbyFrame] = useState(0);
   const animationRef = useRef({});
+  const [drinkingLimit, setDrinkingLimit] = useState(null);
+  const [currentConsumption, setCurrentConsumption] = useState(0);
+  const { user } = useContext(UserContext);
+  const firestore = getFirestore();
+
+  useEffect(() => {
+    const today = moment().format('YYYY-MM-DD');
+    const limitDocRef = doc(firestore, `${user.uid}/Limits`);
+    const intakeDocRef = doc(firestore, `${user.uid}/Daily Totals/Unit Intake`, today);
+
+    // Fetch the drinking limit
+    const unsubscribeLimit = onSnapshot(limitDocRef, (doc) => {
+      if (doc.exists()) {
+        setDrinkingLimit(doc.data().drinkingLimit || 0);
+      }
+    });
+
+    // Listen for real-time updates on current consumption
+    const unsubscribeConsumption = onSnapshot(intakeDocRef, (doc) => {
+      if (doc.exists()) {
+        setCurrentConsumption(doc.data().value || 0);
+      }
+    });
+
+    return () => {
+      unsubscribeLimit();
+      unsubscribeConsumption();
+    };
+  }, [user.uid]);
+
+  useEffect(() => {
+    if (drinkingLimit !== null && currentConsumption !== null) { 
+      const percentageOfLimit = currentConsumption / drinkingLimit;
+      let frame = 0; // Default frame
+      if (percentageOfLimit >= 1) {
+        frame = 24;
+      } else if (percentageOfLimit >= 0.75) {
+        frame = 16;
+      } else if (percentageOfLimit >= 0.5) {
+        frame = 12;
+      } else if (percentageOfLimit >= 0.25) {
+        frame = 5;
+      }
+      setCurrentFrame(frame);
+    }
+  }, [currentConsumption, drinkingLimit]);
+
 
   useEffect(() => {
     if (play) {
         // Set up the interval to change frames
         animationRef.current.interval = setInterval(() => {
             setCurrentFrame(prevCurrentFrame => {
-                const nextFrame = prevCurrentFrame + 1;
-                if (nextFrame < frames.length) {
-                    return nextFrame;  // Move to the next frame
-                } else {
-                    return 0;  // Reset to the first frame to loop the animation
-                }
+              const nextFrame = prevCurrentFrame + 1;
+              return nextFrame < frames.length ? nextFrame : 0;
             });
         }, 1000 / frameRate);  // Calculate interval time based on the desired frame rate
     } else {
         // Clear the interval and reset the frame if 'play' is set to false
         clearInterval(animationRef.current.interval);
-        setCurrentFrame(0);  // Reset to the first frame when not playing
+
     }
 
     // Clean up the interval when the component unmounts or when 'play' or 'frameRate' changes
