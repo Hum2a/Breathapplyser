@@ -43,6 +43,7 @@ export { default as AnimationsToggleScreen } from './frontendScreens/UsersAndSet
 export { default as RecentControlsScreen } from './frontendScreens/UsersAndSettingsScreens/Display/RecentDrinksControls';
 export { default as CommonControlsScreen } from './frontendScreens/UsersAndSettingsScreens/Display/CommonDrinksControls';
 export { default as DeveloperSettingsScreen } from './frontendScreens/UsersAndSettingsScreens/Developer';
+export { default as VenueManagementScreen } from './frontendScreens/UsersAndSettingsScreens/Alcoholics/VenueManagement';
 
 // Charts
 export { default as ChartsScreen } from './frontendScreens/ChartsScreens/OmniChartManager';

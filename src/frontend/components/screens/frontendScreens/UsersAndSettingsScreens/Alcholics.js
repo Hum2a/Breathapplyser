@@ -14,15 +14,23 @@ const AlcoholicsVariables = ({user, navigation}) => {
     navigation.navigate('DrunkParams');
   };
 
+  const navigateToVenueManagement = () => {
+    navigation.navigate('Venue Management');
+  };
+
   return (
     <View style={styles.container}>
       <BackButton/>
       <TouchableOpacity onPress={navigateToBACRefreshRate} style={styles.button}>
-        <Text style={styles.buttonText}> BAC Refresh Rate</Text>
+        <Text style={styles.buttonText}>BAC Refresh Rate</Text>
         </TouchableOpacity>
 
       <TouchableOpacity onPress={navigateToDrunkParemeters} style={styles.button}>
-        <Text style={styles.buttonText}> Drunkness Parameters</Text>
+        <Text style={styles.buttonText}>Drunkness Parameters</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={navigateToVenueManagement} style={styles.button}>
+        <Text style={styles.buttonText}>Venue Management</Text>
         </TouchableOpacity>
     </View>
   );
