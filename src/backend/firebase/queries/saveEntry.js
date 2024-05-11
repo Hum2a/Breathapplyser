@@ -4,7 +4,6 @@ import calculateBACIncrease from '../../../frontend/utils/calculations/calculate
 
 const firestore = getFirestore();
 
-
 export const saveEntry = async (user, userProfile, entryDetails) => {
   if (!user) {
     console.error("User data is not available");
@@ -26,11 +25,10 @@ export const saveEntry = async (user, userProfile, entryDetails) => {
       }
       return 'Unknown'; // Default level if no data is available
     } catch (error) {
-      console.error('Error fetching drunkness levels:', error);
+      console.error('Error fetching drunkenness levels:', error);
       return 'Unknown'; // Default level on error
     }
   };
-  
 
   const { alcohol, amount, units, price, type, selectedStartTime, selectedEndTime, selectedDate, selectedCurrency } = entryDetails;
   const BACIncrease = calculateBACIncrease(units, userProfile);
@@ -43,13 +41,17 @@ export const saveEntry = async (user, userProfile, entryDetails) => {
     let totalBACLevel = bacLevelDoc.exists() ? bacLevelDoc.data().value : 0;
     totalBACLevel += BACIncrease;
 
-    const drunknessLevel = await getDrunkennessLevel(totalBACLevel);  // Fetch drunkness level based on updated BAC level
+    const drunkennessLevel = await getDrunkennessLevel(totalBACLevel);  // Fetch drunkenness level based on updated BAC level
 
     // Update total BAC level in Firestore
     await updateDoc(bacLevelRef, {
       value: increment(BACIncrease),
       lastUpdated: new Date()
     });
+
+    // Make sure the time format includes leading zeros for hours and minutes if necessary
+    const startTimeStr = moment(selectedStartTime, 'HH:mm').format('HH:mm');
+    const endTimeStr = moment(selectedEndTime, 'HH:mm').format('HH:mm');
 
     // Prepare and save entry document
     const entryDoc = {
@@ -60,10 +62,10 @@ export const saveEntry = async (user, userProfile, entryDetails) => {
       price: parseFloat(price),
       type,
       selectedCurrency,
-      startTime: moment(selectedStartTime, 'HH:mm').toISOString(),
-      endTime: moment(selectedEndTime, 'HH:mm').toISOString(),
+      startTime: moment(`${dateStr} ${startTimeStr}`, 'YYYY-MM-DD HH:mm').toISOString(),
+      endTime: moment(`${dateStr} ${endTimeStr}`, 'YYYY-MM-DD HH:mm').toISOString(),
       BACIncrease,
-      drunknessLevel,
+      drunkennessLevel,
       date: selectedDate,
       timestamp: new Date(),
     };

@@ -33,13 +33,15 @@ const BACIncreaseChart = () => {
     
             Promise.all(allEntriesPromises).then(entriesArrays => {
                 const allEntriesData = entriesArrays.flat();
-                // Sort all entries by date in descending order
-                allEntriesData.sort((a, b) => moment(b.date, 'YYYY-MM-DD').diff(moment(a.date, 'YYYY-MM-DD')));
+                // Sort all entries by date in ascending order
+                allEntriesData.sort((a, b) => moment(b.date, 'YYYY-MM-DD').diff(moment(a.date, 'YYYY-MM-DD')) ||
+                                                moment(a.date, 'HH:mm:ss').diff(moment(b.date, 'HH:mm:ss')));
                 setAllEntries(allEntriesData);
                 if (allEntriesData.length > 0) {
                     filterDataByDate(allEntriesData, allEntriesData[0].date);
                 }
             });
+            
         };
     
         fetchAllEntries();
@@ -49,12 +51,17 @@ const BACIncreaseChart = () => {
     const filterDataByDate = (entries, date) => {
         setSelectedDate(date);
         const filteredEntries = entries.filter(entry => entry.date === date);
+        
+        // Sort entries by startTime within the selected date
+        filteredEntries.sort((a, b) => moment(a.startTime, 'YYYY-MM-DD HH:mm:ss').diff(moment(b.startTime, 'YYYY-MM-DD HH:mm:ss')));
+        
         const BACValues = filteredEntries.map(entry => entry.BACIncrease ? parseFloat(entry.BACIncrease) : 0);
         const labels = filteredEntries.map(entry => moment(entry.startTime, 'YYYY-MM-DD HH:mm:ss').format('HH:mm') || 'Unknown');
-
+    
         setBACIncreaseValues(BACValues);
         setChartLabels(labels);
     };
+    
 
     const uniqueDates = [...new Set(allEntries.map(entry => entry.date))];
 
