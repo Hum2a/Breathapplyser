@@ -14,6 +14,7 @@ export const combinedBacStyles = StyleSheet.create({
       backgroundColor: 'transparent',
       borderRadius: 5,
       padding: 5,
+      backgroundColor: 'red',
     },
     pickerStyle: {
       flex: 1,
@@ -22,7 +23,7 @@ export const combinedBacStyles = StyleSheet.create({
       borderWidth: 10,
       borderColor: '#29B6F6', // Light blue border color
       borderRadius: 50,
-      backgroundColor: '#E1F5FE', // Lighter blue background for the picker
+      backgroundColor: '#FFF', // Lighter blue background for the picker
     },
     legendContainer: {
       flexDirection: 'row',

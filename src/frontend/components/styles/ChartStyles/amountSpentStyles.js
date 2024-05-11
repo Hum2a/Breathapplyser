@@ -13,16 +13,21 @@ export const amountSpentStyles = StyleSheet.create({
       color: '#003366', // Dark blue for contrast and readability
       marginBottom: 20,
     },
+    pickersContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginVertical: 10,
+      backgroundColor: 'red',
+    },
     pickerStyle: {
-      width: '80%',
-      height: 40,
-      marginBottom: 20,
-      backgroundColor: 'rgba(242,66,66,0.4)',
-      borderRadius: 20, // Rounded border
-      borderWidth: 1,
-      borderColor: '#007AFF', // Theme consistent blue for the border
-      paddingHorizontal: 10, // Add padding for a softer look
-  },
+      flex: 1,
+      height: 50,
+      backgroundColor: '#ffffff',
+      borderRadius: 10,
+      marginRight: 10,
+      alignSelf: 'center',
+      color: 'black',
+    },
     refreshButton: {
       padding: 10,
       margin: 10,

@@ -141,29 +141,33 @@ const DrinkTypeChart = () => {
                 }}
             />
              {/* Picker for the first date */}
-            <Picker
-                selectedValue={selectedDate}
-                onValueChange={(itemValue) => filterDataByDate(allEntries, itemValue)}
-                style={styles.pickerStyle} // You can define this style in your chartStyles
-            >
-                {uniqueDates.map(date => (
-                    <Picker.Item key={date} label={date} value={date} />
-                ))}
-            </Picker>
-            {/* Picker for the second date (visible in comparison mode) */}
-            {comparisonMode && (
+             <View style={styles.pickersContainer}>
                 <Picker
-                    selectedValue={selectedDate2}
-                    onValueChange={(itemValue) => {
-                        setSelectedDate2(itemValue);
-                        filterDataByDate(allEntries, selectedDate, itemValue);
-                    }}
-                    style={styles.pickerStyle}
+                    selectedValue={selectedDate}
+                    onValueChange={(itemValue) => filterDataByDate(allEntries, itemValue)}
+                    style={styles.pickerStyle} // You can define this style in your chartStyles
                 >
                     {uniqueDates.map(date => (
                         <Picker.Item key={date} label={date} value={date} />
                     ))}
                 </Picker>
+            </View>
+            {/* Picker for the second date (visible in comparison mode) */}
+            {comparisonMode && (
+                <View style={styles.pickersContainer}>
+                    <Picker
+                        selectedValue={selectedDate2}
+                        onValueChange={(itemValue) => {
+                            setSelectedDate2(itemValue);
+                            filterDataByDate(allEntries, selectedDate, itemValue);
+                        }}
+                        style={styles.pickerStyle}
+                    >
+                        {uniqueDates.map(date => (
+                            <Picker.Item key={date} label={date} value={date} />
+                        ))}
+                    </Picker>
+                </View>
             )}
            {drinkTypesData.length > 0 ? (
                 <View>

@@ -120,28 +120,32 @@ const DrinkNamesChart = () => {
                     setSelectedDate2('');
                 }}
             />
-            <Picker
-                selectedValue={selectedDate}
-                onValueChange={(itemValue) => filterDataByDate(allEntries, itemValue)}
-                style={styles.pickerStyle}
-            >
-                {uniqueDates.map(date => (
-                    <Picker.Item key={date} label={date} value={date} />
-                ))}
-            </Picker>
-            {comparisonMode && (
+            <View style={styles.pickersContainer}>
                 <Picker
-                    selectedValue={selectedDate2}
-                    onValueChange={(itemValue) => {
-                        setSelectedDate2(itemValue);
-                        filterDataByDate(allEntries, selectedDate, itemValue);
-                    }}
+                    selectedValue={selectedDate}
+                    onValueChange={(itemValue) => filterDataByDate(allEntries, itemValue)}
                     style={styles.pickerStyle}
                 >
                     {uniqueDates.map(date => (
                         <Picker.Item key={date} label={date} value={date} />
                     ))}
                 </Picker>
+            </View>
+            {comparisonMode && (
+                <View style={styles.pickersContainer}>
+                    <Picker
+                        selectedValue={selectedDate2}
+                        onValueChange={(itemValue) => {
+                            setSelectedDate2(itemValue);
+                            filterDataByDate(allEntries, selectedDate, itemValue);
+                        }}
+                        style={styles.pickerStyle}
+                    >
+                        {uniqueDates.map(date => (
+                            <Picker.Item key={date} label={date} value={date} />
+                        ))}
+                    </Picker>
+                </View>
             )}
             <PieChart
                 data={drinkNamesData.map(([name, count]) => ({

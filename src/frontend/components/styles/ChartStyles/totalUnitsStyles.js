@@ -19,21 +19,19 @@ export const totalUnitsStyles = StyleSheet.create({
     },
     pickersContainer: {
       flexDirection: 'row',
-      marginTop: 5, // Add margin top for spacing
-      backgroundColor: 'transparent',
-      borderRadius: 5,
-      padding: 5,
+      justifyContent: 'space-between',
+      marginVertical: 10,
+      backgroundColor: 'red',
     },
     pickerStyle: {
-      width: '80%',
-      height: 40,
-      marginBottom: 20,
-      backgroundColor: 'rgba(242,66,66,0.4)',
-      borderRadius: 20, // Rounded border
-      borderWidth: 1,
-      borderColor: '#007AFF', // Theme consistent blue for the border
-      paddingHorizontal: 10, // Add padding for a softer look
-  },
+      flex: 1,
+      height: 50,
+      backgroundColor: '#ffffff',
+      borderRadius: 10,
+      marginRight: 10,
+      alignSelf: 'center',
+      color: 'black',
+    },
     legendContainer: {
       flexDirection: 'row',
       alignItems: 'center',

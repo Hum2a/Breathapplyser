@@ -19,14 +19,20 @@ export const NameStyles = StyleSheet.create({
     color: '#003366', // Dark blue for contrast
     marginBottom: 10,
   },
+  pickersContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+    backgroundColor: 'red',
+  },
   pickerStyle: {
-    width: Dimensions.get('window').width * 0.9, // Use a percentage of the screen width for responsiveness
-    height: 40,
-    marginBottom: 20,
-    backgroundColor: 'rgba(242,66,66,0.4)',
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#007AFF', // Theme consistent blue for the border
+    flex: 1,
+    height: 50,
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    marginRight: 10,
+    alignSelf: 'center',
+    color: 'black',
   },
   legendContainer: {
     flexDirection: 'row',

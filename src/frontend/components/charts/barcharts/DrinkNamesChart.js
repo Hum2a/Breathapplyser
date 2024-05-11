@@ -124,15 +124,17 @@ const DrinkNamesChart = () => {
             />
             {isDataLoaded && (
                 <>
-                    <Picker
-                        selectedValue={selectedDate}
-                        onValueChange={(itemValue) => filterDataByDate(allEntries, itemValue)}
-                        style={styles.pickerStyle}
-                    >
-                        {uniqueDates.map(date => (
-                            <Picker.Item key={date} label={date} value={date} />
-                        ))}
-                    </Picker>
+                    <View style={styles.pickersContainer}>
+                        <Picker
+                            selectedValue={selectedDate}
+                            onValueChange={(itemValue) => filterDataByDate(allEntries, itemValue)}
+                            style={styles.pickerStyle}
+                        >
+                            {uniqueDates.map(date => (
+                                <Picker.Item key={date} label={date} value={date} />
+                            ))}
+                        </Picker>
+                    </View>
                     <BarChart
                         data={{
                             labels: drinkNamesData.map(data => data.name),

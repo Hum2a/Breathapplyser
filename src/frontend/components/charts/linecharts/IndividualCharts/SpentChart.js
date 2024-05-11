@@ -137,15 +137,17 @@ const AmountSpentChart = () => {
                     setSelectedDate2('');
                 }}
             />
-            <Picker
-                selectedValue={selectedDate}
-                onValueChange={(itemValue) => filterDataByDate(allEntries, itemValue)}
-                style={styles.pickerStyle}
-            >
-                {uniqueDates.map(date => (
-                    <Picker.Item key={date} label={date} value={date} />
-                ))}
-            </Picker>
+            <View style={styles.pickersContainer}>
+                <Picker
+                    selectedValue={selectedDate}
+                    onValueChange={(itemValue) => filterDataByDate(allEntries, itemValue)}
+                    style={styles.pickerStyle}
+                >
+                    {uniqueDates.map(date => (
+                        <Picker.Item key={date} label={date} value={date} />
+                    ))}
+                </Picker>
+            </View>
             {amountSpentValues.length > 0 && (
                 <LineChart
                     data={{

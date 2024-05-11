@@ -144,28 +144,32 @@ const DrinkTypeChart = () => {
                     }}
                 />
             </View>
-            <Picker
-                selectedValue={selectedDate}
-                onValueChange={(itemValue) => filterDataByDate(allEntries, itemValue, selectedDate)}
-                style={styles.pickerStyle}
-            >
-                {uniqueDates.map(date => (
-                    <Picker.Item key={date} label={date} value={date} />
-                ))}
-            </Picker>
-            {comparisonMode && (
+            <View style={styles.pickersContainer}>
                 <Picker
-                    selectedValue={selectedDate2}
-                    onValueChange={(itemValue) => {
-                        setSelectedDate2(itemValue);
-                        filterDataByDate(allEntries, selectedDate, itemValue);
-                    }}
+                    selectedValue={selectedDate}
+                    onValueChange={(itemValue) => filterDataByDate(allEntries, itemValue, selectedDate)}
                     style={styles.pickerStyle}
                 >
-                    {uniqueDates.filter(date => date !== selectedDate).map(date => (
+                    {uniqueDates.map(date => (
                         <Picker.Item key={date} label={date} value={date} />
                     ))}
                 </Picker>
+            </View>
+            {comparisonMode && (
+                <View style={styles.pickersContainer}>
+                    <Picker
+                        selectedValue={selectedDate2}
+                        onValueChange={(itemValue) => {
+                            setSelectedDate2(itemValue);
+                            filterDataByDate(allEntries, selectedDate, itemValue);
+                        }}
+                        style={styles.pickerStyle}
+                    >
+                        {uniqueDates.filter(date => date !== selectedDate).map(date => (
+                            <Picker.Item key={date} label={date} value={date} />
+                        ))}
+                    </Picker>
+                </View>
             )}
             {drinkTypesData.length > 0 && (
                 <PieChart
