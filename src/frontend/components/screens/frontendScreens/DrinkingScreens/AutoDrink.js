@@ -404,6 +404,7 @@ const AutoEntryScreen = ({ navigation }) => {
             </TouchableOpacity>
             <TextInput
               placeholder="Enter price"
+              placeholderTextColor={'black'}
               keyboardType="numeric"
               value={prices[item.name]}
               onChangeText={(text) => handlePriceChange(item.name, text)}
