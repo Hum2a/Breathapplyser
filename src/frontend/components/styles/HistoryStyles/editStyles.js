@@ -118,6 +118,7 @@ export const editEntryStyles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     marginTop: 20,
+    marginBottom: 25,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,

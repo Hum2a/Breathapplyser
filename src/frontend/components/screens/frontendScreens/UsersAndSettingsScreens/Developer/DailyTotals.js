@@ -59,9 +59,14 @@ const DailyTotals = () => {
         try {
             const promises = [];
             const date = currentData.date;
-            promises.push(updateDoc(doc(firestore, `${user.uid}/Daily Totals/Amount Spent/${date}`), { value: currentData['Amount Spent'] }));
+            // Ensure values are correctly typed as numbers
+            const amountSpent = parseFloat(currentData['Amount Spent']);
+            const unitIntake = parseInt(currentData['Unit Intake'], 10); // The second argument, 10, specifies the base for parseInt
+    
+            promises.push(updateDoc(doc(firestore, `${user.uid}/Daily Totals/Amount Spent/${date}`), { value: isNaN(amountSpent) ? 0 : amountSpent }));
             promises.push(updateDoc(doc(firestore, `${user.uid}/Daily Totals/BAC Level/${date}`), { value: currentData['BAC Level'] }));
-            promises.push(updateDoc(doc(firestore, `${user.uid}/Daily Totals/Unit Intake/${date}`), { value: currentData['Unit Intake'] }));
+            promises.push(updateDoc(doc(firestore, `${user.uid}/Daily Totals/Unit Intake/${date}`), { value: isNaN(unitIntake) ? 0 : unitIntake }));
+    
             await Promise.all(promises);
             fetchDailyTotals(); // Refresh the data
             setDialogVisible(false);
@@ -69,6 +74,7 @@ const DailyTotals = () => {
             console.error("Error updating daily totals:", error);
         }
     };
+    
 
     if (loading) {
         return <View style={styles.centered}><ActivityIndicator size="large" color="#00ADEF" /></View>;
@@ -98,7 +104,15 @@ const DailyTotals = () => {
                     <Dialog.Title>Edit Totals</Dialog.Title>
                     {Object.keys(currentData).map(key => key !== 'date' && (
                         <View key={key}>
-                            <Dialog.Input label={key} value={currentData[key]} onChangeText={(text) => setCurrentData(prev => ({ ...prev, [key]: text }))}/>
+                             <Dialog.Input
+                                label={key}
+                                keyboardType={key === 'Amount Spent' || key === 'Unit Intake' ? 'numeric' : 'default'}
+                                value={currentData[key]}
+                                onChangeText={(text) => setCurrentData(prev => ({
+                                    ...prev,
+                                    [key]: key === 'Amount Spent' || key === 'Unit Intake' ? text.replace(/[^0-9.]/g, '') : text
+                                }))}
+                            />
                         </View>
                     ))}
                     <Dialog.Button label="Cancel" onPress={() => setDialogVisible(false)} />

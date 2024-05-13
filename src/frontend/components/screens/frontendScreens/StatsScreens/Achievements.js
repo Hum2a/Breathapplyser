@@ -6,9 +6,10 @@ import { BackButton } from '../../../buttons/backButton';
 const Achievements = () => {
   // Sample data for achievements
   const [achievements, setAchievements] = useState([
-    { id: '1', title: 'First Drink', description: 'Log your first drink.' },
-    { id: '2', title: 'Someones fun', description: 'Stay under your unit limit for a week.' },
-    // ... more achievements
+    { id: '1', title: 'NHS BFF', description: 'Pass Out' },
+    { id: '2', title: 'Get help', description: 'Go out every day of the week' },
+    { id: '3', title: 'Life of the party', description: 'Black out every day of the week'}
+    
   ]);
 
   // Render an individual achievement item

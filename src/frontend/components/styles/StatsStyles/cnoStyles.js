@@ -87,7 +87,7 @@ export const cnoStyles = StyleSheet.create({
     borderRadius: 25, // Increased border radius for a rounder look
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 10,
+    marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
