@@ -302,6 +302,10 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
               <Text style={[styles.entryText, styles.entryLabel]}>Type:</Text>
               <Text style={[styles.entryText, styles.entryValue]}> {item.type}</Text>
             </View>
+            <View style={styles.entryRow}>
+              <Text style={[styles.entryText, styles.entryLabel]}>Calories:</Text>
+              <Text style={[styles.entryText, styles.entryValue]}> {item.calories}</Text>
+            </View>
           </TouchableOpacity>
         )}
         keyExtractor={(item, index) => index.toString()}

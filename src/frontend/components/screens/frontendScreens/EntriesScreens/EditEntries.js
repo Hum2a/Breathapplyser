@@ -10,8 +10,8 @@ import moment from 'moment';
 const EditEntryScreen = ({ route, navigation }) => {
   const { entry } = route.params;
   const [date, setDate] = useState(new Date(entry.date));
-  const [startTime, setStartTime] = useState(new Date(entry.startTime));
-  const [endTime, setEndTime] = useState(new Date(entry.endTime));
+  const [startTime, setStartTime] = useState(entry.startTime);
+  const [endTime, setEndTime] = useState(entry.endTime);
   const [amount, setAmount] = useState(entry.amount.toString());
   const [calories, setCalories] = useState(entry.calories.toString());
   const [alcohol, setAlcohol] = useState(entry.alcohol);
@@ -92,7 +92,7 @@ const EditEntryScreen = ({ route, navigation }) => {
           mode="date"
           display="default"
           onChange={onChangeDate}
-          maximumDate={new Date()} // Disallow future dates
+          maximumDate={new Date()}
         />
         )}
       </View>
