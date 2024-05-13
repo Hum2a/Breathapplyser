@@ -144,12 +144,6 @@ const DetailedHistoryScreen = ({ route, navigation }) => {
     setSummary(newSummary);
   }, [entries]);
 
-  const chartData = entries.map(entry => ({
-    date: entry.date,
-    units: entry.units,
-  }));
-  console.log('ChartData:', chartData); // Logging Chart Data
-
   const handleEditEntry = (entry) => {
     console.log('Editing Entry:', entry); // Logging the entry to be edited
     navigation.navigate('EditEntries', { entry }); // Navigate to EditEntryScreen with the entry data
