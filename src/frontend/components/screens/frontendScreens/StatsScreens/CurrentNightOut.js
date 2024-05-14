@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
-import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { View, Text, ScrollView, TouchableOpacity, Modal, FlatList, Image, TextInput } from 'react-native';
+import { getFirestore, collection, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../context/UserContext';
 import { cnoStyles } from '../../../styles/StatsStyles/cnoStyles';
 import { BarChart, LineChart } from 'react-native-chart-kit';
@@ -29,6 +29,10 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
     labels: [],
     datasets: [{ data: [] }],
   });
+  const [bacChartData, setbacChartData] = useState({
+    labels: [],
+    datasets: [{ data: [] }],
+  });
   const [modalVisible, setModalVisible] = useState(false);
   const [availableDates, setAvailableDates] = useState([]);
   // const [selectedDateStr, setSelectedDateStr] = useState(new Date().toISOString().split('T')[0]);
@@ -36,6 +40,11 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
   const firestore = getFirestore();
   const { user } = useContext(UserContext);
   const isFocused = useIsFocused();
+
+  const [feedbackDialogVisible, setFeedbackDialogVisible] = useState(false);
+  const [selectedBacPoint, setSelectedBacPoint] = useState({ value: 0, time: '' });
+  const [userFeedback, setUserFeedback] = useState('');
+
 
   useEffect(() => {
     // Update selected date when the screen is focused
@@ -107,6 +116,35 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
       setModalVisible(true);
   };
 
+  const submitFeedback = async () => {
+    if (!userFeedback.trim()) {
+        alert('Please enter some feedback before submitting.');
+        return;
+    }
+
+    const feedbackRef = doc(getFirestore(), user.uid, 'BAC Feedback');
+    const feedbackEntry = {
+        [userFeedback]: {
+            BACLevel: selectedBacPoint.value,
+            feedback: userFeedback,
+            timestamp: new Date()
+        }
+    };
+
+    try {
+        await updateDoc(feedbackRef, feedbackEntry);
+
+        console.log("Feedback submitted successfully");
+        alert('Thank you for your feedback!');
+        setUserFeedback(''); // Clear the feedback input
+        setFeedbackDialogVisible(false); // Close the dialog
+    } catch (error) {
+        console.error("Error submitting feedback:", error);
+        alert('Failed to submit feedback. Please try again.');
+    }
+};
+
+
   useEffect(() => {
     const fetchData = async () => {
         const entriesRef = collection(firestore, user.uid, "Alcohol Stuff", "Entries", selectedDateStr, "EntryDocs");
@@ -131,6 +169,8 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
         let cumulativeAmount = 0;
         let cumulativeUnits = 0;
         let cumulativeUnitsData = [];
+        let cumulativeBAC = 0;
+        const cumulativeBACData = [];
 
         entries.forEach(entry => {
             tempTotalSpent += entry.price * entry.amount;
@@ -138,13 +178,13 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
             cumulativeAmount += entry.price * entry.amount;
             cumulativeUnits += entry.units;
             tempTotalBACIncrease += entry.BACIncrease;
-
+            cumulativeBAC += entry.BACIncrease;
           // Prepare data for line chart
             const entryTime = moment(entry.startTime).format('HH:mm'); // Format time
             times.push(entryTime); // Use formatted start time for x-axis
             cumulativeAmounts.push(cumulativeAmount); // Use cumulative amount for y-axis
             cumulativeUnitsData.push(cumulativeUnits);
-
+            cumulativeBACData.push(cumulativeBAC);
 
           // Tally drinks
           const drinkType = entry.type;
@@ -170,9 +210,13 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
             labels: times,
             datasets: [{ data: cumulativeUnitsData }],
           });
+        setbacChartData({
+            labels: times,
+            datasets: [{ data: cumulativeBACData }],
+        });
 
         console.log('Line Chart Data:', { labels: times, datasets: [{ data: cumulativeAmounts }] }); // Log line chart data
-          
+        console.log('Cumulative BAC Data:', { labels: times, datasets: [{ data: cumulativeBACData }] }); // Log line chart data
 
         // Fetch limits
         const limitsSnapshot = await getDoc(limitsRef);
@@ -308,6 +352,26 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
             />
       </View>
 
+      {bacChartData.labels.length> 0 && bacChartData.datasets[0].data.length > 0 && (
+        <View style={cnoStyles.linechartContainer}>
+          <Text style={cnoStyles.chartTitle}>Cumulative BAC Increase Over Time</Text>
+          <LineChart
+            data={bacChartData}
+            width={chartWidth}
+            height={220}
+            chartConfig={lineChartConfig}
+            fromZero={true}
+            yAxisInterval={1} 
+            bezier
+            onDataPointClick={(data) => {
+                const { index, value } = data;
+                setSelectedBacPoint({ value, time: bacChartData.labels[index] });
+                setFeedbackDialogVisible(true);
+            }}
+        />
+        </View>
+      )}
+
       {lineChartData.labels.length > 0 && lineChartData.datasets[0].data.length > 0 && (
         <View style={cnoStyles.linechartContainer}>
           <Text style={cnoStyles.chartTitle}>Cumulative Amount Spent Over Time</Text>
@@ -376,6 +440,43 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
               </View>
             </View>
         </Modal>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={feedbackDialogVisible}
+          onRequestClose={() => {
+              setFeedbackDialogVisible(false);
+          }}
+      >
+          <View style={cnoStyles.centeredView}>
+              <View style={cnoStyles.modalView}>
+                  <Text style={cnoStyles.modalTitle}>Feedback for BAC {selectedBacPoint.value} at {selectedBacPoint.time}</Text>
+                  <TextInput
+                      style={cnoStyles.input}
+                      onChangeText={setUserFeedback}
+                      value={userFeedback}
+                      placeholder="Enter your feelings or experiences"
+                  />
+                  <TouchableOpacity
+                      style={cnoStyles.button}
+                      onPress={submitFeedback} // Use the submitFeedback function here
+                    >
+                      <Text style={cnoStyles.buttonText}>Submit Feedback</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                      style={cnoStyles.button}
+                      onPress={() => {
+                          setUserFeedback('');
+                          setFeedbackDialogVisible(false);
+                      }}
+                  >
+                      <Text style={cnoStyles.buttonText}>Cancel</Text>
+                  </TouchableOpacity>
+              </View>
+          </View>
+      </Modal>
+
     </ScrollView>
   );
    }

@@ -63,6 +63,7 @@ import {
   BACRefreshRateDevScreen,
   DailyTotalsDevScreen,
   VenueManagementScreen,
+  BACFeedbackScreen,
 } from '../screens/ScreensIndex';
 
 const Stack = createNativeStackNavigator();
@@ -140,6 +141,7 @@ const AppNavigation = () => {
         <Stack.Screen name='Developer BAC Refresh Rate' component={BACRefreshRateDevScreen} />
         <Stack.Screen name='Developer Daily Totals' component={DailyTotalsDevScreen} />
         <Stack.Screen name='Venue Management' component={VenueManagementScreen} />
+        <Stack.Screen name='BAC Feedback' component={BACFeedbackScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

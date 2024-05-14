@@ -44,6 +44,7 @@ export { default as RecentControlsScreen } from './frontendScreens/UsersAndSetti
 export { default as CommonControlsScreen } from './frontendScreens/UsersAndSettingsScreens/Display/CommonDrinksControls';
 export { default as DeveloperSettingsScreen } from './frontendScreens/UsersAndSettingsScreens/Developer';
 export { default as VenueManagementScreen } from './frontendScreens/UsersAndSettingsScreens/Alcoholics/VenueManagement';
+export { default as BACFeedbackScreen } from './frontendScreens/UsersAndSettingsScreens/Alcoholics/BACFeedback';
 
 // Charts
 export { default as ChartsScreen } from './frontendScreens/ChartsScreens/OmniChartManager';
