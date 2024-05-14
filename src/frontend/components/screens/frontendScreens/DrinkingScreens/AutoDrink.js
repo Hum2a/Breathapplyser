@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, FlatList, RefreshControl } from 'react-native';
 import { getFirestore, doc, collection, getDoc, getDocs } from 'firebase/firestore';
 import moment from 'moment';
+import 'moment-timezone';
 import calculateBACIncrease from '../../../../utils/calculations/calculateBAC';
 import { saveEntry } from '../../../../../backend/firebase/queries/saveEntry';
 import { saveBACLevel } from '../../../../../backend/firebase/queries/saveBACLevel';
@@ -24,8 +25,10 @@ const AutoEntryScreen = ({ navigation }) => {
   const [totalDrinks, setTotalDrinks] = useState(0);
   const [totalUnits, setTotalUnits] = useState(0);
   const [totalSpending, setTotalSpending] = useState(0);
-  const [selectedStartTime, setSelectedStartTime] = useState(moment().format('HH:mm'));
-  const [selectedEndTime, setSelectedEndTime] = useState(moment().format('HH:mm'));
+  const timezone = 'Europe/London';
+  const currentBstTime = moment().tz(timezone).format('HH:mm');
+  const [selectedStartTime, setSelectedStartTime] = useState(currentBstTime);
+  const [selectedEndTime, setSelectedEndTime] = useState(currentBstTime);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [limits, setLimits] = useState({
     spendingLimit: 0,
@@ -145,8 +148,8 @@ const AutoEntryScreen = ({ navigation }) => {
             price: priceToAdd,
             type: selectedDrinkType,
             calories: caloriesToAdd,
-            selectedStartTime: moment(selectedStartTime, 'HH:mm').toISOString(),
-            selectedEndTime: moment(selectedEndTime, 'HH:mm').toISOString(),
+            selectedStartTime: selectedStartTime,
+            selectedEndTime: selectedEndTime,
             selectedDate: selectedDate,
             selectedCurrency: "GBP",
         };

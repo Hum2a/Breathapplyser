@@ -263,19 +263,40 @@ export const cnoStyles = StyleSheet.create({
     height: 40, // Set a fixed height for your icon
     resizeMode: 'contain' // Ensure the icon scales properly
 },
-modalContainer: {
-  flex: 1,
-  backgroundColor: '#ffffff', // Bright background for the modal
-  borderRadius: 20, // Rounded corners
-  padding: 20, // Padding around the inner content
-  alignItems: 'center', // Center content horizontally
-  justifyContent: 'center', // Center content vertically
-  shadowColor: '#000', // Black shadow for depth
-  shadowOffset: { width: 0, height: 2 }, // Shadow position
-  shadowOpacity: 0.25, // Shadow opacity
-  shadowRadius: 3.84, // Shadow blur radius
-  elevation: 5, // Elevation for Android
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#ffffff', // Bright background for the modal
+    borderRadius: 20, // Rounded corners
+    padding: 20, // Padding around the inner content
+    alignItems: 'center', // Center content horizontally
+    justifyContent: 'center', // Center content vertically
+    shadowColor: '#000', // Black shadow for depth
+    shadowOffset: { width: 0, height: 2 }, // Shadow position
+    shadowOpacity: 0.25, // Shadow opacity
+    shadowRadius: 3.84, // Shadow blur radius
+    elevation: 5, // Elevation for Android
+  },
+  input: {
+    height: 40, // Set the height of the input field
+    margin: 12, // Margin around the input field
+    borderWidth: 1, // Border width for the input field
+    padding: 10, // Padding inside the input field for text
+    backgroundColor: '#FFFFFF', // Set the background color to white
+    borderColor: '#0077B6', // A brighter shade of blue for the border
+    borderRadius: 10, // Rounded corners for the input field
+    color: '#003366', // Text color
+    fontSize: 16, // Font size for the input text
+    fontWeight: 'normal', // Font weight
+  },
+  modalTitle: {
+    fontSize: 20, // Slightly larger for emphasis
+    fontWeight: 'bold', // Make it bold to stand out
+    color: '#003366', // Using the same dark blue for consistency with other titles
+    textAlign: 'center', // Center the title text
+    marginBottom: 10, // Margin at the bottom to separate from the content
 },
+
+
 });
 
 // Styles for the FlatList and available dates
