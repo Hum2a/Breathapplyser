@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   },
   calendarTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     marginBottom: 20,
     color: '#008080',
   },

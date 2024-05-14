@@ -15,23 +15,17 @@ export const RecentStyles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   listItem: {
-    backgroundColor: 'rgba(249, 249, 249, 0.5)', // Making background slightly transparent
+    backgroundColor: 'rgba(240,255,214, 0.5)', // Making background slightly transparent
     marginVertical: 6,
     borderRadius: 5,
     padding: 8,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.20,
-    shadowRadius: 1.41,
-    elevation: 2,
+   
   },
   
   text: {
     fontSize: 14, // Reduced font size
     color: '#333', // Dark color for text for readability
+    fontFamily: 'my_coffee_break'
   },
   title: {
     fontSize: 20, // Slightly smaller font size for title

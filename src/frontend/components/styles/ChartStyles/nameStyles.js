@@ -10,13 +10,14 @@ export const NameStyles = StyleSheet.create({
   },
   graphTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     color: '#003366', // Dark blue for contrast and readability
     marginBottom: 20,
   },
   toggleLabel: {
     fontSize: 18,
     color: '#003366', // Dark blue for contrast
+    fontFamily: 'my_coffee_break',
     marginBottom: 10,
   },
   pickersContainer: {
@@ -50,11 +51,13 @@ export const NameStyles = StyleSheet.create({
   legendLabel: {
     fontSize: 14,
     color: '#003366', // Dark blue for readability
+    fontFamily: 'my_coffee_break',
   },
   noDataText: {
     fontSize: 16,
     color: '#003366', // Dark blue for readability
     marginTop: 20,
+    fontFamily: 'my_coffee_break',
   },
   refreshButton: {
     padding: 10,

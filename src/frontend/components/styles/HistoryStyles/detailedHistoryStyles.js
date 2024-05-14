@@ -39,7 +39,7 @@ export const DetailedHistoryStyles = StyleSheet.create({
     fontWeight: '500', // Slightly bolder text for better readability
   },
   entryLabel: {
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
   },
   entryValue: {
     fontStyle: 'italic',

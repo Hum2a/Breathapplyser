@@ -12,29 +12,22 @@ export const CommonStyles = StyleSheet.create({
       backgroundColor: 'transparent',
     },
     listItem: {
-      backgroundColor: 'rgba(249, 249, 249, 0.5)',
+      backgroundColor: 'rgba(240,255,214, 0.5)',
       marginVertical: 6,
       borderRadius: 5,
       padding: 8,
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 1,
-      },
-      shadowOpacity: 0.20,
-      shadowRadius: 1.41,
-      elevation: 2,
     },
     text: {
       fontSize: 14,
       color: '#333',
+      fontFamily: 'my_coffee_break',
     },
     title: {
       fontSize: 20,
       fontWeight: 'bold',
-      marginBottom: 10,
-      color: '#333',
+      color: 'black',
       textAlign: 'center',
+      fontFamily: 'heyam',
     },
     refreshButton: {
         position: 'absolute', // Position it over your component or at a fixed position

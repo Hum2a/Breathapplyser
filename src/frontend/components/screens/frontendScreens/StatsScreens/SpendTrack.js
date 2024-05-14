@@ -48,7 +48,8 @@ const SpendingTrack = () => {
     const ratio = Math.min(amountSpent / spendingLimit, 1); // Ensure the ratio does not exceed 1
     const red = Math.round(255 * ratio);
     const green = Math.round(255 * (1 - ratio));
-    return `rgb(${red}, ${green}, 0)`;
+    const blue = Math.round(255 * (1 - ratio));
+    return `rgb(${red}, 0, ${blue})`;
   };
 
   return (
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     marginRight: 3,
     color: '#7048B6',
   },

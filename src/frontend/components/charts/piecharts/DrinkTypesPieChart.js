@@ -198,7 +198,7 @@ const DrinkTypeChart = () => {
                         count,
                         color: '#' + Math.floor(Math.random()*16777215).toString(16),
                         legendFontColor: "#7F7F7F",
-                        legendFontSize: 15
+                        legendFontSize: 15,
                     }))}
                     width={Dimensions.get('window').width - 16} // Adjust for padding
                     height={220}

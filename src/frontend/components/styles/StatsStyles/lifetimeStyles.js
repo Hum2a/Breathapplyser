@@ -3,14 +3,14 @@ import { StyleSheet } from "react-native";
 export const lifetimeStyles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F0F8FF', // Alice Blue background for the overall container
+        backgroundColor: 'rgb(190,233,205)', // Alice Blue background for the overall container
     },
     scrollView: {
         
     },
     title: {
         fontSize: 22,
-        fontWeight: '600',
+        fontFamily: 'my_coffee_break',
         color: '#0277BD', // Light Blue 800
         marginBottom: 20,
         textAlign: 'center',
@@ -31,7 +31,7 @@ export const lifetimeStyles = StyleSheet.create({
     headerText: {
         flex: 1,
         textAlign: 'center',
-        fontWeight: '700',
+        fontFamily: 'my_coffee_break',
         paddingVertical: 15,
         color: '#FFFFFF', // White color for header text
         fontSize: 16,
@@ -48,11 +48,11 @@ export const lifetimeStyles = StyleSheet.create({
         paddingVertical: 12,
         fontSize: 15,
         color: '#0277BD', // Light Blue 800
-        fontWeight: '500',
+        fontFamily: 'heyam',
     },
     subtitle: {
         fontSize: 20,
-        fontWeight: '600',
+        fontFamily: 'my_coffee_break',
         color: '#0277BD', // Light Blue 800
         marginTop: 30,
         marginBottom: 10,
@@ -93,7 +93,7 @@ export const lifetimeStyles = StyleSheet.create({
     },
     dayRangeButtonText: {
         color: '#FFFFFF', // White color for text
-        fontWeight: '600',
+        fontFamily: 'my_coffee_break',
         textAlign: 'center',
     },
     dayRangeContainer: {

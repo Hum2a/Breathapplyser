@@ -319,22 +319,22 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
       </Text>
       
       <View style={cnoStyles.statContainer}>
-        <Text style={cnoStyles.statText}><Text style={{fontWeight: 'bold'}}>Total Drinks:</Text> {Object.values(drinkTally).reduce((sum, val) => sum + val, 0)}</Text>
+        <Text style={cnoStyles.statText}><Text style={{fontFamily: 'my_coffee_break'}}>Total Drinks:</Text> {Object.values(drinkTally).reduce((sum, val) => sum + val, 0)}</Text>
         {Object.entries(drinkTally).map(([type, count]) => (
           <Text key={type} style={cnoStyles.statText}>{type}: {count}</Text>
         ))}
       </View>
       
       <View style={cnoStyles.statContainer}>
-        <Text style={cnoStyles.statText}><Text style={{fontWeight: 'bold'}}>Total Spent:</Text> {totalSpent}</Text>
+        <Text style={cnoStyles.statText}><Text style={{fontFamily: 'my_coffee_break'}}>Total Spent:</Text> {totalSpent}</Text>
         <Text style={cnoStyles.limitText}>Spending Limit: {spendingLimit}</Text>
-        <Text style={cnoStyles.statText}><Text style={{fontWeight: 'bold'}}>Total Units:</Text> {totalUnits}</Text>
+        <Text style={cnoStyles.statText}><Text style={{fontFamily: 'my_coffee_break' }}>Total Units:</Text> {totalUnits}</Text>
         <Text style={cnoStyles.limitText}> Limit: {unitLimit}</Text>
       </View>
   
       <View style={cnoStyles.statContainer}>
-        <Text style={cnoStyles.bacText}>Current BAC Level: {currentBACLevel.toFixed(2)}</Text>
-        <Text style={cnoStyles.bacText}>Total BAC Increase: {totalBACIncrease.toFixed(2)}</Text>
+        <Text style={cnoStyles.bacText}>Current BAC Level: <Text style={{fontFamily: 'heyam' }}>{currentBACLevel.toFixed(2)}</Text></Text>
+        <Text style={cnoStyles.bacText}>Total BAC Increase: <Text style={{fontFamily: 'heyam' }}>{totalBACIncrease.toFixed(2)}</Text></Text>
       </View>
       
       <View style={cnoStyles.barChartContainer}>

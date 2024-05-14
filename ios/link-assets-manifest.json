@@ -1,0 +1,17 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/frontend/assets/fonts/heyam.ttf",
+      "sha1": "e6da2518a3964e3d743fdeac2ae2cd96e05810e1"
+    },
+    {
+      "path": "src/frontend/assets/fonts/my_coffee_break.otf",
+      "sha1": "f8795c8af110c0ad28b3093769e170566a1dff68"
+    },
+    {
+      "path": "src/frontend/assets/fonts/my_coffee_break.ttf",
+      "sha1": "657cabb135eddcba08f62df7840887a7d203a58d"
+    }
+  ]
+}

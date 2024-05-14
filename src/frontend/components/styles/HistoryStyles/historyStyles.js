@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 export const HistoryStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#00797B',
+    backgroundColor: 'rgb(190,233,205)',
   },
   title: {
     fontSize: 24,
@@ -38,11 +38,12 @@ export const HistoryStyles = StyleSheet.create({
 
   dateText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
   },
   entriesCountText: {
     fontSize: 16,
     color: '#666',
+    fontFamily: 'heyam',
   },
   weekHeader: {
     // Style for week header
@@ -78,7 +79,7 @@ export const HistoryStyles = StyleSheet.create({
     fontSize: 68, // Large text size
     color: 'rgba(0, 0, 255, 0.2)', // Semi-transparent white
     transform: [{ rotate: '-20deg' }], // Rotate the container
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     textAlign: 'center',
     zIndex: 1,
     overflow: 'hidden', // Hide any part of the text that overflows the container

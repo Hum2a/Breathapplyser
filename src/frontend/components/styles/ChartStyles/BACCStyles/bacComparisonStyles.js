@@ -44,7 +44,7 @@ export const bacComparisonStyles = StyleSheet.create({
     graphTitle: {
       color: '#01579b', // Darker blue for the title text for contrast
       fontSize: 18, // Slightly larger font size for better visibility
-      fontWeight: 'bold',
+      fontFamily: 'my_coffee_break',
       textAlign: 'center',
       marginBottom: 10,
     },

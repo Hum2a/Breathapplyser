@@ -10,7 +10,7 @@ export const DrunkStyles = StyleSheet.create({
   },
   graphTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     color: '#1565C0',
 },
   pickersContainer: {
@@ -45,6 +45,7 @@ export const DrunkStyles = StyleSheet.create({
     fontSize: 14,
     color: '#1565C0', // Dark blue legend text color
     alignSelf: 'center',
+    fontFamily: 'my_coffee_break',
   },
   drunknessLevelContainer: {
     flexDirection: 'row',
@@ -56,7 +57,7 @@ export const DrunkStyles = StyleSheet.create({
     marginLeft: 20, // Add marginLeft to create space between legend and drunkness level items
   },
   drunknessLevel: {
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     marginRight: 10,
     color: '#1565C0', // Dark blue level text color
     alignSelf: 'center',
@@ -159,7 +160,7 @@ export const DrunkScreenStyles = StyleSheet.create({
   toggleButtonText: {
     color: '#FFFFFF', // White button text color
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
   },
   button: {
     backgroundColor: '#81D4FA', // A stylish light blue shade
@@ -176,7 +177,7 @@ export const DrunkScreenStyles = StyleSheet.create({
   buttonText: {
     color: '#0277BD', // A darker blue for text to ensure good readability
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
   },
   chartContainer: {
     flex: 1,

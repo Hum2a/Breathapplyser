@@ -4,12 +4,12 @@ import { StyleSheet } from 'react-native';
 export const cnoStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#BAEAFF', // Consistent light blue background
+    backgroundColor: 'rgb(190,233,205)', // Consistent light blue background
     padding: 15,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     color: '#003366', // Dark blue for better contrast and readability
     textAlign: 'center',
     marginBottom: 20,
@@ -45,12 +45,12 @@ export const cnoStyles = StyleSheet.create({
   limitText: {
     fontSize: 18,
     color: '#FF3B30', // Red for limits to draw attention
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break'
   },
   bacText: {
     fontSize: 18,
     color: '#003366', // Dark blue for text, similar to statText for consistency
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     marginTop: 10,
   },
   barChartContainer: {
@@ -79,6 +79,7 @@ export const cnoStyles = StyleSheet.create({
     fontSize: 18,
     color: '#003366', // Dark blue for titles within chart containers
     marginBottom: 10,
+    fontFamily: 'my_coffee_break',
   },
   button: {
     backgroundColor: '#FF6347', // Tomato red
@@ -105,6 +106,7 @@ export const cnoStyles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     textAlign: 'center',
+    fontFamily: 'my_coffee_break',
   },
   dateItem: {
     padding: 10,

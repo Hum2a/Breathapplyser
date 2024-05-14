@@ -9,7 +9,7 @@ export const amountSpentStyles = StyleSheet.create({
     },
     graphTitle: {
       fontSize: 24,
-      fontWeight: 'bold',
+      fontFamily: 'my_coffee_break',
       color: '#003366', // Dark blue for contrast and readability
       marginBottom: 20,
     },

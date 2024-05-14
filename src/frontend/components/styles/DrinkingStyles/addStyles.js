@@ -16,7 +16,7 @@ export const drinkStyles = StyleSheet.create({
   },
   text: {
     color: 'black',
-    fontWeight: 'bold'
+    fontFamily: 'my_coffee_break',
   }
 })
 
@@ -238,7 +238,7 @@ export const autoStyles = StyleSheet.create({
   drinkNameText: {
     color: '#03396c', // Deep blue drink text
     marginBottom: 5,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
   },
   priceInput: {
     width: '100%',
@@ -267,7 +267,7 @@ export const autoStyles = StyleSheet.create({
   buttonText: {
     color: '#FFFFFF', // White button text
     fontSize: 14,
-    fontWeight: '500',
+    fontFamily: 'my_coffee_break',
     textAlign: 'center',
   },
   timeText: {
@@ -315,9 +315,11 @@ export const autoStyles = StyleSheet.create({
   },
   doubleToggleText: {
     color: '#333333',
+    fontFamily: 'my_coffee_break',
   },
   doubleToggleTextActive: {
     color: '#FFFFFF',
+    fontFamily: 'my_coffee_break',
   },
   selectedButton: {
     backgroundColor: '#0056b3', // A darker or different color to indicate selection
@@ -343,7 +345,7 @@ export const autoStyles = StyleSheet.create({
     fontSize: 68, // Large text size
     color: 'rgba(0, 0, 255, 0.2)', // Semi-transparent white
     transform: [{ rotate: '10deg' }], // Rotate the container
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     textAlign: 'center',
     zIndex: 1,
     overflow: 'hidden', // Hide any part of the text that overflows the container

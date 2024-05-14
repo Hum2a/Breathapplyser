@@ -49,9 +49,10 @@ const UnitTrack = () => {
       return 'rgb(128, 128, 128)';
   }
     const ratio = unitIntake / limits;
+    const blue = Math.round(255 * (1 - ratio));
     const green = Math.round(255 * (1 - ratio)); // Change the intensity of green based on the ratio
     const red = Math.round(255 * ratio); // Change the intensity of red based on the ratio
-    return `rgb(${red}, ${green}, 0)`;
+    return `rgb(${red}, 0, ${blue})`;
   };
 
   return (
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     marginRight: 3,
     color: '#7048B6',
   },

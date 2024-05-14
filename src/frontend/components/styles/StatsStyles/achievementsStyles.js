@@ -4,11 +4,11 @@ export const achievementStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#E3F2FD', // Lighter shade of blue for the background
+    backgroundColor: 'rgb(190,233,205)', // Lighter shade of blue for the background
   },
   header: {
     fontSize: 26, // Slightly larger for prominence
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     color: '#0277BD', // Darker shade of blue for contrast
     marginBottom: 24, // Increased spacing for better visual separation
     textAlign: 'center', // Center align the header for a more balanced look
@@ -27,12 +27,13 @@ export const achievementStyles = StyleSheet.create({
   },
   title: {
     fontSize: 20, // Increased font size for better visibility
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     color: '#0277BD', // Use the theme's blue for titles for consistency
     marginBottom: 5, // Space between title and description
   },
   description: {
     fontSize: 16, // Larger than before for readability
     color: '#455A64', // Darker gray for better contrast and readability
+    fontFamily: 'heyam',
   },
 });

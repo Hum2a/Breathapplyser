@@ -19,7 +19,7 @@ export const bacPredictionStyles = StyleSheet.create({
     toggleButtonText: {
       color: '#ffffff', // Keeping the text color white for contrast
       fontSize: 16,
-      fontWeight: 'bold',
+      fontFamily: 'my_coffee_break',
     },
     graphTitle: {
       color: '#01579b', // Darker blue for the title text for contrast

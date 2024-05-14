@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const RankingStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#ADD8E6', // Light blue background
+      backgroundColor: 'rgb(190,233,205)', // Light blue background
       paddingHorizontal: 10,
     },
     title: {

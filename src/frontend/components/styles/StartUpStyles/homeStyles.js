@@ -9,7 +9,6 @@ export const homeStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#00797B',
   },
   drinksWidgetContainer: {
     position: 'absolute',
@@ -39,6 +38,7 @@ export const homeStyles = StyleSheet.create({
     alignItems: 'center',
   },
   beer: {
+    position: 'absolute',
     width: 250,
     height: 250,
   },
@@ -51,11 +51,26 @@ export const homeStyles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: 'black', // Text color (change as needed)
-    fontSize: 18, // Font size (adjust as needed)
-    fontWeight: 'bold', // Font weight (adjust as needed)
-    fontFamily: 'Roboto',
+    color: 'lightblue', // Text color (change as needed)
+    fontSize: 36, // Font size (adjust as needed)
+    fontFamily: 'my_coffee_break',
     left: 10,
+  },
+  tapToDrinkContainer: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    bottom: 100,
+    left: 18,
+  },
+  tapToDrink: {
+    position: 'absolute',
+    width: 250,
+    height: 150,
+  },
+  splash: {
+    position: 'absolute',
+    width: 350,
+    height: 150,
   },
   smallIcon: {
     width: 50,
@@ -72,7 +87,7 @@ export const homeStyles = StyleSheet.create({
     position: 'absolute',
     top: 5, // Adjust the top position to center it at the top of the screen
     alignSelf: 'center', // Center the container horizontally
-    backgroundColor: '#ffffff', // Set a background color for the island
+    backgroundColor: 'rgb(190,233,205)', // Set a background color for the island
     borderRadius: 20, // Add border radius to create a rounded island shape
     padding: 10, // Add padding to the container
     zIndex: 999, // Adjust the z-index as needed
@@ -148,7 +163,7 @@ export const homeStyles = StyleSheet.create({
     marginRight: 2,
   },
   drunkennessContainer: {
-    backgroundColor: '#ffffff', // Light gray, adjust as necessary
+    backgroundColor: 'rgb(190,233,205)', // Light gray, adjust as necessary
     padding: 15,
     borderRadius: 15,
     shadowColor: '#000',

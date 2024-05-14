@@ -9,13 +9,15 @@ export const totalUnitsStyles = StyleSheet.create({
     },
     graphTitle: {
       fontSize: 24,
-      fontWeight: 'bold',
       color: '#003366', // Dark blue for contrast and readability
       marginBottom: 20,
+      fontFamily: 'my_coffee_break',
     },
     toggleLabel: {
       fontSize: 18,
       marginBottom: 10,
+      color: 'crimson',
+      fontFamily: 'my_coffee_break',
     },
     pickersContainer: {
       flexDirection: 'row',
@@ -46,11 +48,14 @@ export const totalUnitsStyles = StyleSheet.create({
     },
     legendLabel: {
       fontSize: 14,
+      fontFamily: 'my_coffee_break',
     },
     noDataText: {
       fontSize: 16,
       marginTop: 20,
       textAlign: 'center', // Ensure text is centered
+      fontFamily: 'my_coffee_break',
+
     },
     refreshButton: {
       padding: 10,

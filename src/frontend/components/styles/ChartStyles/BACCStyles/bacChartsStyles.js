@@ -44,7 +44,7 @@ export const combinedBacStyles = StyleSheet.create({
     graphTitle: {
       color: '#01579b', // Darker blue for the title text for contrast
       fontSize: 18, // Slightly larger font size for better visibility
-      fontWeight: 'bold',
+      fontFamily: 'my_coffee_break',
       textAlign: 'center',
       marginBottom: 10,
     },
@@ -66,7 +66,7 @@ export const combinedBacStyles = StyleSheet.create({
     toggleButtonText: {
       color: '#ffffff', // Keeping the text color white for contrast
       fontSize: 16,
-      fontWeight: 'bold',
+      fontFamily: 'my_coffee_break',
     },
     soberText: {
       fontSize: 22,

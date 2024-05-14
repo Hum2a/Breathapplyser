@@ -5,7 +5,7 @@ export const omniStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#BAEAFF', // Light blue background consistent with the app theme
+    backgroundColor: 'rgb(190,233,205)', // Light blue background consistent with the app theme
   },
   button: {
     backgroundColor: 'rgba(0, 122, 255, 0.5)', // Use a transparent blue shade for buttons
@@ -20,13 +20,13 @@ export const omniStyles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     flex: 1, // Allow text to take up available space, pushing the icon to the edge
     textAlign: 'left', // Align text to the left
   },
   graphTitle: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     color: '#003366', // Dark blue for better contrast and readability
     textAlign: 'center',
     marginBottom: 20,

@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#0277BD', // A darker blue for text to ensure good readability
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
   },
 });
 

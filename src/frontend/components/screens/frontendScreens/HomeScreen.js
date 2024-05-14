@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Image, TouchableOpacity, Text, SafeAreaView } from 'react-native';
+import { View, Image, TouchableOpacity, Text, SafeAreaView, ImageBackground } from 'react-native';
 import Video from 'react-native-video';
 import { useNavigation } from '@react-navigation/native';
 import { homeStyles } from '../../styles/StartUpStyles/homeStyles';
@@ -65,6 +65,10 @@ const HomeScreen = () => {
 
   const NavigateToDrinking = () => {
     navigation.navigate('AddEntry');
+  };
+
+  const NotMe = () => {
+    //
   };
 
   const NavigateToHistory = () => {
@@ -151,6 +155,10 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={appStyles.fullScreen}>
+      <ImageBackground
+        source={require('../../../assets/images/Background.png')} // Replace with your background image
+        style={appStyles.fullScreen}
+      >
       <View style={homeStyles.container}>
         <BACDecreaseFB user={user} key={refreshKey} />
         {/* <BacCleaner /> */}
@@ -213,9 +221,14 @@ const HomeScreen = () => {
             </View>
         </TouchableOpacity>
 
+        <TouchableOpacity style={homeStyles.tapToDrinkContainer}>
+          <Image source={require('../../../assets/images/splash.png') } style={homeStyles.splash}/>
+          <Image source={require('../../../assets/images/taptodrink.png')} style={homeStyles.tapToDrink}/>
+        </TouchableOpacity>
+
         
         <TouchableOpacity onPressIn={() => setPlayBeerAnimation(true)} onPressOut={() => { setPlayBeerAnimation(false); NavigateToDrinking(); }} style={homeStyles.beerContainer}>
-          <Text style={homeStyles.buttonText}>Tap to Start Drinking</Text>
+          {/* <Text style={homeStyles.buttonText}>Tap to Start Drinking</Text> */}
           <BeerAnimation frameRate={24} play={playBeerAnimation} />
           <BacWiper />
         </TouchableOpacity>
@@ -255,6 +268,7 @@ const HomeScreen = () => {
           </TouchableOpacity>
           </View> */}
         </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 };

@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const SettingStyles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#00797B',
+      backgroundColor: 'rgb(190,233,205)',
       paddingVertical: 50,
       paddingHorizontal: 15,
     },
@@ -18,6 +18,7 @@ export const SettingStyles = StyleSheet.create({
     text: {
       fontSize: 18,
       color: '#333',
+      fontFamily: 'my_coffee_break',
     },
     icon: {
       width: 30,
@@ -34,9 +35,6 @@ export const SettingStyles = StyleSheet.create({
       borderBottomWidth: 1,
       borderBottomColor: '#ccc',
       paddingVertical: 12,
-    },
-    text: {
-      fontSize: 18,
     },
     smallIcon: {
       width: 70,

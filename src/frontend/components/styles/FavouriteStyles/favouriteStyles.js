@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 export const favouriteStyles = StyleSheet.create({
   fullscreen: {
-    backgroundColor: '#00797B',
+    backgroundColor: 'rgb(190,233,205)',
   },
   flatlistContainer: {
     backgroundColor: '#BAEAFF',
@@ -13,7 +13,7 @@ export const favouriteStyles = StyleSheet.create({
     position: 'relative',
   },
   container: {
-    backgroundColor: '#00797B', // A lighter shade of blue for background
+    backgroundColor: 'rgb(190,233,205)', // A lighter shade of blue for background
     flex: 1,
   },
   favouriteItem: {
@@ -35,8 +35,7 @@ export const favouriteStyles = StyleSheet.create({
     textAlign: 'flex-start',
   },
   categoryText: {
-    fontWeight: 'bold',
-    fontStyle: 'italic',
+    fontFamily: 'my_coffee_break',
     fontSize: 18,
     color: '#005f73', // A darker blue for text, ensuring readability
   },
@@ -44,6 +43,7 @@ export const favouriteStyles = StyleSheet.create({
     fontSize: 16,
     color: '#003366', // Even darker blue for more important details, enhancing contrast
     marginBottom: 5,
+    fontFamily: 'heyam',
   },
   deleteButton: {
     backgroundColor: 'transparent',
@@ -91,7 +91,7 @@ export const favouriteStyles = StyleSheet.create({
   },
   addNewFavouriteButtonText: {
     color: 'white', // White text for clarity and contrast
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     fontSize: 18,
     textAlign: 'center',
   },
@@ -131,7 +131,7 @@ export const favouriteStyles = StyleSheet.create({
     textAlign: 'center',
     color: '#005f73',
     fontSize: 14,
-    fontWeight: 'bold'
+    fontFamily: 'heyam',
   },
   venueButton: {
     backgroundColor: '#0077B6', // A consistent blue theme for action buttons
@@ -145,7 +145,7 @@ export const favouriteStyles = StyleSheet.create({
   },
   venueButtonText: {
     color: 'white', // White text for clarity and contrast
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     fontSize: 18,
     textAlign: 'center',
   },
@@ -171,7 +171,7 @@ export const favouriteStyles = StyleSheet.create({
     fontSize: 72, // Large text size
     color: 'rgba(99, 21, 0, 0.2)', // Semi-transparent white
     transform: [{ rotate: '20deg' }], // Rotate the container
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     textAlign: 'center',
     zIndex: 1,
     overflow: 'hidden', // Hide any part of the text that overflows the container
