@@ -333,8 +333,8 @@ const CurrentNightOutScreen = ({ route, navigation }) => {
       </View>
   
       <View style={cnoStyles.statContainer}>
-        <Text style={cnoStyles.bacText}>Current BAC Level: <Text style={{fontFamily: 'heyam' }}>{currentBACLevel.toFixed(2)}</Text></Text>
-        <Text style={cnoStyles.bacText}>Total BAC Increase: <Text style={{fontFamily: 'heyam' }}>{totalBACIncrease.toFixed(2)}</Text></Text>
+        <Text style={cnoStyles.bacText}>Current BAC Level: {currentBACLevel.toFixed(2)}</Text>
+        <Text style={cnoStyles.bacText}>Total BAC Increase: {totalBACIncrease.toFixed(2)}</Text>
       </View>
       
       <View style={cnoStyles.barChartContainer}>
