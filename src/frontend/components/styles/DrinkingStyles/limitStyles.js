@@ -14,7 +14,7 @@ export const limitStyles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     marginBottom: 20,
     color: '#0277bd',
     textAlign: 'center',
@@ -51,7 +51,7 @@ export const limitStyles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     textAlign: 'center',
-    fontWeight: 'bold',
+    fontFamily: 'heyam',
   },
   centeredView: {
     flex: 1,
@@ -91,7 +91,7 @@ export const limitStyles = StyleSheet.create({
   confirmButtonText: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'heyam',
   },
   strictnessButton: {
     padding: 10,
@@ -100,5 +100,6 @@ export const limitStyles = StyleSheet.create({
   },
   strictnessButtonText: {
     color: '#FFF',
+    fontFamily: 'heyam',
   },  
 });

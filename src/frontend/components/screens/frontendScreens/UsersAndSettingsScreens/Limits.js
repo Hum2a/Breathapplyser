@@ -103,7 +103,7 @@ const LimitsScreen = () => {
         <View style={styles.limitContainer}>
           <TouchableOpacity onPress={() => handleOpenModal('spending')}>
             <View style={styles.limitInnerContainer}>
-              <Text style={styles.label}>Spending Limit: £{spendingLimit}</Text>
+              <Text style={styles.label}><Text style={{fontFamily: 'heyam'}}>Spending Limit: </Text>£{spendingLimit}</Text>
               <Slider
                 style={styles.slider}
                 minimumValue={0}
@@ -133,7 +133,7 @@ const LimitsScreen = () => {
         <View style={styles.limitContainer}>
           <TouchableOpacity onPress={() => handleOpenModal('drinking')}>
             <View style={styles.limitInnerContainer}>
-              <Text style={styles.label}>Drinking Limit: {drinkingLimit} units</Text>
+              <Text style={styles.label}><Text style={{fontFamily: 'heyam'}}>Drinking Limit: </Text>{drinkingLimit} units</Text>
               <Slider
                 style={styles.slider}
                 minimumValue={0}

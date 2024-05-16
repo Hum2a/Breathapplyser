@@ -12,6 +12,7 @@ export const feedbackStyles = StyleSheet.create({
         marginVertical: 5,
         backgroundColor: '#e6f7ff', // Light blue for item containers
         borderRadius: 10,
+        alignItems: 'flex-start',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -48,8 +49,9 @@ export const feedbackStyles = StyleSheet.create({
     },
     title: {
         fontSize: 20,
-        fontWeight: 'bold',
         color: '#0077B6', // A richer shade of blue for titles
         marginBottom: 10,
+        textAlign: 'center',
+        fontFamily: 'my_coffee_break',
     }
 });

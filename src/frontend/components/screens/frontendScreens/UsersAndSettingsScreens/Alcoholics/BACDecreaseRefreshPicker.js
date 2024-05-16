@@ -51,10 +51,10 @@ const BACDecreaseRefreshPicker = () => {
         onValueChange={handleIntervalChange}
         style={styles.picker}
       >
-        <Picker.Item label="10s" value={10000} />
-        <Picker.Item label="1 minute" value={60000} />
-        <Picker.Item label="10 minutes" value={600000} />
-        <Picker.Item label="1 hour" value={3600000} />
+        <Picker.Item style={styles.pickerText} label="10s" value={10000} />
+        <Picker.Item style={styles.pickerText} label="1 minute" value={60000} />
+        <Picker.Item style={styles.pickerText} label="10 minutes" value={600000} />
+        <Picker.Item style={styles.pickerText} label="1 hour" value={3600000} />
       </Picker>
     </View>
   );
@@ -72,12 +72,16 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     color: '#1565C0', // Dark blue text color
+    fontFamily: 'heyam',
   },
   picker: {
     width: '80%', // Set a specific width for the picker or use 'flex: 1' if it should take up more space
     height: 50,
     color: '#1565C0', // Dark blue text color
   },
+  pickerText: {
+    alignSelf: 'center',
+  }
 });
 
 

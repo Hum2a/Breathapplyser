@@ -43,7 +43,8 @@ export const HistoryStyles = StyleSheet.create({
   entriesCountText: {
     fontSize: 16,
     color: '#666',
-    fontFamily: 'heyam',
+    // fontFamily: 'heyam',
+    fontStyle: 'italic',
   },
   weekHeader: {
     // Style for week header

@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     marginBottom: 20,
     color: '#333',
     textAlign: 'center',
@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 5,
     color: '#333',
+    fontFamily: 'heyam',
   },
   input: {
     borderWidth: 1,
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: '#FFFFFF',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'heyam',
   },
 });
 

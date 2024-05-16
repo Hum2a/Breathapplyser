@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   label: {
     color: '#0277bd',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
   },
   value: {
     color: '#0277bd',
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     color: 'white',
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
   },
   noDataText: {
     color: '#0277bd',

@@ -8,7 +8,7 @@ export const profStyles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     marginBottom: 20,
     color: '#005f73', // Darker blue for title text
     textAlign: 'center',
@@ -18,7 +18,7 @@ export const profStyles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'heyam',
     alignSelf: 'center',
     marginBottom: 5,
     color: '#003366', // Dark blue for input labels
@@ -63,6 +63,9 @@ export const profStyles = StyleSheet.create({
     borderWidth: 2,
     textAlign: 'center',
   },
+  heyam: {
+    fontFamily: 'heyam',
+  },
   button: {
     backgroundColor: '#007AFF', // Consistent blue for buttons
     paddingVertical: 12,
@@ -74,6 +77,7 @@ export const profStyles = StyleSheet.create({
     color: '#FFFFFF', // White text for buttons for contrast
     fontSize: 18,
     textAlign: 'center',
+    fontFamily: 'heyam',
   },
   clearButton: {
     backgroundColor: '#62B1F6', // Lighter blue for the clear button, for differentiation
@@ -85,6 +89,7 @@ export const profStyles = StyleSheet.create({
     color: '#FFFFFF', // White text for clear button for contrast
     fontSize: 18,
     textAlign: 'center',
+    fontFamily: 'heyam',
   },
   inputDualContainer: {
     flexDirection: 'row',

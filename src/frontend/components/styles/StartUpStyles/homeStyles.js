@@ -38,7 +38,6 @@ export const homeStyles = StyleSheet.create({
     alignItems: 'center',
   },
   beer: {
-    position: 'absolute',
     width: 250,
     height: 250,
   },

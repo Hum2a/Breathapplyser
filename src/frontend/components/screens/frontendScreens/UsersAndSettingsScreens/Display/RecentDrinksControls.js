@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     color: '#2D3142',
     marginBottom: 15,
   },
@@ -139,6 +139,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 10,
+    fontFamily: 'heyam',
+    
   },
   input: {
     color: 'red',
@@ -149,6 +151,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     fontSize: 18,
+    fontFamily: 'my_coffee_break',
     backgroundColor: 'white',
     textAlign: 'center',
     shadowColor: '#000',
@@ -173,7 +176,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 18,
-    fontWeight: '500',
+    fontFamily: 'my_coffee_break',
+    
   },
   settingContainer: {
     width: '100%',
@@ -186,6 +190,8 @@ const styles = StyleSheet.create({
   switchLabel: {
     fontSize: 16,
     color: '#4F5D75',
+    fontFamily: 'my_coffee_break',
+
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 10,

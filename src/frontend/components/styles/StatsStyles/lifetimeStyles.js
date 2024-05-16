@@ -48,6 +48,8 @@ export const lifetimeStyles = StyleSheet.create({
         paddingVertical: 12,
         fontSize: 15,
         color: '#0277BD', // Light Blue 800
+    },
+    heyam: {
         fontFamily: 'heyam',
     },
     subtitle: {

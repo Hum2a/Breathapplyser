@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Touchable, TouchableOpacity } from 'react-native';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../../context/UserContext';
 import { feedbackStyles as styles } from '../../../../styles/SettingStyles/feedbackStyles';
@@ -50,17 +50,18 @@ const BACFeedbackScreen = () => {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.title}> BAC Feedback Hub</Text>
             <FlatList
                 data={feedbackList}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
-                    <View style={styles.itemContainer}>
+                    <TouchableOpacity style={styles.itemContainer}>
                         <Text style={styles.bacText}>BAC Level: {item.BACLevel}</Text>
                         <Text style={styles.feedbackText}>Feedback: {item.feedback}</Text>
                         <Text style={styles.timestampText}>
                             Timestamp: {new Date(item.timestamp.seconds * 1000).toLocaleString()}
                         </Text>
-                    </View>
+                    </TouchableOpacity>
                 )}
             />
         </View>

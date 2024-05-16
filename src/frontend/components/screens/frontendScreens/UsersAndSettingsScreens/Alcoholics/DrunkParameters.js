@@ -130,6 +130,7 @@ const DrunkParametersScreen = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Lower Bound"
+                placeholderTextColor={'black'}
                 value={newLevel.lowerBound}
                 keyboardType="numeric" // Ensure only numbers can be entered
                 onChangeText={(text) => setNewLevel({ ...newLevel, lowerBound: text })}
@@ -137,6 +138,7 @@ const DrunkParametersScreen = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Upper Bound"
+                placeholderTextColor={'black'}
                 value={newLevel.upperBound}
                 keyboardType="numeric" // Ensure only numbers can be entered
                 onChangeText={(text) => setNewLevel({ ...newLevel, upperBound: text })}
@@ -144,12 +146,14 @@ const DrunkParametersScreen = () => {
                 <TextInput
                   style={styles.input}
                   placeholder="Simple Description"
+                  placeholderTextColor={'black'}
                   value={newLevel.simple}
                   onChangeText={(text) => setNewLevel({ ...newLevel, simple: text })}
                 />
                 <TextInput
                   style={[styles.input, styles.descriptionInput]}
                   placeholder="Detailed Description"
+                  placeholderTextColor={'black'}
                   value={newLevel.detailed}
                   multiline
                   onChangeText={(text) => setNewLevel({ ...newLevel, detailed: text })}
@@ -184,7 +188,7 @@ const DrunkParametersScreen = () => {
       },
       levelTitle: {
         fontSize: 20,
-        fontWeight: 'bold',
+        fontFamily: 'my_coffee_break',
         marginBottom: 5,
       },
       levelRange: {
@@ -194,12 +198,14 @@ const DrunkParametersScreen = () => {
       levelDescription: {
         fontSize: 16,
         marginBottom: 10,
+        fontFamily: 'heyam',
       },
       deleteButton: {
         alignSelf: 'flex-end',
       },
       deleteButtonText: {
         color: 'red',
+        fontFamily: 'heyam',
       },
       formContainer: {
         borderWidth: 1,
@@ -213,6 +219,7 @@ const DrunkParametersScreen = () => {
         borderRadius: 5,
         padding: 10,
         marginBottom: 10,
+        fontFamily: 'heyam',
       },
       descriptionInput: {
         height: 100,
@@ -226,7 +233,8 @@ const DrunkParametersScreen = () => {
       },
       addButtonLabel: {
         color: '#fff',
-        fontWeight: 'bold',
+        fontFamily: 'heyam',
+
       },
       toggleButton: {
         backgroundColor: 'green',
@@ -237,7 +245,7 @@ const DrunkParametersScreen = () => {
     },
       toggleButtonText: {
           color: '#fff',
-          fontWeight: 'bold',
+          fontFamily: 'heyam',
       },
       saveAllButton: {
         backgroundColor: '#4CAF50',  // A vibrant green color
@@ -248,7 +256,7 @@ const DrunkParametersScreen = () => {
       },
       saveAllButtonText: {
         color: '#FFFFFF',
-        fontWeight: 'bold',
+        fontFamily: 'heyam',
         fontSize: 16,
       },
       

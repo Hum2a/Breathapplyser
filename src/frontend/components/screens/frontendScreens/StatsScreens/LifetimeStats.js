@@ -260,10 +260,10 @@ const LifetimeStats = () => {
                     {Object.entries(drinkTypeDetails).map(([type, details]) => (
                         <View key={type}>
                             <TouchableOpacity style={styles.tableRow} onPress={() => toggleExpand(type)}>
-                                <Text style={styles.rowText}>{type}</Text>
+                                <Text style={[styles.rowText, styles.heyam]}>{type}</Text>
                                 <Text style={styles.rowText}>{details.totalCount}</Text>
                                 <Text style={styles.rowText}>{details.totalUnits}</Text>
-                                <Text style={styles.rowText}>${details.totalSpent.toFixed(2)}</Text>
+                                <Text style={styles.rowText}>£{details.totalSpent.toFixed(2)}</Text>
                             </TouchableOpacity>
                             {expanded[type] && details.names && (
                                 <View style={styles.expandedSection}>

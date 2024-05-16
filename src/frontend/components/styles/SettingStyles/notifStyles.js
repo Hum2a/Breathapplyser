@@ -8,7 +8,7 @@ export const notifStyles = StyleSheet.create({
   },
   categoryHeader: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: 'heyam',
     marginBottom: 16,
     color: "#003366", // Darker shade of blue for headers
     alignSelf: 'center',
@@ -34,6 +34,7 @@ export const notifStyles = StyleSheet.create({
   notificationText: {
     fontSize: 18,
     color: "#005f73", // Slightly darker blue for text, ensures good readability
+    fontFamily: 'my_coffee_break',
   },
   switchContainer: {
     transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }], // Adjust switch size, maintain original scaling if preferred

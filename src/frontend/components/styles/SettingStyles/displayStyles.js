@@ -8,12 +8,12 @@ export const DisplayStyles = StyleSheet.create({
       paddingHorizontal: 20,
     },
     header: {
-      fontSize: 24,
-      fontWeight: 'bold',
+      fontSize: 26,
       marginBottom: 20,
       color: '#333',
       textAlign: 'center',
       color: '#062376',
+      fontFamily: 'my_coffee_break',
     },
     option: {
       marginBottom: 20,
@@ -29,9 +29,10 @@ export const DisplayStyles = StyleSheet.create({
       justifyContent: 'center',
       borderBottomWidth: 1,
       borderBottomColor: '#CCCCCC', // Border color for separation between settings items
+      fontFamily: 'my_coffee_break',
     },
     label: {
-      fontSize: 16,
+      fontSize: 20,
       color: '#010100',
       padding: 10,
       marginBottom: 10,
@@ -40,6 +41,7 @@ export const DisplayStyles = StyleSheet.create({
       justifyContent: 'center',
       borderBottomWidth: 1,
       borderBottomColor: '#CCCCCC', // Border color for separation between settings items
+      fontFamily: 'heyam',
     },
     warning: {
       fontSize: 16,
@@ -49,6 +51,7 @@ export const DisplayStyles = StyleSheet.create({
       alignSelf: 'center',
       alignItems: 'center',
       justifyContent: 'center',
+      fontFamily: 'heyam',
     },
     toggleContainer: {
       flexDirection: 'row',
@@ -65,6 +68,7 @@ export const DisplayStyles = StyleSheet.create({
     toggleButtonText: {
       fontSize: 16,
       color: '#333',
+      fontFamily: 'heyam',
     },
     selectedButton: {
       backgroundColor: '#4fc3f7',
@@ -78,8 +82,9 @@ export const DisplayStyles = StyleSheet.create({
         borderBottomColor: '#CCCCCC',
       },
       buttonText: {
-        fontSize: 16,
-        color: '#333333', // Dark gray text color
+        fontSize: 20,
+        color: '#333333',
+        fontFamily: 'heyam',
       },
       toggleAllButton: {
         backgroundColor: '#4fc3f7',
@@ -93,7 +98,7 @@ export const DisplayStyles = StyleSheet.create({
       },
       toggleAllButtonText: {
         color: '#FFFFFF',
-        fontWeight: 'bold',
+        fontFamily: 'heyam',
       },
       toggleAllContainer: {
         flexDirection: 'row',

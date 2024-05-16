@@ -35,7 +35,7 @@ export const favouriteStyles = StyleSheet.create({
     textAlign: 'flex-start',
   },
   categoryText: {
-    fontFamily: 'my_coffee_break',
+    fontFamily: 'heyam',
     fontSize: 18,
     color: '#005f73', // A darker blue for text, ensuring readability
   },
@@ -43,7 +43,6 @@ export const favouriteStyles = StyleSheet.create({
     fontSize: 16,
     color: '#003366', // Even darker blue for more important details, enhancing contrast
     marginBottom: 5,
-    fontFamily: 'heyam',
   },
   deleteButton: {
     backgroundColor: 'transparent',

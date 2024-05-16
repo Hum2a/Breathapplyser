@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     color: '#2D3142',
     marginBottom: 15,
   },
@@ -141,6 +141,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 25,
     lineHeight: 24,
+    fontFamily: 'heyam',
   },
   input: {
     color: 'red',
@@ -152,6 +153,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
     fontSize: 18,
+    fontFamily: 'my_coffee_break',
+
     backgroundColor: 'white',
     textAlign: 'center',
     shadowColor: '#000',
@@ -176,7 +179,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 18,
-    fontWeight: '500',
+    fontFamily: 'my_coffee_break',
+
   }
 });
 

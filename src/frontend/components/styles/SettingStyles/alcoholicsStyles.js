@@ -17,7 +17,8 @@ export const AlcoholicsStyles = StyleSheet.create({
     borderBottomColor: '#CCCCCC',
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 24,
     color: '#333333', // Dark gray text color
+    fontFamily: 'heyam',
   },
 });

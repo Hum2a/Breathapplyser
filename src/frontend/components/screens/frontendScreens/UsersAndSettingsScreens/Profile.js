@@ -232,7 +232,7 @@ const ProfileScreen = () => {
           </Picker>
         </View>
 
-        <Text style={profStyles.bmiLabel}>Your BMI: {bmi}</Text>
+        <Text style={profStyles.bmiLabel}><Text style={profStyles.heyam}>Your BMI: </Text>{bmi}</Text>
 
         <TouchableOpacity style={profStyles.button} onPress={calculateBMI}>
           <Text style={profStyles.buttonText}>Calculate BMI</Text>

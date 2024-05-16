@@ -223,7 +223,7 @@ const HistoryScreen = ({ navigation }) => {
                 <View style={styles.itemContent}>
                   <Text style={styles.dateText}>{moment(item.name).format('MMM Do')}</Text>
                   <Text style={styles.entriesCountText}>{`Entries: ${item.count}`}</Text>
-                  <Text style={styles.entriesCountText}>{`Total Spent: $${item.totalSpent}`}</Text>
+                  <Text style={styles.entriesCountText}>{`Total Spent: £${item.totalSpent}`}</Text>
                   <Text style={styles.entriesCountText}>{`Total Units: ${item.totalUnits}`}</Text>
                 </View>
               </LinearGradient>

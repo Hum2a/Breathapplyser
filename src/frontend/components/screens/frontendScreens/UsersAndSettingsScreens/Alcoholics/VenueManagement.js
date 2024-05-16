@@ -133,11 +133,12 @@ const styles = StyleSheet.create({
     },
     venueHeader: {
         fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: 'heyam',
         color: '#333',
+        textAlign: 'center',
     },
     favouriteItem: {
-        paddingLeft: 20,
+        alignItems: 'center'
     },
     favouriteText: {
         fontSize: 16,
