@@ -203,6 +203,9 @@ const RecentDrinks = ({ navigation }) => {
       // Add the new entry to the Firestore collection
       await setDoc(doc(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs", entryDocId), newEntry);
 
+      const dateStrDocRef = doc(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr);
+      await setDoc(dateStrDocRef, { lastUpdated: new Date() }, { merge: true });
+
       // Update the BAC Level using the saveBACLevel function
       await saveBACLevel(user, drink.units, userProfile, newEntryDetails);
   

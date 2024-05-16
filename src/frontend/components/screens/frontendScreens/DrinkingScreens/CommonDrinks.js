@@ -209,6 +209,8 @@ const CommonDrinks = () => {
 
     try {
       await setDoc(doc(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr, "EntryDocs", entryDocId), newEntry);
+      const dateStrDocRef = doc(firestore, user.uid, "Alcohol Stuff", "Entries", dateStr);
+      await setDoc(dateStrDocRef, { lastUpdated: new Date() }, { merge: true });
       await saveBACLevel(user, drink.units, userProfile, entryDetails);
 
        // Define references for daily totals
