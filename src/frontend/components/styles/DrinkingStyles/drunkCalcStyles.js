@@ -50,7 +50,7 @@ export  const DrunkCalcStyles = StyleSheet.create({
       textAlign: 'center',
       marginTop: 5,
       fontSize: 14,
-      // fontWeight: 'bold',
+      fontWeight: 'bold',
       fontFamily: 'heyam',
       color: '#666', // A neutral, readable color
     },
