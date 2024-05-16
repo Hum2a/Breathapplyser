@@ -13,7 +13,7 @@ export const StartStyles = StyleSheet.create({
   },
   title: {
     fontSize: 36, // Larger font size for the title
-    fontWeight: 'bold',
+    fontFamily: 'heyam',
     color: '#005f73', // A contrasting darker blue for better readability
     marginBottom: 60, // Increase spacing before the buttons start
     textAlign: 'center',
