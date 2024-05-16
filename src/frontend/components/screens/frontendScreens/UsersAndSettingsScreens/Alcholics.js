@@ -24,6 +24,7 @@ const AlcoholicsVariables = ({user, navigation}) => {
   return (
     <View style={styles.container}>
       <BackButton/>
+      <Text style={styles.title}> Alcoholics Settings </Text>
       <TouchableOpacity onPress={navigateToBACRefreshRate} style={styles.button}>
         <Text style={styles.buttonText}>BAC Refresh Rate</Text>
       </TouchableOpacity>
