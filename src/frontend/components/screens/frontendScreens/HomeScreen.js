@@ -8,6 +8,7 @@ import StatsScreen from './StatsScreens/TodaysStats';
 import BACDecrease from '../../../../backend/app/background/BAC/bacDecreaser';
 import BACDecreaseFB from '../../../../backend/app/background/BAC/bacDecreaserFB';
 import DrunkennessLevelFb from '../../../../backend/app/background/Drunkness/drunknessCalculatorFb';
+import DrunkennessFeedback from '../../../../backend/app/background/Drunkness/drunknessFeedback';
 import BacWiper from '../../../../backend/app/background/BAC/bacWiper';
 import BacCleaner from '../../../../backend/app/background/BAC/bacCleaner';
 import { getFirestore, deleteDoc, doc, collection, query, getDocs, getDoc, onSnapshot } from 'firebase/firestore';
@@ -172,6 +173,8 @@ const HomeScreen = () => {
         <View style={homeStyles.drunkennessContainer}>
           <DrunkennessLevelFb />
         </View>
+
+        <DrunkennessFeedback />
 
         <View style={homeStyles.topLeftContainer}>
           
