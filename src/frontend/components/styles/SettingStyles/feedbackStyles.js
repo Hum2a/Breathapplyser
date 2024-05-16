@@ -53,5 +53,32 @@ export const feedbackStyles = StyleSheet.create({
         marginBottom: 10,
         textAlign: 'center',
         fontFamily: 'my_coffee_break',
-    }
+    },
+    dialogContainer: {
+        borderRadius: 15,
+        padding: 20,
+        backgroundColor: '#fff',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    dialogTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#FF6347',
+        textAlign: 'center',
+        marginBottom: 10,
+    },
+    dialogDescription: {
+        fontSize: 18,
+        color: '#333',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    dialogButton: {
+        color: '#FF6347',
+        fontWeight: 'bold',
+    },
 });

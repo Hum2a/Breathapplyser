@@ -30,7 +30,7 @@ export const manualStyles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     color: '#03396c', // Deep, contrast blue for titles
     textAlign: 'center',
     marginVertical: 20,
@@ -61,7 +61,7 @@ export const manualStyles = StyleSheet.create({
   buttonText: {
     color: '#FFFFFF', // White for button text for strong contrast
     fontSize: 18,
-    fontWeight: '500',
+    fontFamily: 'my_coffee_break',
     textAlign: 'center',
   },
   timeText: {
@@ -97,6 +97,7 @@ export const manualStyles = StyleSheet.create({
     backgroundColor: '#E3F2FD',
     color: 'navy',
     marginLeft: 10,
+    fontFamily: 'my_coffee_break',
   },
   priceInput: {
     // Styles adjusted to match the rest of the inputs
@@ -153,6 +154,7 @@ export const manualStyles = StyleSheet.create({
     color: '#FFFFFF', // White text for readability
     fontSize: 18,
     textAlign: 'center',
+    fontFamily: 'my_coffee_break',
   },
   favouriteButton: {
     backgroundColor: '#005f73', // A darker shade of blue for contrast
@@ -165,6 +167,7 @@ export const manualStyles = StyleSheet.create({
     color: '#FFFFFF', // White text for readability
     fontSize: 18,
     textAlign: 'center',
+    fontFamily: 'my_coffee_break',
   },
   scanButton: {
     backgroundColor: '#2979FF', // A vibrant blue for the scan button
@@ -176,6 +179,7 @@ export const manualStyles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     textAlign: 'center',
+    fontFamily: 'my_coffee_break',
   },
   picker: {
     height: 45, // Matches the height of input fields for consistency
@@ -207,6 +211,7 @@ export const manualStyles = StyleSheet.create({
   timeButtonText: {
     color: 'pink',
     fontSize: 14,
+    fontFamily: 'my_coffee_break',
   }
 });
 

@@ -5,8 +5,14 @@ export const AlcoholicsStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#E0F2F1', // Light blue background color
     padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+  },
+  title: {
+    color: 'navy',
+    fontSize: 28,
+    fontFamily: 'my_coffee_break',
+    textAlign: 'center',
+    marginTop: 40,
+    marginBottom: 50,
   },
   button: {
     padding: 10,
