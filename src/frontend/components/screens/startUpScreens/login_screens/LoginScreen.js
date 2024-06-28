@@ -42,7 +42,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={LoginStyles.container}>
-      <Image style={LoginStyles.logo} source={require('../../../../assets/images/breathapplyser.png')} />
+      <Image style={LoginStyles.logo} source={require('../../../../assets/images/breathapplyserLogo.png')} />
       <TextInput 
         style={LoginStyles.input} 
         placeholder="Email" 
