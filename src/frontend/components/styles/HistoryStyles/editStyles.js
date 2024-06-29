@@ -71,7 +71,7 @@ export const editEntryStyles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'my_coffee_break',
     marginBottom: 20,
     color: '#003366', // Deep blue for contrast
     textAlign: 'center',
@@ -90,7 +90,7 @@ export const editEntryStyles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
     color: '#005f73', // Subtle blue tone for labels
-    fontWeight: 'bold',
+    fontFamily: 'heyam',
   },
   input: {
     height: 40,
@@ -128,7 +128,7 @@ export const editEntryStyles = StyleSheet.create({
   buttonText: {
     color: '#FFFFFF', // White text for clarity and contrast
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'heyam',
     textAlign: 'center',
   },
 });
