@@ -9,10 +9,10 @@ import LinearGradient from 'react-native-linear-gradient'; // Import LinearGradi
 
 
 const RegisterScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('Tester');
-  const [email, setEmail] = useState('testytest@test.com');
-  const [password, setPassword] = useState('Testing');
-  const [confirmPassword, setConfirmPassword] = useState('Testing');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisible] = useState(false);
   const [showPassword, setShowPassword] = useState(false);

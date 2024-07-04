@@ -1,7 +1,6 @@
 // Start Up
 export { default as GetStartedScreen } from './startUpScreens/GetStartedScreen';
 export { default as LoginScreen } from './startUpScreens/login_screens/LoginScreen';
-export { default as BubbleStartScreen } from './startUpScreens/BubbleStartScreen';
 export { default as StartScreen } from './startUpScreens/StartScreen';
 export { default as RegisterScreen } from './startUpScreens/register_screens/RegisterScreen';
 export { default as BodyStatsScreen } from './startUpScreens/register_screens/BodyStats';

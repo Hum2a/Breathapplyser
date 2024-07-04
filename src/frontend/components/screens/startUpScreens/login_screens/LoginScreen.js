@@ -5,8 +5,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('Humzab1711@hotmail.com');
-  const [password, setPassword] = useState('testpassword');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loginAttempts, setLoginAttempts] = useState(0);
 
   const handleLogin = () => {
