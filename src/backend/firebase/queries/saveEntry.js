@@ -43,11 +43,11 @@ export const saveEntry = async (user, userProfile, entryDetails) => {
 
     const drunkennessLevel = await getDrunkennessLevel(totalBACLevel);  // Fetch drunkenness level based on updated BAC level
 
-    // Update total BAC level in Firestore
-    await updateDoc(bacLevelRef, {
-      value: increment(BACIncrease),
-      lastUpdated: new Date()
-    });
+    // // Update total BAC level in Firestore
+    // await updateDoc(bacLevelRef, {
+    //   value: increment(BACIncrease),
+    //   lastUpdated: new Date()
+    // });
 
     // Make sure the time format includes leading zeros for hours and minutes if necessary
     const startTimeStr = moment(selectedStartTime, 'HH:mm').format('HH:mm');

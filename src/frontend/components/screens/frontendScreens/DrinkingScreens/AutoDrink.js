@@ -44,7 +44,7 @@ const AutoEntryScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   
   const { user } = useContext(UserContext);
-  const firestore = getFirestore();;
+  const firestore = getFirestore();
 
   useEffect(() => {
       // Filter common drinks based on selected drink type
@@ -116,43 +116,47 @@ const AutoEntryScreen = ({ navigation }) => {
     }
 };  
 
-  const handleDrinkSelection = async (drink) => {
-    const price = prices[drink.name];
-    if (!price) {
-      showAlertDialog('Error', 'Please enter the price.', () => {});
-      return;
-    }
-    
-    const unitsToAdd = drink.units; // Logic for units
-    const priceToAdd = parseFloat(price); // Logic for price
-    const caloriesToAdd = drink.calories; // Adding calories information
+    const handleDrinkSelection = async (drink) => {
+      console.log('handleDrinkSelection: Called with drink:', drink);
 
-    // First, check limits before proceeding
-    const canAddDrink = await handleCheckLimits(unitsToAdd, priceToAdd, true);
-    if (!canAddDrink) {
+      const price = prices[drink.name];
+      if (!price) {
+        showAlertDialog('Error', 'Please enter the price.', () => {});
+        return;
+      }
+
+      const unitsToAdd = drink.units; // Logic for units
+      const priceToAdd = parseFloat(price); // Logic for price
+      const caloriesToAdd = drink.calories; // Adding calories information
+
+      // First, check limits before proceeding
+      const canAddDrink = await handleCheckLimits(unitsToAdd, priceToAdd, true);
+      if (!canAddDrink) {
         // If the limits are exceeded, exit the function without saving anything
         return;
-    }
+      }
 
-    // If checks pass, proceed to add the drink
-    try {
+      // If checks pass, proceed to add the drink
+      try {
         let units = drink.units;
         if (selectedDrinkType === 'Spirit' && drink.double) {
-            units *= 2; // If it's a double, double the units
+          units *= 2; // If it's a double, double the units
         }
 
         const entryData = {
-            alcohol: drink.name,
-            amount: 1,
-            units: units,
-            price: priceToAdd,
-            type: selectedDrinkType,
-            calories: caloriesToAdd,
-            selectedStartTime: selectedStartTime,
-            selectedEndTime: selectedEndTime,
-            selectedDate: selectedDate,
-            selectedCurrency: "GBP",
+          alcohol: drink.name,
+          amount: 1,
+          units: units,
+          price: priceToAdd,
+          type: selectedDrinkType,
+          calories: caloriesToAdd,
+          selectedStartTime: selectedStartTime,
+          selectedEndTime: selectedEndTime,
+          selectedDate: selectedDate,
+          selectedCurrency: "GBP",
         };
+
+        console.log('handleDrinkSelection: entryData:', entryData);
 
         // Save the entry in the database
         await saveEntry(user, userProfile, entryData);
@@ -161,21 +165,24 @@ const AutoEntryScreen = ({ navigation }) => {
         // Calculate BAC increase and update daily totals only after ensuring limits are not exceeded
         const BACIncrease = calculateBACIncrease(units, userProfile);
         const entryDetailsArray = [{
-            ...entryData,
-            BACIncrease
+          ...entryData,
+          BACIncrease
         }];
+
+        console.log('handleDrinkSelection: entryDetailsArray:', entryDetailsArray);
 
         // Update daily totals
         await saveDailyTotals(firestore, user, selectedDate, entryDetailsArray);
-        
+
         showAlertDialog('Success', 'Drink entry added successfully!', () => {
           navigation.navigate('Home');
-      });
-    } catch (error) {
-        console.error('Error adding drink entry:', error);
+        });
+      } catch (error) {
+        console.error('handleDrinkSelection: Error adding drink entry:', error);
         showAlertDialog('Error', 'Failed to add drink entry. Please try again.', () => {});
-    }
-};
+      }
+    };
+
 
     const handlePriceChange = (drinkName, price) => {
         setPrices(prevPrices => ({
@@ -233,7 +240,7 @@ const AutoEntryScreen = ({ navigation }) => {
     };
       
     const getCurrentTotals = async (selectedDate) => {
-
+      console.log('getCurrentTotals called with selectedDate:', selectedDate);
       const dateStr = moment(selectedDate).format('YYYY-MM-DD');
       const unitsRef = doc(firestore, user.uid, "Daily Totals", "Unit Intake", dateStr);
       const spendingRef = doc(firestore, user.uid, "Daily Totals", "Amount Spent", dateStr);
@@ -241,10 +248,13 @@ const AutoEntryScreen = ({ navigation }) => {
       const unitsSnap = await getDoc(unitsRef);
       const spendingSnap = await getDoc(spendingRef);
 
-      return {
+      const totals = {
           totalUnits: unitsSnap.exists() ? unitsSnap.data().value : 0,
           totalSpending: spendingSnap.exists() ? spendingSnap.data().value : 0,
       };
+
+      console.log('currentTotals:', totals);
+      return totals;
   };
 
   useEffect(() => {
@@ -347,8 +357,6 @@ const AutoEntryScreen = ({ navigation }) => {
     setAddDialogVisible(true);
 }
   
-  
-
   return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
@@ -475,4 +483,3 @@ const AutoEntryScreen = ({ navigation }) => {
 };
 
 export default AutoEntryScreen;
-
