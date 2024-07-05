@@ -1,17 +1,20 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, TextInput } from 'react-native';
 import { auth, firestore } from '../../../../../backend/firebase/database/firebase';
-import { doc, deleteDoc } from 'firebase/firestore';
+import { doc, deleteDoc, collection, getDocs } from 'firebase/firestore';
 import { useUser } from '../../../../context/UserContext';
 import { CommonActions } from '@react-navigation/native';
 import moment from 'moment';
 import { BackButton } from '../../../buttons/backButton';
 import Dialog from 'react-native-dialog';
+import { getAuth, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 
 const DataManagerScreen = ({ navigation }) => {
   const { logout } = useUser();
   const [userData, setUserData] = useState(null);
   const [dialogVisible, setDialogVisible] = useState(false);
+  const [reauthDialogVisible, setReauthDialogVisible] = useState(false);
+  const [password, setPassword] = useState('');
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -25,15 +28,47 @@ const DataManagerScreen = ({ navigation }) => {
   }, []);
 
   const handleDeleteAccount = () => {
-    setDialogVisible(true);
+    setReauthDialogVisible(true);
+  };
+
+  const reauthenticate = async () => {
+    const user = auth.currentUser;
+    const credential = EmailAuthProvider.credential(user.email, password);
+
+    try {
+      await reauthenticateWithCredential(user, credential);
+      confirmDeleteAccount();
+    } catch (error) {
+      Alert.alert('Re-authentication failed', error.message);
+      setReauthDialogVisible(false);
+    }
+  };
+
+  const deleteCollection = async (collectionPath) => {
+    const collectionRef = collection(firestore, collectionPath);
+    const querySnapshot = await getDocs(collectionRef);
+
+    const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
+    await Promise.all(deletePromises);
   };
 
   const confirmDeleteAccount = async () => {
     const user = auth.currentUser;
-    const userProfileRef = doc(firestore, "Profile", user.uid);
-    await deleteDoc(userProfileRef);
+    // const userProfilePath = `${user.uid}`;
+    const userCollectionPath = `${user.uid}`; // Adjust this path according to your actual collection path
 
-    user.delete().then(() => {
+    try {
+      // Delete all documents in the user's collection
+      await deleteCollection(userCollectionPath);
+
+      // Delete the user profile document
+      // const userProfileRef = doc(firestore, userProfilePath);
+      // await deleteDoc(userProfileRef);
+
+      // Delete the user account
+      await user.delete();
+
+      // Log out and navigate to the start screen
       logout();
       navigation.dispatch(
         CommonActions.reset({
@@ -41,10 +76,12 @@ const DataManagerScreen = ({ navigation }) => {
           routes: [{ name: 'Start' }],
         })
       );
-    }).catch((error) => {
+    } catch (error) {
       console.error("Failed to delete account: " + error.message);
-    });
+      Alert.alert('Failed to delete account', error.message);
+    }
     setDialogVisible(false);
+    setReauthDialogVisible(false);
   };
 
   const cancelDeleteAccount = () => {
@@ -90,7 +127,25 @@ const DataManagerScreen = ({ navigation }) => {
         <Dialog.Button label="Cancel" onPress={cancelDeleteAccount} style={dialogStyles.cancelButton} />
         <Dialog.Button label="Delete" onPress={confirmDeleteAccount} style={dialogStyles.deleteButton} />
       </Dialog.Container>
-
+      <Dialog.Container
+        visible={reauthDialogVisible}
+        contentStyle={dialogStyles.container}
+      >
+        <Dialog.Title style={dialogStyles.title}>Re-authenticate</Dialog.Title>
+        <Dialog.Description style={dialogStyles.description}>
+          Please enter your password to confirm your identity.
+        </Dialog.Description>
+        <TextInput
+          style={dialogStyles.input}
+          placeholder="Password"
+          placeholderTextColor="#999"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+        <Dialog.Button label="Cancel" onPress={() => setReauthDialogVisible(false)} style={dialogStyles.cancelButton} />
+        <Dialog.Button label="Confirm" onPress={reauthenticate} style={dialogStyles.deleteButton} />
+      </Dialog.Container>
     </View>
   );
 };
@@ -198,6 +253,5 @@ export const dialogStyles = StyleSheet.create({
     backgroundColor: '#F7F7F7', // Very light gray background for input
   }
 });
-
 
 export default DataManagerScreen;
