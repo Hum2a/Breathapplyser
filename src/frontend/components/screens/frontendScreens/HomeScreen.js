@@ -47,13 +47,13 @@ const HomeScreen = () => {
         if (docSnap.exists()) {
           const settingsData = docSnap.data();
           // Check if the data contains specific animation settings and update state
-          setPlayStarAnimation(settingsData['Star Animation'] ?? false);
+          setPlayStarAnimation(settingsData['Star Animation'] ?? true);
           setPlayBeerAnimation(settingsData['Beer Animation'] ?? false);
-          setPlayMedalAnimation(settingsData['Medal Animation'] ?? false);
-          setPlayDiscoBallAnimation(settingsData['Disco Ball Animation'] ?? false);
-          setPlayScrollAnimation(settingsData['Scroll Animation'] ?? false);
-          setPlaySettingsAnimation(settingsData['Settings Animation'] ?? false);
-          setPlayChartAnimation(settingsData['Chart Animation'] ?? false);
+          setPlayMedalAnimation(settingsData['Medal Animation'] ?? true);
+          setPlayDiscoBallAnimation(settingsData['Disco Ball Animation'] ?? true);
+          setPlayScrollAnimation(settingsData['Scroll Animation'] ?? true);
+          setPlaySettingsAnimation(settingsData['Settings Animation'] ?? true);
+          setPlayChartAnimation(settingsData['Chart Animation'] ?? true);
         }
       }, (error) => {
         console.error("Failed to listen to animation settings:", error);
