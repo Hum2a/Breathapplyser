@@ -15,8 +15,11 @@ export const RegisterStyles = StyleSheet.create({
     padding: 10,
     marginVertical: 8,
     borderRadius: 10,
-    color: 'black',
     backgroundColor: '#FFFFFF', // White input background
+    flex: 1, 
+    height: 50,
+    padding: 10,
+    color: 'navy',
   },
   datePickerButton: {
     width: '80%',
@@ -101,6 +104,9 @@ export const RegisterStyles = StyleSheet.create({
     toggleButton: {
       padding: 10,
       marginHorizontal: 5,
+    },
+    activityIndicator: {
+      marginVertical: 20,
     },
     
 });
