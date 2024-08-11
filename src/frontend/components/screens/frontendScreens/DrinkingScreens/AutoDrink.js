@@ -59,11 +59,15 @@ const AutoEntryScreen = ({ navigation }) => {
   }, [user]);
 
   const fetchCommonDrinks = async (type) => {
-  // You can fetch common drinks for each type from your database
-  // For now, we'll just use a static array
-  const drinks = CommonDrinksList[type];
-  setCommonDrinks(drinks);
+    const drinks = CommonDrinksList[type].map(drink => ({
+      ...drink,
+      fullPint: true, // Default to full pint for beers/lager
+      double: false, // Default to single for spirits
+      size: 'large' // Default to large for wine
+    }));
+    setCommonDrinks(drinks);
   };
+  
 
   const fetchLimits = async (forceRefresh = false) => {
     if (user) {
@@ -116,73 +120,79 @@ const AutoEntryScreen = ({ navigation }) => {
     }
 };  
 
-    const handleDrinkSelection = async (drink) => {
-      console.log('handleDrinkSelection: Called with drink:', drink);
+  const handleDrinkSelection = async (drink) => {
+    console.log('handleDrinkSelection: Called with drink:', drink);
 
-      const price = prices[drink.name];
-      if (!price) {
-        showAlertDialog('Error', 'Please enter the price.', () => {});
-        return;
+    const price = prices[drink.name];
+    if (!price) {
+      showAlertDialog('Error', 'Please enter the price.', () => {});
+      return;
+    }
+
+    let units = drink.units;
+    if (selectedDrinkType === 'Spirit' && drink.double) {
+      units *= 2; // If it's a double, double the units
+    } else if ((selectedDrinkType === 'Beer' || selectedDrinkType === 'Lager') && !drink.fullPint) {
+      units *= 0.5; // If it's a half pint, halve the units
+    } else if (selectedDrinkType === 'Wine') {
+      if (drink.size === 'small') {
+        units *= 0.5; // Assume the base units in the list are for a large measure, halve for small
+      } else if (drink.size === 'medium') {
+        units *= 0.7; // Adjust accordingly for medium (e.g., 70% of large)
       }
+    }
 
-      const unitsToAdd = drink.units; // Logic for units
-      const priceToAdd = parseFloat(price); // Logic for price
-      const caloriesToAdd = drink.calories; // Adding calories information
+    const priceToAdd = parseFloat(price); // Logic for price
+    const caloriesToAdd = drink.calories; // Adding calories information
 
-      // First, check limits before proceeding
-      const canAddDrink = await handleCheckLimits(unitsToAdd, priceToAdd, true);
-      if (!canAddDrink) {
-        // If the limits are exceeded, exit the function without saving anything
-        return;
-      }
+    // First, check limits before proceeding
+    const canAddDrink = await handleCheckLimits(units, priceToAdd, true);
+    if (!canAddDrink) {
+      // If the limits are exceeded, exit the function without saving anything
+      return;
+    }
 
-      // If checks pass, proceed to add the drink
-      try {
-        let units = drink.units;
-        if (selectedDrinkType === 'Spirit' && drink.double) {
-          units *= 2; // If it's a double, double the units
-        }
+    // If checks pass, proceed to add the drink
+    try {
+      const entryData = {
+        alcohol: drink.name,
+        amount: 1,
+        units: units,
+        price: priceToAdd,
+        type: selectedDrinkType,
+        calories: caloriesToAdd,
+        selectedStartTime: selectedStartTime,
+        selectedEndTime: selectedEndTime,
+        selectedDate: selectedDate,
+        selectedCurrency: "GBP",
+      };
 
-        const entryData = {
-          alcohol: drink.name,
-          amount: 1,
-          units: units,
-          price: priceToAdd,
-          type: selectedDrinkType,
-          calories: caloriesToAdd,
-          selectedStartTime: selectedStartTime,
-          selectedEndTime: selectedEndTime,
-          selectedDate: selectedDate,
-          selectedCurrency: "GBP",
-        };
+      console.log('handleDrinkSelection: entryData:', entryData);
 
-        console.log('handleDrinkSelection: entryData:', entryData);
+      // Save the entry in the database
+      await saveEntry(user, userProfile, entryData);
+      await saveBACLevel(user, entryData.units, userProfile, entryData);
 
-        // Save the entry in the database
-        await saveEntry(user, userProfile, entryData);
-        await saveBACLevel(user, entryData.units, userProfile, entryData);
+      // Calculate BAC increase and update daily totals only after ensuring limits are not exceeded
+      const BACIncrease = calculateBACIncrease(units, userProfile);
+      const entryDetailsArray = [{
+        ...entryData,
+        BACIncrease
+      }];
 
-        // Calculate BAC increase and update daily totals only after ensuring limits are not exceeded
-        const BACIncrease = calculateBACIncrease(units, userProfile);
-        const entryDetailsArray = [{
-          ...entryData,
-          BACIncrease
-        }];
+      console.log('handleDrinkSelection: entryDetailsArray:', entryDetailsArray);
 
-        console.log('handleDrinkSelection: entryDetailsArray:', entryDetailsArray);
+      // Update daily totals
+      await saveDailyTotals(firestore, user, selectedDate, entryDetailsArray);
 
-        // Update daily totals
-        await saveDailyTotals(firestore, user, selectedDate, entryDetailsArray);
-
-        showAlertDialog('Success', 'Drink entry added successfully!', () => {
-          navigation.navigate('Home');
-        });
-      } catch (error) {
-        console.error('handleDrinkSelection: Error adding drink entry:', error);
-        showAlertDialog('Error', 'Failed to add drink entry. Please try again.', () => {});
-      }
-    };
-
+      showAlertDialog('Success', 'Drink entry added successfully!', () => {
+        navigation.navigate('Home');
+      });
+    } catch (error) {
+      console.error('handleDrinkSelection: Error adding drink entry:', error);
+      showAlertDialog('Error', 'Failed to add drink entry. Please try again.', () => {});
+    }
+  };
 
     const handlePriceChange = (drinkName, price) => {
         setPrices(prevPrices => ({
@@ -331,12 +341,22 @@ const AutoEntryScreen = ({ navigation }) => {
     }
   }, [selectedDate, user]);
 
-  const handleToggleDouble = (drink) => {
-    const updatedDrinks = commonDrinks.map((item) =>
-      item.name === drink.name ? { ...item, double: !item.double } : item
-    );
+  const handleToggleDrinkSize = (drink, size) => {
+    const updatedDrinks = commonDrinks.map((item) => {
+      if (item.name === drink.name) {
+        // Toggle the size between single/double for spirits, full/half pint for beer/lager, or small/medium/large for wine
+        if (selectedDrinkType === 'Spirit') {
+          return { ...item, double: !item.double };
+        } else if (selectedDrinkType === 'Beer' || selectedDrinkType === 'Lager') {
+          return { ...item, fullPint: !item.fullPint };
+        } else if (selectedDrinkType === 'Wine') {
+          return { ...item, size }; // size can be 'small', 'medium', or 'large'
+        }
+      }
+      return item;
+    });
     setCommonDrinks(updatedDrinks);
-  };
+  };  
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -400,18 +420,59 @@ const AutoEntryScreen = ({ navigation }) => {
                 <View style={styles.doubleToggleContainer}>
                   <TouchableOpacity
                     style={[styles.doubleToggle, !item.double && styles.doubleToggleActive]}
-                    onPress={() => handleToggleDouble(item)}
+                    onPress={() => handleToggleDrinkSize(item)}
                   >
                     <Text style={[styles.doubleToggleText, !item.double && styles.doubleToggleTextActive]}>Single</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.doubleToggle, item.double && styles.doubleToggleActive]}
-                    onPress={() => handleToggleDouble(item)}
+                    onPress={() => handleToggleDrinkSize(item)}
                   >
                     <Text style={[styles.doubleToggleText, item.double && styles.doubleToggleTextActive]}>Double</Text>
                   </TouchableOpacity>
-                </View>              
+                </View>
               )}
+
+              {(selectedDrinkType === 'Beer' || selectedDrinkType === 'Lager') && (
+                <View style={styles.doubleToggleContainer}>
+                  <TouchableOpacity
+                    style={[styles.doubleToggle, !item.fullPint && styles.doubleToggleActive]}
+                    onPress={() => handleToggleDrinkSize(item)}
+                  >
+                    <Text style={[styles.doubleToggleText, !item.fullPint && styles.doubleToggleTextActive]}>Half Pint</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.doubleToggle, item.fullPint && styles.doubleToggleActive]}
+                    onPress={() => handleToggleDrinkSize(item)}
+                  >
+                    <Text style={[styles.doubleToggleText, item.fullPint && styles.doubleToggleTextActive]}>Full Pint</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+
+              {selectedDrinkType === 'Wine' && (
+                <View style={styles.wineToggleContainer}>
+                  <TouchableOpacity
+                    style={[styles.wineToggle, item.size === 'small' && styles.wineToggleActive]}
+                    onPress={() => handleToggleDrinkSize(item, 'small')}
+                  >
+                    <Text style={[styles.wineToggleText, item.size === 'small' && styles.wineToggleTextActive]}>Small (125ml)</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.wineToggle, item.size === 'medium' && styles.wineToggleActive]}
+                    onPress={() => handleToggleDrinkSize(item, 'medium')}
+                  >
+                    <Text style={[styles.wineToggleText, item.size === 'medium' && styles.wineToggleTextActive]}>Medium (175ml)</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.wineToggle, item.size === 'large' && styles.wineToggleActive]}
+                    onPress={() => handleToggleDrinkSize(item, 'large')}
+                  >
+                    <Text style={[styles.wineToggleText, item.size === 'large' && styles.wineToggleTextActive]}>Large (250ml)</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+
             </TouchableOpacity>
             <TextInput
               placeholder="Enter price"

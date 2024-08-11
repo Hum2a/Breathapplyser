@@ -392,4 +392,30 @@ export const autoStyles = StyleSheet.create({
   dialogButtonCancel: {
     backgroundColor: '#cccccc', // grey color for cancel button
   },
+  wineToggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  wineToggle: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  wineToggleActive: {
+    backgroundColor: '#2196F3',
+    borderColor: '#1976D2',
+  },
+  wineToggleText: {
+    color: '#333',
+  },
+  wineToggleTextActive: {
+    color: '#fff',
+  },
+  
 });
