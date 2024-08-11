@@ -1,34 +1,19 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../../context/UserContext';
 import Dialog from 'react-native-dialog';
 import { dialogStyles } from '../../../../styles/AppStyles/dialogueStyles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CommonDrinksControls = () => {
   const [number, setNumber] = useState('');
   const [loading, setLoading] = useState(false);
-  const [maxDays, setMaxDays] = useState(false);
+  const [maxDays, setMaxDays] = useState('');
   const { user } = useContext(UserContext);
   const firestore = getFirestore();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
   const [dialogTitle, setDialogTitle] = useState('');
-
-  useEffect(() => {
-    // Load settings from AsyncStorage on component mount
-    loadSettings();
-  }, []);
-
-  const loadSettings = async () => {
-    const settings = await AsyncStorage.getItem('commonDrinksSettings');
-    if (settings) {
-      const parsedSettings = JSON.parse(settings);
-      setNumber(parsedSettings.number.toString()); // Ensure the number is a string for the TextInput
-      setMaxDays(parsedSettings.maxDaysLookBack.toString());
-    }
-  };
 
   const handleNumberChange = (newNumber) => {
     setNumber(newNumber);
@@ -45,21 +30,21 @@ const CommonDrinksControls = () => {
       setDialogVisible(true);
       return;
     }
-    if (!number || isNaN(number)) {
+    if (!number || isNaN(number) || !maxDays || isNaN(maxDays)) {
       setDialogTitle("Error");
-      setDialogMessage("Please enter a valid number.");
+      setDialogMessage("Please enter valid numbers.");
       setDialogVisible(true);
       return;
     }
+
     try {
       setLoading(true);
       const settings = {
         number: parseInt(number, 10),
-        maxDaysLookBack: parseInt(maxDays),
+        maxDaysLookBack: parseInt(maxDays, 10),
       };
       const userDocRef = doc(firestore, user.uid, "Common Drinks Controls");
       await setDoc(userDocRef, settings, { merge: true });
-      await AsyncStorage.setItem('commonDrinksSettings', JSON.stringify(settings));
       setDialogTitle("Success");
       setDialogMessage("Settings updated successfully!");
       setDialogVisible(true);
@@ -89,7 +74,7 @@ const CommonDrinksControls = () => {
         editable={!loading}
       />
 
-      {/* <Text style={styles.descriptionText}>
+      <Text style={styles.descriptionText}>
         Adjust how far back to look for common Drinks.
       </Text>
       <TextInput
@@ -100,7 +85,7 @@ const CommonDrinksControls = () => {
         placeholder="Enter Max Number of days to look back..."
         placeholderTextColor={'#A7BBC7'}
         editable={!loading}
-      /> */}
+      />
       {loading ? (
         <ActivityIndicator size="large" color="#007BFF" />
       ) : (
@@ -112,7 +97,7 @@ const CommonDrinksControls = () => {
         visible={dialogVisible} 
         onDismiss={() => setDialogVisible(false)}
         contentStyle={dialogStyles.container}
-        >
+      >
         <Dialog.Title style={dialogStyles.title}>{dialogTitle}</Dialog.Title>
         <Dialog.Description style={dialogStyles.description}>{dialogMessage}</Dialog.Description>
         <Dialog.Button style={dialogStyles.editButton} label="OK" onPress={() => setDialogVisible(false)} />
@@ -144,7 +129,7 @@ const styles = StyleSheet.create({
     fontFamily: 'heyam',
   },
   input: {
-    color: 'red',
+    color: 'black',
     width: '90%',
     height: 50,
     borderWidth: 1,
@@ -154,7 +139,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 18,
     fontFamily: 'my_coffee_break',
-
     backgroundColor: 'white',
     textAlign: 'center',
     shadowColor: '#000',
@@ -180,7 +164,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontFamily: 'my_coffee_break',
-
   }
 });
 

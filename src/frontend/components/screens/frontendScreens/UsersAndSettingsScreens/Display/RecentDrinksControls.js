@@ -1,10 +1,9 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Switch } from 'react-native';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { UserContext } from '../../../../../context/UserContext';
 import Dialog from 'react-native-dialog';
 import { dialogStyles } from '../../../../styles/AppStyles/dialogueStyles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RecentDrinksControls = () => {
   const [number, setNumber] = useState('');
@@ -15,20 +14,6 @@ const RecentDrinksControls = () => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
   const [dialogTitle, setDialogTitle] = useState('');
-
-  useEffect(() => {
-    // Load settings from AsyncStorage on component mount
-    loadSettings();
-  }, []);
-
-  const loadSettings = async () => {
-    const settings = await AsyncStorage.getItem('recentDrinksSettings');
-    if (settings) {
-      const parsedSettings = JSON.parse(settings);
-      setNumber(parsedSettings.number.toString()); // Ensure the number is a string for the TextInput
-      setRepeatDrinks(parsedSettings.ignoreRepeatDrinks);
-    }
-  };
 
   const handleNumberChange = (newNumber) => {
     setNumber(newNumber);
@@ -55,8 +40,6 @@ const RecentDrinksControls = () => {
       };
       const userDocRef = doc(firestore, user.uid, "Recent Drinks Controls");
       await setDoc(userDocRef, settings, { merge: true });
-      // Also save to AsyncStorage
-      await AsyncStorage.setItem('recentDrinksSettings', JSON.stringify(settings));
       setDialogTitle("Success");
       setDialogMessage("Settings updated successfully!");
       setDialogVisible(true);
@@ -110,7 +93,7 @@ const RecentDrinksControls = () => {
         visible={dialogVisible} 
         onDismiss={() => setDialogVisible(false)}
         contentStyle={dialogStyles.container}
-        >
+      >
         <Dialog.Title style={dialogStyles.title}>{dialogTitle}</Dialog.Title>
         <Dialog.Description style={dialogStyles.description}>{dialogMessage}</Dialog.Description>
         <Dialog.Button style={dialogStyles.editButton} label="OK" onPress={() => setDialogVisible(false)} />
@@ -140,16 +123,16 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     marginBottom: 10,
     fontFamily: 'heyam',
-    
   },
   input: {
-    color: 'red',
-    width: '100%',
+    color: 'black',
+    width: '90%',
     height: 50,
     borderWidth: 1,
     borderColor: '#BCCCDC',
     padding: 10,
     borderRadius: 10,
+    marginBottom: 20,
     fontSize: 18,
     fontFamily: 'my_coffee_break',
     backgroundColor: 'white',
@@ -177,7 +160,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontFamily: 'my_coffee_break',
-    
   },
   settingContainer: {
     width: '100%',
@@ -191,7 +173,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#4F5D75',
     fontFamily: 'my_coffee_break',
-
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 10,
