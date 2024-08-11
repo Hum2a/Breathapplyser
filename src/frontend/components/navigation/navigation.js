@@ -68,11 +68,11 @@ import {
 
 const Stack = createNativeStackNavigator();
 
-const AppNavigation = () => {
+const AppNavigation = ({ initialRoute }) => {
   return (
     <NavigationContainer>
       <Stack.Navigator 
-        initialRouteName="Login"
+        initialRouteName={initialRoute} // Use initialRoute prop here
         screenOptions={{
           headerShown: false,
           gestureEnabled: true, // Enable gestures if desired
