@@ -1,10 +1,12 @@
+import { FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, FIREBASE_PROJECT_ID, FIREBASE_STORAGE_BUCKET, FIREBASE_MESSAGING_SENDER_ID, FIREBASE_APP_ID } from '@env';
+
 export const firebaseConfig = {
-    apiKey: "AIzaSyAfb605bEs-6NVYWd7XofM0YpI6DyQT7kg",
-    authDomain: "breathappdb.firebaseapp.com",
-    projectId: "breathappdb",
-    storageBucket: "breathappdb.appspot.com",
-    messagingSenderId: "846693325075",
-    appId: "1:846693325075:android:62ccdbb5bf953a96a7a2e6"
+    apiKey: FIREBASE_API_KEY,
+    authDomain: FIREBASE_AUTH_DOMAIN,
+    projectId: FIREBASE_PROJECT_ID,
+    storageBucket: FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
+    appId: FIREBASE_APP_ID
     // You might also have a measurementId, add it here if available
   };
   
